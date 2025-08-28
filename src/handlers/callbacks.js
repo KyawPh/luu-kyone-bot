@@ -411,26 +411,25 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     
     try {
       const welcomeMessages = [
-        `💚 Welcome to our kindness community!\n\n"No act of kindness, no matter how small, is ever wasted."`,
-        `🤝 A new friend has joined us!\n\n"Kindness is a language everyone understands."`,
-        `🌟 Welcome aboard!\n\n"Small acts, when multiplied by millions of people, can transform the world."`,
-        `✨ Great to have you here!\n\n"Be the reason someone believes in the goodness of people."`
+        `💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot`,
+        `🤝 Another kind soul joins us!\n\n"Together we're building bridges of kindness across cities."\n\nShare your journey: @luukyonebot`,
+        `✨ Welcome, neighbor!\n\n"Every new member makes our community stronger and kinder."\n\nBegin spreading joy: @luukyonebot`,
+        `🌟 So happy you're here!\n\n"In a world where you can be anything, you chose to be kind."\n\nStart your kindness story: @luukyonebot`
       ];
       
       const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
       
       await bot.telegram.sendMessage(
         process.env.FREE_CHANNEL_ID,
-        `${randomMessage}\n\n` +
-        `🤖 Start your journey: @luukyonebot\n` +
-        `#welcome #kindness #test`,
+        `🧪 TEST WELCOME MESSAGE\n\n${randomMessage}\n\n` +
+        `#WelcomeWednesday #LuuKyoneFamily #KindnessInAction`,
         { parse_mode: 'HTML' }
       );
       
       await ctx.editMessageText('✅ Test welcome message sent to channel!');
     } catch (error) {
       console.error('Test welcome error:', error);
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+      await ctx.editMessageText(`❌ Failed to send: ${error.message}\n\n⚠️ Make sure bot is admin in channel!`);
     }
   });
   
