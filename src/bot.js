@@ -66,6 +66,7 @@ const launch = async () => {
         const webhookUrl = `https://${domain}/webhook`;
         
         // Check current webhook to avoid unnecessary updates
+        let webhookNeedsUpdate = false;
         try {
           const webhookInfo = await bot.telegram.getWebhookInfo();
           if (webhookInfo.url !== webhookUrl) {
@@ -74,18 +75,22 @@ const launch = async () => {
             await bot.telegram.deleteWebhook({ drop_pending_updates: true });
             // Add small delay to avoid rate limiting
             await new Promise(resolve => setTimeout(resolve, 1500));
+            webhookNeedsUpdate = true;
           } else {
-            logger.info('Webhook already configured correctly');
+            logger.info('Webhook already configured correctly, skipping update');
           }
         } catch (error) {
-          logger.warn('Could not check webhook info', { error: error.message });
+          logger.warn('Could not check webhook info, will set webhook', { error: error.message });
+          webhookNeedsUpdate = true;
         }
         
-        // Set webhook with drop_pending_updates to clear any queued messages
-        await bot.telegram.setWebhook(webhookUrl, {
-          drop_pending_updates: false // Don't drop in production unless necessary
-        });
-        logEvent.webhookSet(webhookUrl);
+        // Only set webhook if it needs updating
+        if (webhookNeedsUpdate) {
+          await bot.telegram.setWebhook(webhookUrl, {
+            drop_pending_updates: false // Don't drop in production unless necessary
+          });
+          logEvent.webhookSet(webhookUrl);
+        }
         
         // Use bot.launch for proper webhook setup
         await bot.launch({
