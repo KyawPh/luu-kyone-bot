@@ -3,11 +3,23 @@ const admin = require('firebase-admin');
 const path = require('path');
 
 // Initialize Firebase Admin
-const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || 
-  path.join(__dirname, '../../firebase-service-account.json');
+let serviceAccount;
 
-const absolutePath = path.resolve(serviceAccountPath);
-const serviceAccount = require(absolutePath);
+if (process.env.NODE_ENV === 'production') {
+  // Use environment variables in production
+  serviceAccount = {
+    type: 'service_account',
+    project_id: process.env.FIREBASE_PROJECT_ID,
+    private_key: process.env.FIREBASE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+    client_email: process.env.FIREBASE_CLIENT_EMAIL
+  };
+} else {
+  // Use service account file in development
+  const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || 
+    path.join(__dirname, '../../firebase-service-account.json');
+  const absolutePath = path.resolve(serviceAccountPath);
+  serviceAccount = require(absolutePath);
+}
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
