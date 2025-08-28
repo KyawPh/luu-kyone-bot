@@ -185,7 +185,7 @@ favorScene.on('photo', async (ctx) => {
       
       await confirmFavorRequest(ctx);
     } catch (error) {
-      console.error('Error processing photo:', error);
+      logger.error('Error processing photo', { error: error.message });
       ctx.reply('❌ Failed to process photo. You can skip or try again.');
     }
   }

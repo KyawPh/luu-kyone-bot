@@ -118,17 +118,22 @@ travelScene.action('date_custom', async (ctx) => {
 
 
 // Weight selection prompt
-async function promptWeight(ctx) {
-  await ctx.editMessageText(
-    '✈️ <b>Share Your Travel Plan</b>\n\n' +
+async function promptWeight(ctx, useReply = false) {
+  const message = '✈️ <b>Share Your Travel Plan</b>\n\n' +
     `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
     `Departure: ${formatDate(ctx.scene.state.departureDate)}\n\n` +
-    'Step 4: How much luggage space do you have available?',
-    { 
-      parse_mode: 'HTML',
-      ...weightKeyboard()
-    }
-  );
+    'Step 4: How much luggage space do you have available?';
+  
+  const options = { 
+    parse_mode: 'HTML',
+    ...weightKeyboard()
+  };
+  
+  if (useReply) {
+    await ctx.reply(message, options);
+  } else {
+    await ctx.editMessageText(message, options);
+  }
 }
 
 // Handle weight selection
@@ -188,7 +193,8 @@ travelScene.on('text', async (ctx) => {
     
     ctx.scene.state.departureDate = date;
     ctx.scene.state.waitingForDate = null;
-    await promptWeight(ctx);
+    // Use reply mode since this is responding to text input
+    await promptWeight(ctx, true);
   }
 });
 
