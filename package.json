@@ -1,0 +1,34 @@
+{
+  "name": "luu-kyone-bot",
+  "version": "1.0.0",
+  "description": "Telegram bot for connecting travelers with people needing personal favors",
+  "main": "src/bot.js",
+  "scripts": {
+    "start": "node src/bot.js",
+    "dev": "nodemon src/bot.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "clear:all": "node scripts/clear-test-data.js --all",
+    "clear:posts": "node scripts/clear-test-data.js --posts",
+    "clear:users": "node scripts/clear-test-data.js --users",
+    "clear:dry": "node scripts/clear-test-data.js --all --dry-run",
+    "clear:user": "node scripts/clear-specific-user.js"
+  },
+  "keywords": [
+    "telegram",
+    "bot",
+    "personal-favor",
+    "community"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "telegraf": "^4.15.3",
+    "firebase-admin": "^11.11.1",
+    "dotenv": "^16.3.1",
+    "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
+}
