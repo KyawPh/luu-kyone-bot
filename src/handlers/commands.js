@@ -72,14 +72,15 @@ const setupCommands = (bot) => {
         
         // Send welcome message for new user
         await ctx.reply(
-          `🎉 <b>Welcome to Luu Kyone</b>, ${userName}!\n\n` +
-          `<b>Luu Kyone</b> ("လူကြုံ" in Myanmar) is a <b>kindness-based platform</b> connecting travelers with people who need personal favors.\n\n` +
-          `🤝 <i>Neighbors helping neighbors across borders</i>\n\n` +
-          `<b>Routes:</b> Singapore 🇸🇬 ↔ Bangkok 🇹🇭 ↔ Yangon 🇲🇲\n\n` +
-          `✈️ <b>Traveling?</b> Share kindness by helping others\n` +
-          `📦 <b>Need help?</b> Find kind travelers on your route\n\n` +
-          `💚 <i>"A small act of kindness can make a big difference"</i>\n\n` +
-          `Let's help each other! What would you like to do?`,
+          `💚 <b>Welcome to Our Kindness Community!</b>\n\n` +
+          `Hi ${userName}! You've just joined something special.\n\n` +
+          `<b>Luu Kyone</b> (လူကြုံ) connects kind hearts across cities. We're neighbors helping neighbors with personal favors - not a delivery service.\n\n` +
+          `<b>How it works:</b>\n` +
+          `✈️ <b>Traveling?</b> Your empty luggage space can bring joy\n` +
+          `🤝 <b>Need a favor?</b> Your neighbor might be traveling home\n\n` +
+          `<b>Our routes:</b> 🇸🇬 Singapore ↔ 🇹🇭 Bangkok ↔ 🇲🇲 Yangon\n\n` +
+          `<i>"Small acts, when multiplied by millions of people,\ncan transform the world"</i>\n\n` +
+          `Ready to spread kindness? Let's start! 🙏`,
           { 
             parse_mode: 'HTML',
             ...mainMenu()
@@ -98,12 +99,12 @@ const setupCommands = (bot) => {
         const postsRemaining = (user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth) - postCount;
         
         await ctx.reply(
-          `Welcome back, ${userName}! 👋\n\n` +
-          `💚 <i>"Kindness is a language everyone understands"</i>\n\n` +
-          `<b>Your kindness journey:</b>\n` +
-          `📊 Posts this month: ${postCount}/${user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth}\n` +
-          `${user.completedFavors > 0 ? `🤝 Kindness shared: ${user.completedFavors} times\n` : `🌱 Ready to share your first act of kindness?\n`}\n` +
-          `Let's spread kindness across borders today!`,
+          `Welcome back, ${userName}! 🤝\n\n` +
+          `<i>"Every act of kindness creates a ripple"</i>\n\n` +
+          `<b>Your impact so far:</b>\n` +
+          `📊 Favors this month: ${postCount}/${user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth}\n` +
+          `${user.completedFavors > 0 ? `💚 Acts of kindness: ${user.completedFavors}\n⭐ You're making a difference!` : `🌱 Your first act of kindness awaits!`}\n\n` +
+          `Someone might need your help today. Let's see! 🙏`,
           { 
             parse_mode: 'HTML',
             ...mainMenu()
@@ -119,41 +120,40 @@ const setupCommands = (bot) => {
   // Help command
   bot.command('help', async (ctx) => {
     const helpMessage = `
-📚 <b>How to Use Luu Kyone Bot</b>
+❓ <b>How Luu Kyone Works</b>
 
-<b>For Travelers:</b>
-1. Use /travel to share your travel plan
-2. Specify your route and dates
-3. Select categories you can help with
-4. Get connected with people needing favors
+We connect travelers with people needing personal favors.
+It's about <b>kindness, not business</b>. 💚
 
-<b>For Requesters:</b>
-1. Use /favor to request help
-2. Specify destination and urgency
-3. Add description and photos
-4. Wait for travelers to contact you
+<b>✈️ For Kind Travelers:</b>
+Your empty luggage space = Someone's happiness!
+• Tap /travel to share your journey
+• Choose what you're comfortable carrying
+• Connect with grateful neighbors
+• <i>5 minutes of your time brings endless joy</i>
 
-<b>Commands:</b>
-/start - Start the bot
-/travel - Share travel plan
-/favor - Request a favor
-/browse - Browse active requests
-/profile - View your profile
-/help - Show this help message
+<b>🤝 For Those Needing Favors:</b>
+Your neighbor might be traveling home!
+• Tap /favor to request help
+• Describe what you need clearly
+• Add photos for better understanding
+• <i>Small favors, big impact on lives</i>
 
-<b>Limits (Free Tier):</b>
-• ${LIMITS.free.postsPerMonth} posts per month
-• One-time introduction only
-• Community trust-based
+<b>🛡️ Safety First:</b>
+• Meet only in public places (airports, cafes)
+• Document everything with photos
+• Trust your instincts always
+• Never carry unknown items
 
-<b>Safety Tips:</b>
-✅ Meet in public places only
-✅ Verify items before accepting
-✅ Take photos of handover
-✅ Never carry unknown packages
-✅ Trust your instincts
+<b>💚 Community Guidelines:</b>
+• This is NOT a delivery service
+• Show gratitude with thank-you gifts
+• Build trust through kindness
+• ${LIMITS.free.postsPerMonth} favors/month (free members)
 
-<b>Support:</b> @luukyone_support
+<i>"Kindness is free. Sprinkle it everywhere!"</i>
+
+Need help? Join @LuuKyone_Community 🙏
     `;
     
     await ctx.reply(helpMessage, { 

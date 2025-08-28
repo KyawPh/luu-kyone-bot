@@ -16,7 +16,14 @@ bot.use(session());
 // Error handling
 bot.catch((err, ctx) => {
   console.error(`Error for ${ctx.updateType}:`, err);
-  ctx.reply('❌ An error occurred. Please try again or contact support.');
+  ctx.reply(
+    `😔 Oops! Something went wrong.\n\n` +
+    `Don't worry, it happens! Please try again.\n\n` +
+    `If this keeps happening, our community is here to help:\n` +
+    `👉 @LuuKyone_Community\n\n` +
+    `<i>"Even technology needs kindness sometimes!"</i>`,
+    { parse_mode: 'HTML' }
+  );
 });
 
 // Register scenes
