@@ -1,5 +1,5 @@
-require('dotenv').config();
 const { Telegraf, session } = require('telegraf');
+const { config } = require('./config');
 const { collections } = require('./config/firebase');
 const setupCommands = require('./handlers/commands');
 const setupCallbacks = require('./handlers/callbacks');
@@ -7,14 +7,8 @@ const setupChannelHandlers = require('./handlers/channel');
 const travelScene = require('./scenes/travel');
 const favorScene = require('./scenes/favor');
 
-// Check for required environment variables
-if (!process.env.BOT_TOKEN) {
-  console.error('❌ BOT_TOKEN is not set in .env file');
-  process.exit(1);
-}
-
 // Initialize bot
-const bot = new Telegraf(process.env.BOT_TOKEN);
+const bot = new Telegraf(config.telegram.botToken);
 
 // Middleware
 bot.use(session());
@@ -38,11 +32,11 @@ setupChannelHandlers(bot);
 // Launch bot
 const launch = async () => {
   try {
-    if (process.env.NODE_ENV === 'production') {
+    if (config.environment === 'production') {
       // Production webhook setup for Railway
       const domain = process.env.RAILWAY_PUBLIC_DOMAIN || 
                      process.env.RAILWAY_STATIC_URL || 
-                     process.env.WEBHOOK_DOMAIN;
+                     config.telegram.webhookDomain;
       
       if (!domain) {
         console.log('⚠️ No domain set, falling back to polling mode in production');
@@ -56,10 +50,9 @@ const launch = async () => {
         await bot.telegram.setWebhook(webhookUrl);
         
         // Start webhook server
-        const port = process.env.PORT || 3000;
-        bot.startWebhook('/webhook', null, port);
+        bot.startWebhook('/webhook', null, config.server.port);
         
-        console.log(`✅ Bot started in production mode on port ${port}`);
+        console.log(`✅ Bot started in production mode on port ${config.server.port}`);
         console.log(`📡 Webhook URL: ${webhookUrl}`);
       }
     } else {

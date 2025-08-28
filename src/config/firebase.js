@@ -9,20 +9,11 @@ let serviceAccount;
 // Option 1: Use Base64 encoded credentials (best for Railway/production)
 if (process.env.FIREBASE_CREDENTIALS_BASE64) {
   try {
-    console.log('🔐 Using Base64 encoded Firebase credentials');
     const base64String = process.env.FIREBASE_CREDENTIALS_BASE64;
-    console.log('  Base64 string length:', base64String.length);
-    
-    // Decode from Base64
     const credentialsJson = Buffer.from(base64String, 'base64').toString('utf-8');
     serviceAccount = JSON.parse(credentialsJson);
-    
-    console.log('✅ Successfully decoded Firebase credentials');
-    console.log('  Project ID:', serviceAccount.project_id);
-    console.log('  Client Email:', serviceAccount.client_email);
   } catch (error) {
-    console.error('❌ Failed to decode Firebase credentials from Base64:', error);
-    throw new Error(`Failed to decode Firebase credentials: ${error.message}`);
+    throw new Error(`Failed to decode Firebase credentials from Base64: ${error.message}`);
   }
 }
 // Option 2: Use service account file path (for local development)
@@ -32,7 +23,6 @@ else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH || fs.existsSync(path.join(__
   const absolutePath = path.resolve(serviceAccountPath);
   
   if (fs.existsSync(absolutePath)) {
-    console.log('📁 Using Firebase service account file:', absolutePath);
     serviceAccount = require(absolutePath);
   } else {
     throw new Error(`Firebase service account file not found at: ${absolutePath}`);
@@ -40,8 +30,6 @@ else if (process.env.FIREBASE_SERVICE_ACCOUNT_PATH || fs.existsSync(path.join(__
 }
 // Option 3: Use individual environment variables
 else if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY && process.env.FIREBASE_CLIENT_EMAIL) {
-  console.log('🔑 Using individual Firebase environment variables');
-  
   // Handle private key format
   let privateKey = process.env.FIREBASE_PRIVATE_KEY;
   
@@ -66,10 +54,6 @@ else if (process.env.FIREBASE_PROJECT_ID && process.env.FIREBASE_PRIVATE_KEY && 
       : undefined,
     universe_domain: 'googleapis.com'
   };
-  
-  console.log('✅ Created service account from individual variables');
-  console.log('  Project ID:', serviceAccount.project_id);
-  console.log('  Client Email:', serviceAccount.client_email);
 } else {
   throw new Error(
     'Firebase credentials not found. Set one of:\n' +
@@ -84,11 +68,8 @@ try {
     credential: admin.credential.cert(serviceAccount),
     storageBucket: `${serviceAccount.project_id}.appspot.com`
   });
-  console.log('✅ Firebase initialized successfully');
-  console.log(`📁 Project ID: ${serviceAccount.project_id}`);
 } catch (error) {
-  console.error('❌ Failed to initialize Firebase:', error);
-  throw error;
+  throw new Error(`Failed to initialize Firebase: ${error.message}`);
 }
 
 const db = admin.firestore();
