@@ -12,9 +12,11 @@ const {
 const { 
   generatePostId,
   formatPostForChannel,
-  escapeHtml
+  escapeHtml,
+  formatRoute
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES, URGENCY_LEVELS } = require('../config/constants');
+const { logger, logEvent } = require('../utils/logger');
 
 const favorScene = new Scenes.BaseScene('favorScene');
 
@@ -250,6 +252,18 @@ favorScene.action('confirm_favor', async (ctx) => {
     // Save to database
     await collections.favorRequests.doc(postId).set(favorRequest);
     
+    // Log the favor request creation
+    const route = formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity);
+    logEvent.favorRequestCreated(userId, route, ctx.scene.state.category);
+    logger.info('Favor request created successfully', {
+      postId,
+      userId,
+      route,
+      category: ctx.scene.state.category,
+      urgency: ctx.scene.state.urgency,
+      hasPhoto: !!ctx.scene.state.photoUrl
+    });
+    
     // Format message for channel
     const channelMessage = formatPostForChannel(favorRequest, 'favor');
     
@@ -277,8 +291,12 @@ favorScene.action('confirm_favor', async (ctx) => {
           }
         );
       }
+      logEvent.channelMessageSent('favor_request');
     } catch (error) {
-      console.error('Failed to post to channel:', error);
+      logger.error('Failed to post favor request to channel', { 
+        error: error.message, 
+        postId 
+      });
       await ctx.reply(
         '⚠️ <b>Note:</b> Your favor request was saved but couldn\'t be posted to the channel.\n\n' +
         'Please ensure the bot is added as admin to @LuuKyone_Community channel.',
@@ -304,7 +322,13 @@ favorScene.action('confirm_favor', async (ctx) => {
     // Leave scene
     ctx.scene.leave();
   } catch (error) {
-    console.error('Error posting favor request:', error);
+    const userId = ctx.from?.id || 'unknown';
+    logger.error('Error creating favor request', { 
+      error: error.message,
+      userId,
+      state: ctx.scene.state 
+    });
+    logEvent.firebaseError('create_favor_request', error);
     ctx.reply('❌ An error occurred while posting. Please try again.');
     ctx.scene.leave();
   }

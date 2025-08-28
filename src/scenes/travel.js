@@ -18,6 +18,7 @@ const {
   escapeHtml
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES } = require('../config/constants');
+const { logger, logEvent } = require('../utils/logger');
 
 const travelScene = new Scenes.BaseScene('travelScene');
 
@@ -297,6 +298,17 @@ travelScene.action('confirm_post', async (ctx) => {
     // Save to database
     await collections.travelPlans.doc(postId).set(travelPlan);
     
+    // Log the travel plan creation
+    const route = formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity);
+    logEvent.travelPlanCreated(userId, route, ctx.scene.state.departureDate);
+    logger.info('Travel plan created successfully', {
+      postId,
+      userId,
+      route,
+      categories: ctx.scene.state.categories.length,
+      weight: ctx.scene.state.availableWeight
+    });
+    
     // Format message for channel
     const channelMessage = formatPostForChannel(travelPlan, 'travel');
     
@@ -310,8 +322,12 @@ travelScene.action('confirm_post', async (ctx) => {
           ...contactButton(userId, 'travel', postId)
         }
       );
+      logEvent.channelMessageSent('travel_plan');
     } catch (error) {
-      console.error('Failed to post to channel:', error);
+      logger.error('Failed to post travel plan to channel', { 
+        error: error.message, 
+        postId 
+      });
       await ctx.reply(
         '⚠️ <b>Note:</b> Your travel plan was saved but couldn\'t be posted to the channel.\n\n' +
         'Please ensure the bot is added as admin to @LuuKyone_Community channel.',
@@ -337,7 +353,13 @@ travelScene.action('confirm_post', async (ctx) => {
     // Leave scene
     ctx.scene.leave();
   } catch (error) {
-    console.error('Error posting travel plan:', error);
+    const userId = ctx.from?.id || 'unknown';
+    logger.error('Error creating travel plan', { 
+      error: error.message,
+      userId,
+      state: ctx.scene.state 
+    });
+    logEvent.firebaseError('create_travel_plan', error);
     ctx.reply('❌ An error occurred while posting. Please try again.');
     ctx.scene.leave();
   }
