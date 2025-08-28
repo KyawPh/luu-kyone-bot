@@ -40,20 +40,28 @@ const launch = async () => {
   try {
     if (process.env.NODE_ENV === 'production') {
       // Production webhook setup for Railway
-      const domain = process.env.RAILWAY_STATIC_URL || process.env.VERCEL_URL;
+      const domain = process.env.RAILWAY_PUBLIC_DOMAIN || 
+                     process.env.RAILWAY_STATIC_URL || 
+                     process.env.WEBHOOK_DOMAIN;
+      
       if (!domain) {
-        throw new Error('Domain not set for production webhook');
+        console.log('⚠️ No domain set, falling back to polling mode in production');
+        // Fallback to polling in production if no domain is set
+        const botInfo = await bot.telegram.getMe();
+        bot.startPolling(30, 100, null, () => {
+          console.log(`✅ Bot started as @${botInfo.username} (production polling mode)`);
+        });
+      } else {
+        const webhookUrl = `https://${domain}/webhook`;
+        await bot.telegram.setWebhook(webhookUrl);
+        
+        // Start webhook server
+        const port = process.env.PORT || 3000;
+        bot.startWebhook('/webhook', null, port);
+        
+        console.log(`✅ Bot started in production mode on port ${port}`);
+        console.log(`📡 Webhook URL: ${webhookUrl}`);
       }
-      
-      const webhookUrl = `https://${domain}/webhook`;
-      await bot.telegram.setWebhook(webhookUrl);
-      
-      // Start webhook server
-      const port = process.env.PORT || 3000;
-      bot.startWebhook('/webhook', null, port);
-      
-      console.log(`✅ Bot started in production mode on port ${port}`);
-      console.log(`📡 Webhook URL: ${webhookUrl}`);
     } else {
       // Development polling mode
       const botInfo = await bot.telegram.getMe();
