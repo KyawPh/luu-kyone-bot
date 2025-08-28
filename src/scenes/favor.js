@@ -24,6 +24,10 @@ favorScene.enter(async (ctx) => {
   // Initialize state with passed data or empty object
   ctx.scene.state = ctx.scene.state || {};
   
+  // Log scene entry
+  const userId = ctx.from.id.toString();
+  logEvent.sceneEntered(userId, 'favorScene');
+  
   const message = '📦 <b>Request a Personal Favor</b>\n\n' +
     'Step 1: Where does the item need to be picked up FROM?';
   
@@ -320,6 +324,7 @@ favorScene.action('confirm_favor', async (ctx) => {
     }, 1000);
     
     // Leave scene
+    logEvent.sceneLeft(userId, 'favorScene', 'completed');
     ctx.scene.leave();
   } catch (error) {
     const userId = ctx.from?.id || 'unknown';
@@ -330,6 +335,7 @@ favorScene.action('confirm_favor', async (ctx) => {
     });
     logEvent.firebaseError('create_favor_request', error);
     ctx.reply('❌ An error occurred while posting. Please try again.');
+    logEvent.sceneLeft(userId, 'favorScene', 'error');
     ctx.scene.leave();
   }
 });
@@ -338,6 +344,8 @@ favorScene.action('confirm_favor', async (ctx) => {
 favorScene.action(['cancel', 'cancel_favor'], async (ctx) => {
   await ctx.answerCbQuery();
   await ctx.editMessageText('❌ Favor request cancelled.');
+  const userId = ctx.from.id.toString();
+  logEvent.sceneLeft(userId, 'favorScene', 'cancelled');
   ctx.scene.leave();
   ctx.reply('What would you like to do?', mainMenu());
 });

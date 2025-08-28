@@ -2,7 +2,7 @@ const { collections } = require('../config/firebase');
 const { mainMenu, contactButton } = require('../utils/keyboards');
 const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
-const { logger } = require('../utils/logger');
+const { logger, logEvent } = require('../utils/logger');
 
 const setupCallbacks = (bot) => {
   // Check membership callback
@@ -17,8 +17,10 @@ const setupCallbacks = (bot) => {
       try {
         const chatMember = await bot.telegram.getChatMember(process.env.FREE_CHANNEL_ID, userId);
         isMember = ['member', 'administrator', 'creator'].includes(chatMember.status);
+        logEvent.membershipChecked(userId, isMember);
       } catch (error) {
-        // Membership check failed
+        logger.error('Error checking membership', { error: error.message, userId });
+        logEvent.telegramError('getChatMember', error);
       }
       
       if (!isMember) {
@@ -335,6 +337,9 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
         createdAt: new Date(),
         status: 'introduced'
       });
+      
+      // Log the contact request
+      logEvent.contactRequested(requesterId, posterId, postId, postType);
       
       // Get poster info
       const posterDoc = await collections.users.doc(posterId).get();

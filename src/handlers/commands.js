@@ -294,6 +294,8 @@ Need help? Join @LuuKyone_Community 🙏
         return ctx.reply('📭 No active posts at the moment. Check back later!');
       }
       
+      logEvent.postsViewed('unknown', 'browse', activeTravelPlans.length + activeFavorRequests.length);
+      
       let message = '📋 <b>Recent Active Posts</b>\n\n';
       
       if (activeTravelPlans.length > 0) {
@@ -340,6 +342,8 @@ Need help? Join @LuuKyone_Community 🙏
       
       const user = userDoc.data();
       const postCount = await require('../utils/helpers').getMonthlyPostCount(userId, collections);
+      
+      logEvent.userViewedProfile(userId);
       
       const profileMessage = `
 👤 <b>Your Profile</b>

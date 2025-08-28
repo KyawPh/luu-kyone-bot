@@ -107,6 +107,10 @@ const logEvent = {
     logger.info('User started bot', { userId, userName, event: 'USER_STARTED' });
   },
   
+  userViewedProfile: (userId) => {
+    logger.info('User viewed profile', { userId, event: 'PROFILE_VIEWED' });
+  },
+  
   // Post events
   travelPlanCreated: (userId, route, date) => {
     logger.info('Travel plan created', { userId, route, date, event: 'TRAVEL_CREATED' });
@@ -118,6 +122,27 @@ const logEvent = {
   
   postCompleted: (postId, type) => {
     logger.info('Post marked complete', { postId, type, event: 'POST_COMPLETED' });
+  },
+  
+  postsViewed: (userId, type, count) => {
+    logger.info('User browsed posts', { userId, type, count, event: 'POSTS_BROWSED' });
+  },
+  
+  // Interaction events
+  contactRequested: (userId, posterId, postId, postType) => {
+    logger.info('Contact requested', { userId, posterId, postId, postType, event: 'CONTACT_REQUESTED' });
+  },
+  
+  sceneEntered: (userId, scene) => {
+    logger.debug('Scene entered', { userId, scene, event: 'SCENE_ENTERED' });
+  },
+  
+  sceneLeft: (userId, scene, reason = 'completed') => {
+    logger.debug('Scene left', { userId, scene, reason, event: 'SCENE_LEFT' });
+  },
+  
+  membershipChecked: (userId, isMember) => {
+    logger.debug('Membership checked', { userId, isMember, event: 'MEMBERSHIP_CHECKED' });
   },
   
   // Channel events

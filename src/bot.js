@@ -50,6 +50,14 @@ setupChannelHandlers(bot);
 // Launch bot
 const launch = async () => {
   try {
+    // Always clear any existing webhook/polling first to prevent conflicts
+    try {
+      await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+      logger.info('Cleared any existing webhook/polling to prevent conflicts');
+    } catch (error) {
+      logger.warn('Could not clear webhook', { error: error.message });
+    }
+    
     if (config.environment === 'production') {
       // Production webhook setup for Railway
       const domain = process.env.RAILWAY_PUBLIC_DOMAIN || 
@@ -57,33 +65,47 @@ const launch = async () => {
                      config.telegram.webhookDomain;
       
       if (!domain) {
-        logger.warn('No domain set, falling back to polling mode in production');
-        // Fallback to polling in production if no domain is set
-        const botInfo = await bot.telegram.getMe();
-        bot.startPolling(30, 100, null, () => {
-          logEvent.botStarted('production-polling', { username: botInfo.username });
-        });
+        logger.error('❌ CRITICAL: No domain configured for production!');
+        logger.error('Please set RAILWAY_PUBLIC_DOMAIN in Railway environment variables');
+        logger.error('The bot cannot run in polling mode on Railway as it causes conflicts');
+        // Exit to prevent polling mode conflicts in production
+        throw new Error('Production requires webhook mode. Set RAILWAY_PUBLIC_DOMAIN in Railway.');
       } else {
         const webhookUrl = `https://${domain}/webhook`;
-        await bot.telegram.setWebhook(webhookUrl);
+        
+        // Set webhook with drop_pending_updates to clear any queued messages
+        await bot.telegram.setWebhook(webhookUrl, {
+          drop_pending_updates: true
+        });
         logEvent.webhookSet(webhookUrl);
         
-        // Start webhook server
-        bot.startWebhook('/webhook', null, config.server.port);
+        // Use bot.launch for proper webhook setup
+        await bot.launch({
+          webhook: {
+            domain: domain,
+            path: '/webhook',
+            port: config.server.port
+          }
+        });
         
         logEvent.botStarted('production-webhook', { 
           port: config.server.port, 
           webhookUrl 
         });
+        
+        logger.info(`✅ Bot launched in webhook mode on ${webhookUrl}`);
       }
     } else {
       // Development polling mode
       const botInfo = await bot.telegram.getMe();
       
-      // Start polling
-      bot.startPolling(30, 100, null, () => {
-        logEvent.botStarted('development', { username: botInfo.username });
+      // Use bot.launch for proper polling setup
+      await bot.launch({
+        dropPendingUpdates: true
       });
+      
+      logEvent.botStarted('development', { username: botInfo.username });
+      logger.info(`✅ Bot launched in polling mode for development`);
     }
     
     // Set bot commands menu

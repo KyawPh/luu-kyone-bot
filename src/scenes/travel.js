@@ -26,6 +26,10 @@ travelScene.enter(async (ctx) => {
   // Initialize state with passed data or empty object
   ctx.scene.state = ctx.scene.state || {};
   
+  // Log scene entry
+  const userId = ctx.from.id.toString();
+  logEvent.sceneEntered(userId, 'travelScene');
+  
   const message = '✈️ <b>Share Your Travel Plan</b>\n\n' +
     'Step 1: Where are you traveling FROM?';
   
@@ -351,6 +355,7 @@ travelScene.action('confirm_post', async (ctx) => {
     }, 1000);
     
     // Leave scene
+    logEvent.sceneLeft(userId, 'travelScene', 'completed');
     ctx.scene.leave();
   } catch (error) {
     const userId = ctx.from?.id || 'unknown';
@@ -361,6 +366,7 @@ travelScene.action('confirm_post', async (ctx) => {
     });
     logEvent.firebaseError('create_travel_plan', error);
     ctx.reply('❌ An error occurred while posting. Please try again.');
+    logEvent.sceneLeft(userId, 'travelScene', 'error');
     ctx.scene.leave();
   }
 });
@@ -369,6 +375,8 @@ travelScene.action('confirm_post', async (ctx) => {
 travelScene.action('cancel', async (ctx) => {
   await ctx.answerCbQuery();
   await ctx.editMessageText('❌ Travel plan cancelled.');
+  const userId = ctx.from.id.toString();
+  logEvent.sceneLeft(userId, 'travelScene', 'cancelled');
   ctx.scene.leave();
   ctx.reply('What would you like to do?', mainMenu());
 });
