@@ -50,14 +50,6 @@ setupChannelHandlers(bot);
 // Launch bot
 const launch = async () => {
   try {
-    // Always clear any existing webhook/polling first to prevent conflicts
-    try {
-      await bot.telegram.deleteWebhook({ drop_pending_updates: true });
-      logger.info('Cleared any existing webhook/polling to prevent conflicts');
-    } catch (error) {
-      logger.warn('Could not clear webhook', { error: error.message });
-    }
-    
     if (config.environment === 'production') {
       // Production webhook setup for Railway
       const domain = process.env.RAILWAY_PUBLIC_DOMAIN || 
@@ -73,9 +65,25 @@ const launch = async () => {
       } else {
         const webhookUrl = `https://${domain}/webhook`;
         
+        // Check current webhook to avoid unnecessary updates
+        try {
+          const webhookInfo = await bot.telegram.getWebhookInfo();
+          if (webhookInfo.url !== webhookUrl) {
+            logger.info('Webhook URL changed, updating...');
+            // Only delete if we need to change the webhook
+            await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+            // Add small delay to avoid rate limiting
+            await new Promise(resolve => setTimeout(resolve, 1500));
+          } else {
+            logger.info('Webhook already configured correctly');
+          }
+        } catch (error) {
+          logger.warn('Could not check webhook info', { error: error.message });
+        }
+        
         // Set webhook with drop_pending_updates to clear any queued messages
         await bot.telegram.setWebhook(webhookUrl, {
-          drop_pending_updates: true
+          drop_pending_updates: false // Don't drop in production unless necessary
         });
         logEvent.webhookSet(webhookUrl);
         
@@ -97,6 +105,14 @@ const launch = async () => {
       }
     } else {
       // Development polling mode
+      // Clear any existing webhook for development
+      try {
+        await bot.telegram.deleteWebhook({ drop_pending_updates: true });
+        logger.info('Cleared webhook for development polling mode');
+      } catch (error) {
+        logger.warn('Could not clear webhook', { error: error.message });
+      }
+      
       const botInfo = await bot.telegram.getMe();
       
       // Use bot.launch for proper polling setup
