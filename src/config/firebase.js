@@ -6,16 +6,28 @@ const path = require('path');
 let serviceAccount;
 
 if (process.env.NODE_ENV === 'production') {
+  console.log('🔧 Setting up Firebase in production mode...');
+  
   // Use environment variables in production
-  // Option 1: Use individual environment variables
+  // Option 1: Use full service account JSON
   if (process.env.FIREBASE_SERVICE_ACCOUNT) {
+    console.log('📄 Using FIREBASE_SERVICE_ACCOUNT environment variable');
     // If full service account JSON is provided as a single env var
     try {
       serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT);
+      console.log('✅ Parsed service account JSON successfully');
     } catch (error) {
       throw new Error('Invalid FIREBASE_SERVICE_ACCOUNT JSON: ' + error.message);
     }
   } else {
+    console.log('🔑 Using individual Firebase environment variables');
+    
+    // Check which variables are present
+    console.log('Environment check:');
+    console.log('  FIREBASE_PROJECT_ID:', process.env.FIREBASE_PROJECT_ID ? '✅ Set' : '❌ Missing');
+    console.log('  FIREBASE_CLIENT_EMAIL:', process.env.FIREBASE_CLIENT_EMAIL ? '✅ Set' : '❌ Missing');
+    console.log('  FIREBASE_PRIVATE_KEY:', process.env.FIREBASE_PRIVATE_KEY ? `✅ Set (${process.env.FIREBASE_PRIVATE_KEY.substring(0, 50)}...)` : '❌ Missing');
+    
     // Use individual variables
     if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_PRIVATE_KEY || !process.env.FIREBASE_CLIENT_EMAIL) {
       throw new Error('Missing required Firebase environment variables');
@@ -24,15 +36,24 @@ if (process.env.NODE_ENV === 'production') {
     // Handle different private key formats
     let privateKey = process.env.FIREBASE_PRIVATE_KEY;
     
+    console.log('🔐 Processing private key...');
+    console.log('  Key starts with:', privateKey.substring(0, 30));
+    console.log('  Contains \\n:', privateKey.includes('\\n') ? 'Yes' : 'No');
+    
     // If the key is JSON-escaped (has literal \n), replace them with actual newlines
     if (privateKey.includes('\\n')) {
+      console.log('  Converting \\n to actual newlines...');
       privateKey = privateKey.replace(/\\n/g, '\n');
     }
     
     // Ensure proper formatting
     if (!privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+      console.error('❌ Private key does not have proper BEGIN marker');
+      console.error('  Key preview:', privateKey.substring(0, 100));
       throw new Error('Invalid Firebase private key format');
     }
+    
+    console.log('  ✅ Private key format validated');
     
     // Build complete service account object with all required fields
     serviceAccount = {
@@ -48,6 +69,11 @@ if (process.env.NODE_ENV === 'production') {
       client_x509_cert_url: `https://www.googleapis.com/robot/v1/metadata/x509/${encodeURIComponent(process.env.FIREBASE_CLIENT_EMAIL)}`,
       universe_domain: 'googleapis.com'
     };
+    
+    console.log('📋 Service account object created:');
+    console.log('  Project ID:', serviceAccount.project_id);
+    console.log('  Client Email:', serviceAccount.client_email);
+    console.log('  Private Key ID:', serviceAccount.private_key_id);
   }
 } else {
   // Use service account file in development
