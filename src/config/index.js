@@ -70,10 +70,8 @@ function validateConfig() {
       throw new Error('NODE_ENV must be development, production, or test');
     }
     
-    console.log('✅ Configuration validated successfully');
     return true;
   } catch (error) {
-    console.error('❌ Configuration validation failed:', error.message);
     throw error;
   }
 }

@@ -2,6 +2,7 @@ const { collections } = require('../config/firebase');
 const { mainMenu, contactButton } = require('../utils/keyboards');
 const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
+const { logger } = require('../utils/logger');
 
 const setupCallbacks = (bot) => {
   // Check membership callback
@@ -82,7 +83,7 @@ const setupCallbacks = (bot) => {
       }, 500);
       
     } catch (error) {
-      console.error('Check membership error:', error);
+      logger.error('Check membership error', { error: error.message });
       ctx.reply('❌ An error occurred. Please try /start again.');
     }
   });
@@ -173,7 +174,7 @@ const setupCallbacks = (bot) => {
         ctx.reply('What would you like to do?', mainMenu());
       }, 500);
     } catch (error) {
-      console.error('Browse callback error:', error);
+      logger.error('Browse callback error', { error: error.message });
       ctx.reply('❌ An error occurred. Please try again.');
     }
   });
@@ -214,7 +215,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
         ctx.reply('What would you like to do?', mainMenu());
       }, 500);
     } catch (error) {
-      console.error('Profile callback error:', error);
+      logger.error('Profile callback error', { error: error.message });
       ctx.reply('❌ An error occurred. Please try again.');
     }
   });
@@ -377,11 +378,11 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
           { parse_mode: 'HTML' }
         );
       } catch (error) {
-        console.error('Failed to notify poster:', error);
+        logger.error('Failed to notify poster', { error: error.message });
       }
       
     } catch (error) {
-      console.error('Contact callback error:', error);
+      logger.error('Contact callback error', { error: error.message });
       await ctx.answerCbQuery('❌ An error occurred. Please try again.', { show_alert: true });
     }
   });
@@ -428,7 +429,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       
       await ctx.editMessageText('✅ Test welcome message sent to channel!');
     } catch (error) {
-      console.error('Test welcome error:', error);
+      logger.error('Test welcome error', { error: error.message });
       await ctx.editMessageText(`❌ Failed to send: ${error.message}\n\n⚠️ Make sure bot is admin in channel!`);
     }
   });
@@ -440,7 +441,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await bot.telegram.sendDailyQuote();
       await ctx.editMessageText('✅ Daily quote sent to channel!');
     } catch (error) {
-      console.error('Test quote error:', error);
+      logger.error('Test quote error', { error: error.message });
       await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
     }
   });
@@ -452,7 +453,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await bot.telegram.celebrateMilestone('kindness', 100);
       await ctx.editMessageText('✅ Milestone celebration sent to channel!');
     } catch (error) {
-      console.error('Test milestone error:', error);
+      logger.error('Test milestone error', { error: error.message });
       await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
     }
   });
@@ -464,7 +465,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await bot.telegram.celebrateMilestone('members', 500);
       await ctx.editMessageText('✅ Member milestone sent to channel!');
     } catch (error) {
-      console.error('Test milestone error:', error);
+      logger.error('Test milestone error', { error: error.message });
       await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
     }
   });
@@ -512,7 +513,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       
       await ctx.editMessageText('✅ Weekly stats sent to channel!');
     } catch (error) {
-      console.error('Test stats error:', error);
+      logger.error('Test stats error', { error: error.message });
       await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
     }
   });

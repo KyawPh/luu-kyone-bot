@@ -2,6 +2,7 @@ const { collections } = require('../config/firebase');
 const { mainMenu } = require('../utils/keyboards');
 const { canCreatePost } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
+const { logger, logEvent } = require('../utils/logger');
 
 const setupCommands = (bot) => {
   // Start command
@@ -70,6 +71,8 @@ const setupCommands = (bot) => {
           isChannelMember: true // They must be a member to reach this point
         });
         
+        logEvent.userJoined(userId, userName);
+        
         // Send welcome message for new user
         await ctx.reply(
           `💚 <b>Welcome to Our Kindness Community!</b>\n\n` +
@@ -111,8 +114,10 @@ const setupCommands = (bot) => {
           }
         );
       }
+      
+      logEvent.userStarted(userId, userName);
     } catch (error) {
-      console.error('Start command error:', error);
+      logEvent.commandError('start', error, userId);
       ctx.reply('❌ An error occurred. Please try again.');
     }
   });
@@ -203,7 +208,7 @@ Need help? Join @LuuKyone_Community 🙏
       // Enter travel scene
       ctx.scene.enter('travelScene');
     } catch (error) {
-      console.error('Travel command error:', error);
+      logEvent.commandError('travel', error, userId);
       ctx.reply('❌ An error occurred. Please try again.');
     }
   });
@@ -249,7 +254,7 @@ Need help? Join @LuuKyone_Community 🙏
       // Enter favor scene
       ctx.scene.enter('favorScene');
     } catch (error) {
-      console.error('Favor command error:', error);
+      logEvent.commandError('favor', error, userId);
       ctx.reply('❌ An error occurred. Please try again.');
     }
   });
@@ -317,7 +322,7 @@ Need help? Join @LuuKyone_Community 🙏
       
       await ctx.reply(message, { parse_mode: 'HTML' });
     } catch (error) {
-      console.error('Browse command error:', error);
+      logEvent.commandError('browse', error, 'unknown');
       ctx.reply('❌ An error occurred. Please try again.');
     }
   });
@@ -353,7 +358,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       
       await ctx.reply(profileMessage, { parse_mode: 'HTML' });
     } catch (error) {
-      console.error('Profile command error:', error);
+      logEvent.commandError('profile', error, userId);
       ctx.reply('❌ An error occurred. Please try again.');
     }
   });
@@ -399,7 +404,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
         }
       );
     } catch (error) {
-      console.error('Test command error:', error);
+      logger.error('Test command error', { error: error.message });
       ctx.reply('❌ Error accessing test menu.');
     }
   });

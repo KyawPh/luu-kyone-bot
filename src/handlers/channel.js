@@ -1,32 +1,17 @@
 const { collections, admin } = require('../config/firebase');
+const { logger, logEvent } = require('../utils/logger');
+const { config } = require('../config');
 
 const setupChannelHandlers = (bot) => {
-  // Debug: Log when handler is set up
-  console.log('📢 Channel handlers initialized for channel:', process.env.FREE_CHANNEL_ID);
-  
   // Handle new members joining the channel
   bot.on('chat_member', async (ctx) => {
     try {
-      console.log('👥 Chat member update received:', {
-        chatId: ctx.chat.id,
-        chatTitle: ctx.chat.title,
-        expectedChannel: process.env.FREE_CHANNEL_ID
-      });
-      
       // Check if this is for our community channel
       if (ctx.chat.id.toString() !== process.env.FREE_CHANNEL_ID) {
-        console.log('❌ Update not for our channel, ignoring');
         return;
       }
 
       const { new_chat_member, old_chat_member } = ctx.chatMember;
-      
-      console.log('📊 Member status change:', {
-        oldStatus: old_chat_member.status,
-        newStatus: new_chat_member.status,
-        userId: new_chat_member.user.id,
-        userName: new_chat_member.user.first_name
-      });
       
       // Check if someone joined the channel
       if (old_chat_member.status === 'left' && 
@@ -34,9 +19,11 @@ const setupChannelHandlers = (bot) => {
         
         // Don't welcome bots
         if (new_chat_member.user.is_bot) {
-          console.log('🤖 New member is a bot, skipping welcome');
           return;
         }
+        
+        const userName = new_chat_member.user.first_name || 'Friend';
+        logEvent.memberJoinedChannel(userName);
         
         // Send a welcome message to the channel
         const welcomeMessages = [
@@ -49,8 +36,6 @@ const setupChannelHandlers = (bot) => {
         // Pick a random welcome message
         const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
         
-        console.log('✅ Sending welcome message for:', new_chat_member.user.first_name);
-        
         await bot.telegram.sendMessage(
           process.env.FREE_CHANNEL_ID,
           `${randomMessage}\n\n` +
@@ -58,7 +43,7 @@ const setupChannelHandlers = (bot) => {
           { parse_mode: 'HTML' }
         );
         
-        console.log('✅ Welcome message sent successfully');
+        logEvent.channelMessageSent('welcome');
         
         // Update stats (optional - track member count)
         try {
@@ -86,8 +71,7 @@ const setupChannelHandlers = (bot) => {
         }
       }
     } catch (error) {
-      console.error('Channel member update error:', error);
-      // Don't crash on channel events
+      logger.error('Channel member update failed', { error: error.message });
     }
   });
 
@@ -103,7 +87,7 @@ const setupChannelHandlers = (bot) => {
       // For example: /stats, /help, etc.
       
     } catch (error) {
-      console.error('Channel post error:', error);
+      logger.error('Channel post error', { error: error.message });
     }
   });
 
@@ -143,7 +127,7 @@ const setupChannelHandlers = (bot) => {
           { parse_mode: 'HTML' }
         );
       } catch (error) {
-        console.error('Failed to send milestone message:', error);
+        logger.error('Failed to send milestone message', { error: error.message });
       }
     }
   };
@@ -173,7 +157,7 @@ const setupChannelHandlers = (bot) => {
         { parse_mode: 'HTML' }
       );
     } catch (error) {
-      console.error('Failed to send gratitude post:', error);
+      logger.error('Failed to send gratitude post', { error: error.message });
     }
   };
   
@@ -228,7 +212,7 @@ const setupChannelHandlers = (bot) => {
         { parse_mode: 'HTML' }
       );
     } catch (error) {
-      console.error('Failed to send safety reminder:', error);
+      logger.error('Failed to send safety reminder', { error: error.message });
     }
   };
   
@@ -261,7 +245,7 @@ const setupChannelHandlers = (bot) => {
         { parse_mode: 'HTML' }
       );
     } catch (error) {
-      console.error('Failed to send route highlight:', error);
+      logger.error('Failed to send route highlight', { error: error.message });
     }
   };
   
@@ -293,7 +277,7 @@ const setupChannelHandlers = (bot) => {
         { parse_mode: 'HTML' }
       );
     } catch (error) {
-      console.error('Failed to send daily quote:', error);
+      logger.error('Failed to send daily quote', { error: error.message });
     }
   };
 };
