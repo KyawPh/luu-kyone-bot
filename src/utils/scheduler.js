@@ -1,5 +1,5 @@
 const cron = require('node-cron');
-const { collections } = require('../config/firebase');
+const { collections, db } = require('../config/firebase');
 const { formatRoute, formatDate } = require('./helpers');
 const { messages, formatMessage } = require('../config/messages');
 const { logger, logEvent } = require('./logger');
@@ -123,7 +123,7 @@ async function cleanupExpiredPosts() {
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     
-    const batch = collections.db.batch();
+    const batch = db.batch();
     let expiredCount = 0;
     
     // Update expired travel plans (departure date has passed)
