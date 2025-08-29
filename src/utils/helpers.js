@@ -122,11 +122,27 @@ const formatPostForChannel = (post, postType) => {
     // Get urgency label
     const { URGENCY_LEVELS, CATEGORIES } = require('../config/constants');
     const urgencyInfo = URGENCY_LEVELS[post.urgency];
-    const category = CATEGORIES.find(c => c.name === post.category);
+    
+    // Handle both old single category and new multiple categories
+    let categoriesDisplay;
+    if (post.categories && Array.isArray(post.categories)) {
+      // New format with multiple categories
+      categoriesDisplay = post.categories
+        .map(id => {
+          const cat = CATEGORIES.find(c => c.id === id);
+          return cat ? `${cat.emoji} ${cat.name}` : '';
+        })
+        .filter(c => c)
+        .join(', ');
+    } else if (post.category) {
+      // Old format with single category
+      const category = CATEGORIES.find(c => c.name === post.category);
+      categoriesDisplay = category ? `${category.emoji} ${post.category}` : post.category;
+    }
     
     message = `📦 <b>Favor Request</b>\n\n`;
     message += `<b>Route:</b> ${formatRoute(post.fromCity, post.toCity)}\n`;
-    message += `<b>Item:</b> ${category ? `${category.emoji} ${post.category}` : post.category}\n`;
+    message += `<b>Items:</b> ${categoriesDisplay}\n`;
     message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}`;
     if (post.description) {
       const shortDesc = post.description.length > 80 

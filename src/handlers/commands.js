@@ -316,7 +316,16 @@ Need help? Join @LuuKyone_Community 🙏
           const request = doc.data();
           const fromCity = request.fromCity || 'Unknown';
           const toCity = request.toCity || 'Unknown';
-          message += `• ${fromCity} → ${toCity}: ${request.category} (${request.urgency})\n`;
+          // Handle both old single category and new multiple categories
+          let categoryDisplay = 'Various';
+          if (request.categories && Array.isArray(request.categories)) {
+            categoryDisplay = request.categories.length > 1 
+              ? `${request.categories.length} items` 
+              : request.categories[0];
+          } else if (request.category) {
+            categoryDisplay = request.category;
+          }
+          message += `• ${fromCity} → ${toCity}: ${categoryDisplay} (${request.urgency})\n`;
         });
       }
       

@@ -96,16 +96,86 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
   const categoryId = ctx.match[1];
   await ctx.answerCbQuery();
   
-  const category = CATEGORIES.find(c => c.id === categoryId);
-  ctx.scene.state.category = category.name;
+  // Initialize categories array if not exists
+  if (!ctx.scene.state.categories) {
+    ctx.scene.state.categories = [];
+  }
+  
+  // Add category if not already added
+  if (!ctx.scene.state.categories.includes(categoryId)) {
+    ctx.scene.state.categories.push(categoryId);
+  }
   
   const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
   const toCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.toCity)?.name;
   
+  const selectedCats = ctx.scene.state.categories
+    .map(id => CATEGORIES.find(c => c.id === id))
+    .map(c => `${c.emoji} ${c.name}`)
+    .join('\n');
+  
+  // Build keyboard with remaining categories in 2 columns
+  const remainingCategories = CATEGORIES.filter(c => !ctx.scene.state.categories.includes(c.id));
+  const categoryRows = [];
+  
+  for (let i = 0; i < remainingCategories.length; i += 2) {
+    const row = [];
+    row.push({ 
+      text: `${remainingCategories[i].emoji} ${remainingCategories[i].name}`, 
+      callback_data: `cat_${remainingCategories[i].id}` 
+    });
+    
+    if (i + 1 < remainingCategories.length) {
+      row.push({ 
+        text: `${remainingCategories[i + 1].emoji} ${remainingCategories[i + 1].name}`, 
+        callback_data: `cat_${remainingCategories[i + 1].id}` 
+      });
+    }
+    
+    categoryRows.push(row);
+  }
+  
+  await ctx.editMessageText(
+    '📦 <b>Request a Personal Favor</b>\n\n' +
+    `Route: ${fromCityName} → ${toCityName}\n\n` +
+    '<b>Selected Categories:</b>\n' +
+    selectedCats + '\n\n' +
+    'Add more categories or confirm your selection:',
+    { 
+      parse_mode: 'HTML',
+      reply_markup: {
+        inline_keyboard: [
+          ...categoryRows,
+          [
+            { text: '✅ Confirm Categories', callback_data: 'confirm_categories' },
+            { text: '❌ Cancel', callback_data: 'cancel' }
+          ]
+        ]
+      }
+    }
+  );
+});
+
+// Handle category confirmation
+favorScene.action('confirm_categories', async (ctx) => {
+  await ctx.answerCbQuery();
+  
+  if (!ctx.scene.state.categories || ctx.scene.state.categories.length === 0) {
+    return ctx.reply('❌ Please select at least one category.');
+  }
+  
+  const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
+  const toCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.toCity)?.name;
+  
+  const selectedCats = ctx.scene.state.categories
+    .map(id => CATEGORIES.find(c => c.id === id))
+    .map(c => `${c.emoji} ${c.name}`)
+    .join(', ');
+  
   await ctx.editMessageText(
     '📦 <b>Request a Personal Favor</b>\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n` +
-    `Category: ${category.emoji} ${category.name}\n\n` +
+    `Categories: ${selectedCats}\n\n` +
     'Step 4: How urgent is your request?',
     { 
       parse_mode: 'HTML',
@@ -124,12 +194,16 @@ favorScene.action(/^urgency_(.+)$/, async (ctx) => {
   
   const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
   const toCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.toCity)?.name;
-  const category = CATEGORIES.find(c => c.name === ctx.scene.state.category);
+  
+  const selectedCats = ctx.scene.state.categories
+    .map(id => CATEGORIES.find(c => c.id === id))
+    .map(c => `${c.emoji} ${c.name}`)
+    .join(', ');
   
   await ctx.editMessageText(
     '📦 <b>Request a Personal Favor</b>\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n` +
-    `Category: ${category.emoji} ${ctx.scene.state.category}\n` +
+    `Categories: ${selectedCats}\n` +
     `Urgency: ${urgency.emoji} ${urgency.label}\n\n` +
     'Step 5: Describe the item details (size, weight, contents, special handling):',
     { parse_mode: 'HTML' }
@@ -202,13 +276,17 @@ favorScene.action('skip', async (ctx) => {
 async function confirmFavorRequest(ctx) {
   const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
   const toCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.toCity)?.name;
-  const category = CATEGORIES.find(c => c.name === ctx.scene.state.category);
   const urgency = URGENCY_LEVELS[ctx.scene.state.urgency];
+  
+  const selectedCats = ctx.scene.state.categories
+    .map(id => CATEGORIES.find(c => c.id === id))
+    .map(c => `${c.emoji} ${c.name}`)
+    .join(', ');
   
   const summary = 
     '📦 <b>Review Your Favor Request</b>\n\n' +
     `<b>Route:</b> ${fromCityName} → ${toCityName}\n` +
-    `<b>Category:</b> ${category.emoji} ${ctx.scene.state.category}\n` +
+    `<b>Categories:</b> ${selectedCats}\n` +
     `<b>Urgency:</b> ${urgency.emoji} ${urgency.label}\n` +
     `<b>Description:</b> ${escapeHtml(ctx.scene.state.description)}\n` +
     `<b>Photo:</b> ${ctx.scene.state.photoUrl ? 'Yes' : 'No'}\n\n` +
@@ -240,7 +318,7 @@ favorScene.action('confirm_favor', async (ctx) => {
       userName: user.userName,
       fromCity: ctx.scene.state.fromCity,
       toCity: ctx.scene.state.toCity,
-      category: ctx.scene.state.category,
+      categories: ctx.scene.state.categories, // Now storing array of category IDs
       urgency: ctx.scene.state.urgency,
       description: ctx.scene.state.description,
       photoUrl: ctx.scene.state.photoUrl || null,
@@ -258,12 +336,13 @@ favorScene.action('confirm_favor', async (ctx) => {
     
     // Log the favor request creation
     const route = formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity);
-    logEvent.favorRequestCreated(userId, route, ctx.scene.state.category);
+    const firstCategoryName = CATEGORIES.find(c => c.id === ctx.scene.state.categories[0])?.name;
+    logEvent.favorRequestCreated(userId, route, firstCategoryName);
     logger.info('Favor request created successfully', {
       postId,
       userId,
       route,
-      category: ctx.scene.state.category,
+      categories: ctx.scene.state.categories.length,
       urgency: ctx.scene.state.urgency,
       hasPhoto: !!ctx.scene.state.photoUrl
     });
