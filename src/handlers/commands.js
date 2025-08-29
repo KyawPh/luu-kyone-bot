@@ -376,12 +376,53 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     }
   });
   
+  // My Posts command - manage active posts
+  bot.command('myposts', async (ctx) => {
+    const { handleMyPosts } = require('../commands/myposts');
+    await handleMyPosts(ctx);
+  });
+  
   // Cancel command
   bot.command('cancel', async (ctx) => {
     if (ctx.scene) {
       ctx.scene.leave();
     }
     await ctx.reply('❌ Operation cancelled.', mainMenu());
+  });
+  
+  // Test daily summaries (admin only)
+  bot.command('test_summary', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
+    
+    if (!ADMIN_IDS.includes(userId)) {
+      return ctx.reply('❌ This command is for admins only.');
+    }
+    
+    const { testDailySummary } = require('../utils/scheduler');
+    
+    try {
+      // Show options for morning or evening summary
+      const keyboard = {
+        inline_keyboard: [
+          [{ text: '☀️ Test Morning Summary', callback_data: 'test_morning_summary' }],
+          [{ text: '🌙 Test Evening Summary', callback_data: 'test_evening_summary' }],
+          [{ text: '❌ Cancel', callback_data: 'cancel' }]
+        ]
+      };
+      
+      await ctx.reply(
+        '📊 <b>Test Daily Summary</b>\n\n' +
+        'Select which summary to test:',
+        {
+          parse_mode: 'HTML',
+          reply_markup: keyboard
+        }
+      );
+    } catch (error) {
+      logger.error('Test summary command error', { error: error.message });
+      ctx.reply('❌ Error accessing test menu.');
+    }
   });
   
   // Test channel features (admin only)

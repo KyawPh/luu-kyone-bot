@@ -7,6 +7,7 @@ const setupCallbacks = require('./handlers/callbacks');
 const setupChannelHandlers = require('./handlers/channel');
 const travelScene = require('./scenes/travel');
 const favorScene = require('./scenes/favor');
+const { setupScheduledJobs } = require('./utils/scheduler');
 
 // Initialize bot
 const bot = new Telegraf(config.telegram.botToken);
@@ -134,8 +135,12 @@ const launch = async () => {
       { command: 'start', description: '🚀 Start sharing kindness' },
       { command: 'travel', description: '✈️ Share your travel plan' },
       { command: 'favor', description: '💚 Request a kind favor' },
+      { command: 'myposts', description: '📋 Manage your active posts' },
       { command: 'help', description: '❓ How to spread kindness' }
     ]);
+    
+    // Setup scheduled jobs
+    setupScheduledJobs(bot);
     
     logger.info('🤖 Luu Kyone Bot (@luukyonebot) is running!');
   } catch (error) {

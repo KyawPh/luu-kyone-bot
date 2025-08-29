@@ -218,7 +218,27 @@ const messages = {
       members500: '🎉 COMMUNITY MILESTONE! 🎉\n\nWe\'ve grown to 500 kind hearts! 🎉\n\nEach of you makes our community special. Together, we\'re proving that kindness has no borders.\n\nHere\'s to many more connections and favors! 🤝',
       weeklyStats: '📊 This Week in Kindness\n\n✈️ Active Travelers: {travelers}\n📦 Favor Requests: {favors}\n🤝 Connections Made: {connections}\n⭐ Kindness Rating: {rating}/5\n\nKeep spreading the love! 💚'
     },
-    dailyQuote: '💚 Daily Kindness Reminder\n\n"{quote}"\n\nWhat act of kindness will you do today?'
+    dailyQuote: '💚 Daily Kindness Reminder\n\n"{quote}"\n\nWhat act of kindness will you do today?',
+    postCompleted: '✅ Post Completed!\n\n{userName} has successfully completed their {postType}!\nPost ID: #{postId}\n\nThank you for spreading kindness! 💚',
+    postCancelled: '❌ Post Cancelled\n\n{postType} #{postId} has been cancelled by the user.',
+    dailySummary: {
+      morning: {
+        title: '☀️ Good Morning! Active Posts Summary',
+        subtitle: 'Here are today\'s opportunities to spread kindness:',
+        travelCount: '✈️ {count} Active Travel Plans',
+        favorCount: '📦 {count} Active Favor Requests',
+        noActive: 'No active posts at the moment. Be the first to post today!',
+        footer: 'Ready to help? Visit @luukyonebot'
+      },
+      evening: {
+        title: '🌙 Evening Update! Active Posts Summary',
+        subtitle: 'Still time to help with these:',
+        travelCount: '✈️ {count} Active Travel Plans',
+        favorCount: '📦 {count} Active Favor Requests',
+        noActive: 'All posts have been completed today! Great job, community! 🎉',
+        footer: 'Tomorrow brings new opportunities for kindness 💚'
+      }
+    }
   },
 
   // Browse Messages
@@ -339,6 +359,26 @@ const messages = {
       selectPrompt: 'Select what you want to test:',
       adminOnly: '❌ This command is for admins only.',
       error: '❌ Error accessing test menu.'
+    },
+    myposts: {
+      title: '📋 Your Active Posts',
+      noActivePosts: '📭 You don\'t have any active posts at the moment.',
+      travelPlan: '✈️ Travel Plan #{postId}',
+      favorRequest: '📦 Favor Request #{postId}',
+      route: 'Route: {route}',
+      date: 'Date: {date}',
+      status: 'Status: {status}',
+      selectPost: 'Select a post to manage:',
+      managePost: '📋 Managing Post #{postId}',
+      whatToDo: 'What would you like to do with this post?',
+      markComplete: '✅ Mark as Completed',
+      cancel: '❌ Cancel Post',
+      back: '⬅️ Back to List',
+      confirmComplete: 'Are you sure you want to mark this post as completed?',
+      confirmCancel: 'Are you sure you want to cancel this post?',
+      postCompleted: '✅ Post marked as completed!',
+      postCancelled: '❌ Post cancelled.',
+      error: '❌ Error managing posts. Please try again.'
     }
   },
 

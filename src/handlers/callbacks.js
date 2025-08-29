@@ -522,6 +522,83 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
     }
   });
+  
+  // Post Management Callbacks
+  const {
+    handleManagePost,
+    handleCompletePost,
+    handleCancelPost,
+    confirmCompletePost,
+    confirmCancelPost,
+    handleBackToPosts
+  } = require('../commands/myposts');
+  
+  // Handle manage post callback
+  bot.action(/^manage_post_(.+)_(.+)$/, async (ctx) => {
+    const type = ctx.match[1];
+    const postId = ctx.match[2];
+    await handleManagePost(ctx, type, postId);
+  });
+  
+  // Handle complete post callback
+  bot.action(/^complete_post_(.+)_(.+)$/, async (ctx) => {
+    const type = ctx.match[1];
+    const postId = ctx.match[2];
+    await handleCompletePost(ctx, type, postId);
+  });
+  
+  // Handle cancel post callback
+  bot.action(/^cancel_post_(.+)_(.+)$/, async (ctx) => {
+    const type = ctx.match[1];
+    const postId = ctx.match[2];
+    await handleCancelPost(ctx, type, postId);
+  });
+  
+  // Handle confirm complete callback
+  bot.action(/^confirm_complete_(.+)_(.+)$/, async (ctx) => {
+    const type = ctx.match[1];
+    const postId = ctx.match[2];
+    await confirmCompletePost(ctx, type, postId);
+  });
+  
+  // Handle confirm cancel callback
+  bot.action(/^confirm_cancel_(.+)_(.+)$/, async (ctx) => {
+    const type = ctx.match[1];
+    const postId = ctx.match[2];
+    await confirmCancelPost(ctx, type, postId);
+  });
+  
+  // Handle back to posts list
+  bot.action('back_to_posts', async (ctx) => {
+    await handleBackToPosts(ctx);
+  });
+  
+  // Test daily summary callbacks
+  bot.action('test_morning_summary', async (ctx) => {
+    await ctx.answerCbQuery();
+    const { testDailySummary } = require('../utils/scheduler');
+    
+    try {
+      await testDailySummary(bot, false);
+      await ctx.editMessageText('✅ Morning summary sent to channel!');
+    } catch (error) {
+      logger.error('Test morning summary error', { error: error.message });
+      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+    }
+  });
+  
+  bot.action('test_evening_summary', async (ctx) => {
+    await ctx.answerCbQuery();
+    const { testDailySummary } = require('../utils/scheduler');
+    
+    try {
+      await testDailySummary(bot, true);
+      await ctx.editMessageText('✅ Evening summary sent to channel!');
+    } catch (error) {
+      logger.error('Test evening summary error', { error: error.message });
+      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+    }
+  });
 };
 
 module.exports = setupCallbacks;
