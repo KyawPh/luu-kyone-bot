@@ -19,6 +19,7 @@ const {
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
+const { messages, formatMessage } = require('../config/messages');
 
 const travelScene = new Scenes.BaseScene('travelScene');
 
@@ -30,8 +31,8 @@ travelScene.enter(async (ctx) => {
   const userId = ctx.from.id.toString();
   logEvent.sceneEntered(userId, 'travelScene');
   
-  const message = '✈️ <b>Share Your Travel Plan</b>\n\n' +
-    'Step 1: Where are you traveling FROM?';
+  const message = messages.scenes.travel.title + '\n\n' +
+    messages.scenes.travel.steps.fromCity;
   
   // If we have a message to edit (from menu), edit it. Otherwise, send a new message
   if (ctx.scene.state.messageToEdit) {
@@ -65,9 +66,9 @@ travelScene.action(/^city_(.+)$/, async (ctx) => {
     // First city selection (FROM)
     ctx.scene.state.fromCity = city;
     await ctx.editMessageText(
-      '✈️ <b>Share Your Travel Plan</b>\n\n' +
+      messages.scenes.travel.title + '\n\n' +
       `From: ${CITIES[Object.keys(CITIES).find(k => CITIES[k].code === city)]?.name}\n\n` +
-      'Step 2: Where are you traveling TO?',
+      messages.scenes.travel.steps.toCity,
       { 
         parse_mode: 'HTML',
         ...cityKeyboard(city) // Exclude the FROM city
@@ -77,9 +78,9 @@ travelScene.action(/^city_(.+)$/, async (ctx) => {
     // Second city selection (TO)
     ctx.scene.state.toCity = city;
     await ctx.editMessageText(
-      '✈️ <b>Share Your Travel Plan</b>\n\n' +
+      messages.scenes.travel.title + '\n\n' +
       `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n\n` +
-      'Step 3: When is your DEPARTURE date?',
+      messages.scenes.travel.steps.departure,
       { 
         parse_mode: 'HTML',
         ...dateKeyboard()
@@ -109,9 +110,9 @@ travelScene.action('date_custom', async (ctx) => {
   ctx.scene.state.waitingForDate = 'departure';
   // We need to send a new message for text input since user needs to see the prompt while typing
   await ctx.editMessageText(
-    '✈️ <b>Share Your Travel Plan</b>\n\n' +
+    messages.scenes.travel.title + '\n\n' +
     `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n\n` +
-    'Step 3: Please enter the departure date in format DD/MM/YYYY:',
+    messages.scenes.travel.steps.departureCustom,
     { parse_mode: 'HTML' }
   );
 });
@@ -119,10 +120,10 @@ travelScene.action('date_custom', async (ctx) => {
 
 // Weight selection prompt
 async function promptWeight(ctx, useReply = false) {
-  const message = '✈️ <b>Share Your Travel Plan</b>\n\n' +
+  const message = messages.scenes.travel.title + '\n\n' +
     `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
     `Departure: ${formatDate(ctx.scene.state.departureDate)}\n\n` +
-    'Step 4: How much luggage space do you have available?';
+    messages.scenes.travel.steps.weight;
   
   const options = { 
     parse_mode: 'HTML',
@@ -151,10 +152,10 @@ travelScene.action(/^weight_(\w+)$/, async (ctx) => {
     case 'custom':
       ctx.scene.state.waitingForWeight = true;
       return ctx.editMessageText(
-        '✈️ <b>Share Your Travel Plan</b>\n\n' +
+        messages.scenes.travel.title + '\n\n' +
         `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
         `Departure: ${formatDate(ctx.scene.state.departureDate)}\n\n` +
-        'Step 4: Enter the available weight in kg (e.g., "20" or "20 kg"):',
+        messages.scenes.travel.steps.weightCustom,
         { parse_mode: 'HTML' }
       );
   }
@@ -172,7 +173,7 @@ travelScene.on('text', async (ctx) => {
     const weightMatch = text.match(/^(\d+)\s*(kg)?$/i);
     
     if (!weightMatch) {
-      return ctx.reply('❌ Please enter weight as a number in kg (e.g., "20" or "20 kg"):');
+      return ctx.reply(messages.errors.invalidWeight);
     }
     
     const weightValue = weightMatch[1];

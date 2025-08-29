@@ -1,20 +1,21 @@
 const { Markup } = require('telegraf');
 const { CITIES, CATEGORIES, URGENCY_LEVELS } = require('../config/constants');
+const { messages } = require('../config/messages');
 
 // Main menu keyboard
 const mainMenu = () => {
   return Markup.inlineKeyboard([
     [
-      Markup.button.callback('✈️ Travel', 'create_travel'),
-      Markup.button.callback('📦 Favor', 'create_favor')
+      Markup.button.callback(messages.buttons.mainMenu.travel, 'create_travel'),
+      Markup.button.callback(messages.buttons.mainMenu.favor, 'create_favor')
     ],
     [
-      Markup.button.callback('🔍 Browse', 'browse_requests'),
-      Markup.button.callback('👤 Profile', 'my_profile')
+      Markup.button.callback(messages.buttons.mainMenu.browse, 'browse_requests'),
+      Markup.button.callback(messages.buttons.mainMenu.profile, 'my_profile')
     ],
     [
-      Markup.button.callback('📚 Help', 'help'),
-      Markup.button.callback('⚙️ Settings', 'settings')
+      Markup.button.callback(messages.buttons.mainMenu.help, 'help'),
+      Markup.button.callback(messages.buttons.mainMenu.settings, 'settings')
     ]
   ]);
 };
@@ -25,7 +26,7 @@ const cityKeyboard = (excludeCity = null) => {
     .filter(city => city.code !== excludeCity)
     .map(city => [Markup.button.callback(`${city.emoji} ${city.name}`, `city_${city.code}`)]);
   
-  buttons.push([Markup.button.callback('❌ Cancel', 'cancel')]);
+  buttons.push([Markup.button.callback(messages.buttons.common.cancel, 'cancel')]);
   return Markup.inlineKeyboard(buttons);
 };
 
@@ -46,7 +47,7 @@ const categoryKeyboard = () => {
     buttons.push(row);
   }
   
-  buttons.push([Markup.button.callback('❌ Cancel', 'cancel')]);
+  buttons.push([Markup.button.callback(messages.buttons.common.cancel, 'cancel')]);
   return Markup.inlineKeyboard(buttons);
 };
 
@@ -55,7 +56,7 @@ const urgencyKeyboard = () => {
   const buttons = Object.entries(URGENCY_LEVELS).map(([key, value]) => 
     [Markup.button.callback(`${value.emoji} ${value.label}`, `urgency_${key}`)]
   );
-  buttons.push([Markup.button.callback('❌ Cancel', 'cancel')]);
+  buttons.push([Markup.button.callback(messages.buttons.common.cancel, 'cancel')]);
   return Markup.inlineKeyboard(buttons);
 };
 
@@ -63,8 +64,8 @@ const urgencyKeyboard = () => {
 const confirmKeyboard = (yesCallback = 'yes', noCallback = 'no') => {
   return Markup.inlineKeyboard([
     [
-      Markup.button.callback('✅ Yes', yesCallback),
-      Markup.button.callback('❌ No', noCallback)
+      Markup.button.callback(messages.buttons.common.yes, yesCallback),
+      Markup.button.callback(messages.buttons.common.no, noCallback)
     ]
   ]);
 };
@@ -72,15 +73,15 @@ const confirmKeyboard = (yesCallback = 'yes', noCallback = 'no') => {
 // Back/Cancel keyboard
 const backKeyboard = () => {
   return Markup.inlineKeyboard([
-    [Markup.button.callback('⬅️ Back', 'back')],
-    [Markup.button.callback('❌ Cancel', 'cancel')]
+    [Markup.button.callback(messages.buttons.common.back, 'back')],
+    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
   ]);
 };
 
 // Contact button for posts
 const contactButton = (userId, postType, postId) => {
   return Markup.inlineKeyboard([
-    [Markup.button.callback('💬 Contact', `contact_${postType}_${postId}_${userId}`)]
+    [Markup.button.callback(messages.buttons.common.contact, `contact_${postType}_${postId}_${userId}`)]
   ]);
 };
 
@@ -88,19 +89,19 @@ const contactButton = (userId, postType, postId) => {
 const dateKeyboard = () => {
   return Markup.inlineKeyboard([
     [
-      Markup.button.callback('📅 Today', 'date_today'),
-      Markup.button.callback('📅 Tomorrow', 'date_tomorrow')
+      Markup.button.callback(messages.buttons.date.today, 'date_today'),
+      Markup.button.callback(messages.buttons.date.tomorrow, 'date_tomorrow')
     ],
-    [Markup.button.callback('📅 Custom Date', 'date_custom')],
-    [Markup.button.callback('❌ Cancel', 'cancel')]
+    [Markup.button.callback(messages.buttons.date.custom, 'date_custom')],
+    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
   ]);
 };
 
 // Skip button
 const skipKeyboard = () => {
   return Markup.inlineKeyboard([
-    [Markup.button.callback('⏭️ Skip', 'skip')],
-    [Markup.button.callback('❌ Cancel', 'cancel')]
+    [Markup.button.callback(messages.buttons.common.skip, 'skip')],
+    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
   ]);
 };
 
@@ -108,18 +109,18 @@ const skipKeyboard = () => {
 const weightKeyboard = () => {
   return Markup.inlineKeyboard([
     [
-      Markup.button.callback('< 1 kg', 'weight_1'),
-      Markup.button.callback('1-3 kg', 'weight_3')
+      Markup.button.callback(messages.buttons.weight.less1, 'weight_1'),
+      Markup.button.callback(messages.buttons.weight.kg1to3, 'weight_3')
     ],
     [
-      Markup.button.callback('3-5 kg', 'weight_5'),
-      Markup.button.callback('5-10 kg', 'weight_10')
+      Markup.button.callback(messages.buttons.weight.kg3to5, 'weight_5'),
+      Markup.button.callback(messages.buttons.weight.kg5to10, 'weight_10')
     ],
     [
-      Markup.button.callback('> 10 kg', 'weight_more'),
-      Markup.button.callback('✏️ Custom', 'weight_custom')
+      Markup.button.callback(messages.buttons.weight.more10, 'weight_more'),
+      Markup.button.callback(messages.buttons.weight.custom, 'weight_custom')
     ],
-    [Markup.button.callback('❌ Cancel', 'cancel')]
+    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
   ]);
 };
 
