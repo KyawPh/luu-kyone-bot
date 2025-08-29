@@ -425,6 +425,27 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     }
   });
   
+  // Cleanup expired posts (admin only)
+  bot.command('cleanup', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
+    
+    if (!ADMIN_IDS.includes(userId)) {
+      return ctx.reply('❌ This command is for admins only.');
+    }
+    
+    const { cleanupExpiredPosts } = require('../utils/scheduler');
+    
+    try {
+      await ctx.reply('🧹 Running cleanup job...');
+      await cleanupExpiredPosts();
+      await ctx.reply('✅ Cleanup completed! Check logs for details.');
+    } catch (error) {
+      logger.error('Manual cleanup error', { error: error.message });
+      ctx.reply(`❌ Cleanup failed: ${error.message}`);
+    }
+  });
+  
   // Test channel features (admin only)
   bot.command('test_channel', async (ctx) => {
     const userId = ctx.from.id.toString();

@@ -119,42 +119,88 @@ async function sendDailySummary(bot, isEvening = false) {
 async function cleanupExpiredPosts() {
   try {
     const now = new Date();
+    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
-    
-    // Update expired travel plans
-    const expiredTravels = await collections.travelPlans
-      .where('status', '==', 'active')
-      .where('departureDate', '<', thirtyDaysAgo)
-      .get();
     
     const batch = collections.db.batch();
     let expiredCount = 0;
     
+    // Update expired travel plans (departure date has passed)
+    const expiredTravels = await collections.travelPlans
+      .where('status', '==', 'active')
+      .where('departureDate', '<', yesterday)
+      .get();
+    
     expiredTravels.forEach(doc => {
       batch.update(doc.ref, { 
         status: 'expired',
-        expiredAt: now 
+        expiredAt: now,
+        expiredReason: 'departure_passed'
       });
       expiredCount++;
     });
     
-    // Update old favor requests (older than 30 days)
-    const oldFavors = await collections.favorRequests
+    // Update urgent favor requests (older than 7 days)
+    const urgentFavors = await collections.favorRequests
       .where('status', '==', 'active')
+      .where('urgency', '==', 'urgent')
+      .where('createdAt', '<', sevenDaysAgo)
+      .get();
+    
+    urgentFavors.forEach(doc => {
+      batch.update(doc.ref, { 
+        status: 'expired',
+        expiredAt: now,
+        expiredReason: 'urgency_timeout'
+      });
+      expiredCount++;
+    });
+    
+    // Update normal favor requests (older than 14 days)
+    const fourteenDaysAgo = new Date(now.getTime() - 14 * 24 * 60 * 60 * 1000);
+    const normalFavors = await collections.favorRequests
+      .where('status', '==', 'active')
+      .where('urgency', '==', 'normal')
+      .where('createdAt', '<', fourteenDaysAgo)
+      .get();
+    
+    normalFavors.forEach(doc => {
+      batch.update(doc.ref, { 
+        status: 'expired',
+        expiredAt: now,
+        expiredReason: 'normal_timeout'
+      });
+      expiredCount++;
+    });
+    
+    // Update flexible favor requests (older than 30 days)
+    const flexibleFavors = await collections.favorRequests
+      .where('status', '==', 'active')
+      .where('urgency', '==', 'flexible')
       .where('createdAt', '<', thirtyDaysAgo)
       .get();
     
-    oldFavors.forEach(doc => {
+    flexibleFavors.forEach(doc => {
       batch.update(doc.ref, { 
         status: 'expired',
-        expiredAt: now 
+        expiredAt: now,
+        expiredReason: 'flexible_timeout'
       });
       expiredCount++;
     });
     
     if (expiredCount > 0) {
       await batch.commit();
-      logger.info('Expired posts cleaned up', { count: expiredCount });
+      logger.info('Expired posts cleaned up', { 
+        count: expiredCount,
+        breakdown: {
+          travels: expiredTravels.size,
+          urgentFavors: urgentFavors.size,
+          normalFavors: normalFavors.size,
+          flexibleFavors: flexibleFavors.size
+        }
+      });
     }
     
   } catch (error) {
