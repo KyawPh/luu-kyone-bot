@@ -197,6 +197,16 @@ const logEvent = {
   // Metrics
   dailyStats: (stats) => {
     logger.info('Daily statistics', { ...stats, event: 'DAILY_STATS' });
+  },
+  
+  // Command usage
+  commandUsed: (userId, command) => {
+    logger.info('Command used', { userId, command, event: 'COMMAND_USED' });
+  },
+  
+  // Custom events
+  customEvent: (eventName, data = {}) => {
+    logger.info(eventName, { ...data, event: eventName.toUpperCase() });
   }
 };
 
