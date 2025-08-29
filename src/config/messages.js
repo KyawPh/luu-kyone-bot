@@ -2,6 +2,50 @@
 // All text content and button labels in one place
 
 const messages = {
+  // Cities Configuration
+  cities: {
+    singapore: {
+      name: 'Singapore',
+      emoji: '🇸🇬'
+    },
+    bangkok: {
+      name: 'Bangkok', 
+      emoji: '🇹🇭'
+    },
+    yangon: {
+      name: 'Yangon',
+      emoji: '🇲🇲'
+    }
+  },
+
+  // Categories Configuration
+  categories: {
+    medicine: { name: 'Medicine', emoji: '💊' },
+    documents: { name: 'Documents', emoji: '📄' },
+    food: { name: 'Food', emoji: '🍜' },
+    electronics: { name: 'Electronics', emoji: '📱' },
+    clothing: { name: 'Clothing', emoji: '👕' },
+    books: { name: 'Books', emoji: '📚' },
+    cosmetics: { name: 'Cosmetics', emoji: '💄' },
+    gifts: { name: 'Gifts', emoji: '🎁' },
+    other: { name: 'Other', emoji: '📦' }
+  },
+
+  // Urgency Levels
+  urgency: {
+    urgent: { label: 'Urgent (1-3 days)', emoji: '🚨' },
+    normal: { label: 'Normal (4-7 days)', emoji: '⏰' },
+    flexible: { label: 'Flexible (Anytime)', emoji: '😌' }
+  },
+  
+  // Weight Options
+  weightOptions: {
+    less1: '< 1 kg',
+    kg1to3: '1-3 kg', 
+    kg3to5: '3-5 kg',
+    kg5to10: '5-10 kg',
+    more10: '> 10 kg'
+  },
   // Button Labels
   buttons: {
     mainMenu: {
@@ -64,7 +108,10 @@ const messages = {
         body: 'Your travel plan has been shared with the community.\nYou will be notified when someone needs your help.',
         reference: '📌 Reference: {postId}\n<i>(Share this ID if someone asks about your post)</i>'
       },
-      cancelled: '❌ Travel plan cancelled.'
+      cancelled: '❌ Travel plan cancelled.',
+      nextPrompt: 'What would you like to do next?',
+      whatToDo: 'What would you like to do?',
+      errorPosting: '❌ An error occurred while posting. Please try again.'
     },
     
     favor: {
@@ -97,7 +144,10 @@ const messages = {
       },
       cancelled: '❌ Favor request cancelled.',
       photoProcessing: '📸 Processing photo...',
-      photoError: '❌ Failed to process photo. You can skip or try again.'
+      photoError: '❌ Failed to process photo. You can skip or try again.',
+      nextPrompt: 'What would you like to do next?',
+      whatToDo: 'What would you like to do?',
+      errorPosting: '❌ An error occurred while posting. Please try again.'
     }
   },
 
@@ -162,7 +212,13 @@ const messages = {
     welcome: {
       single: '💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot',
       multiple: 'Welcome to all our new friends! 💚'
-    }
+    },
+    milestones: {
+      kindness100: '🎊 MILESTONE CELEBRATION! 🎊\n\nOur community has completed 100 acts of kindness!\n\n"No act of kindness, no matter how small, is ever wasted."\n\nThank you for making the world a better place, one favor at a time! 💚',
+      members500: '🎉 COMMUNITY MILESTONE! 🎉\n\nWe\'ve grown to 500 kind hearts! 🎉\n\nEach of you makes our community special. Together, we\'re proving that kindness has no borders.\n\nHere\'s to many more connections and favors! 🤝',
+      weeklyStats: '📊 This Week in Kindness\n\n✈️ Active Travelers: {travelers}\n📦 Favor Requests: {favors}\n🤝 Connections Made: {connections}\n⭐ Kindness Rating: {rating}/5\n\nKeep spreading the love! 💚'
+    },
+    dailyQuote: '💚 Daily Kindness Reminder\n\n"{quote}"\n\nWhat act of kindness will you do today?'
   },
 
   // Browse Messages
@@ -229,12 +285,17 @@ const messages = {
     notMember: '❌ Please join @LuuKyone_Community first!\n\nUse /start to get the join link.',
     startFirst: 'Please start the bot first with /start',
     limitReached: '❌ You\'ve reached your monthly limit of {limit} posts.\nPosts used: {current}/{limit}\n\nYour limit will reset next month.',
+    channelPostFailed: '⚠️ Note: Your {postType} was saved but couldn\'t be posted to the channel.\n\nPlease ensure the bot is added as admin to @LuuKyone_Community channel.'
+  },
+
+  // Validation Messages
+  validation: {
     descriptionTooShort: '❌ Please provide a more detailed description (at least 10 characters).',
     descriptionTooLong: '❌ Description is too long. Please keep it under 500 characters.',
     invalidDate: '❌ Invalid date format or date is in the past.\nPlease enter in format DD/MM/YYYY:',
     invalidWeight: '❌ Please enter weight as a number in kg (e.g., "20" or "20 kg"):',
     selectCategory: '❌ Please select at least one category.',
-    channelPostFailed: '⚠️ Note: Your {postType} was saved but couldn\'t be posted to the channel.\n\nPlease ensure the bot is added as admin to @LuuKyone_Community channel.'
+    selectAtLeastOne: '❌ Please select at least one option.'
   },
 
   // Help Messages
@@ -265,6 +326,31 @@ const messages = {
     operationCancelled: '❌ Operation cancelled.',
     whatNext: 'What would you like to do next?',
     whatToDo: 'What would you like to do?'
+  },
+
+  // Commands Messages
+  commands: {
+    start: {
+      channelRequired: '👉 @LuuKyone_Community',
+      joinFirst: 'Please join the channel and click "I\'ve Joined" below:'
+    },
+    test: {
+      title: '🧪 Channel Test Menu',
+      selectPrompt: 'Select what you want to test:',
+      adminOnly: '❌ This command is for admins only.',
+      error: '❌ Error accessing test menu.'
+    }
+  },
+
+  // Admin Messages
+  admin: {
+    testButtons: {
+      welcome: '📢 Test Welcome Message',
+      quote: '💚 Test Daily Quote',
+      milestone100: '🎊 Test Milestone (100 kindness)',
+      milestone500: '🎉 Test Milestone (500 members)',
+      stats: '📊 Test Weekly Stats'
+    }
   }
 };
 
