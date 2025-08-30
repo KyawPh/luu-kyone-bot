@@ -66,9 +66,34 @@ async function handleMyPosts(ctx) {
     // Build keyboard with posts
     const keyboard = [];
     posts.forEach(post => {
-      const label = post.type === 'travel' 
-        ? formatMessage(messages.commands.myposts.travelPlan, { postId: post.id })
-        : formatMessage(messages.commands.myposts.favorRequest, { postId: post.id });
+      let label;
+      
+      if (post.type === 'travel') {
+        // Format: ✈️ SG→BKK • 30 Dec
+        const shortDate = formatDate(post.date.toDate ? post.date.toDate() : post.date)
+          .split(' ')
+          .slice(0, 2)
+          .join(' '); // Get "30 Dec" from "30 Dec 2024"
+        
+        // Get short city codes
+        const fromCode = post.data.fromCity.toUpperCase();
+        const toCode = post.data.toCity.toUpperCase();
+        
+        label = `✈️ ${fromCode}→${toCode} • ${shortDate}`;
+      } else {
+        // Format: 📦 YGN→SG • Urgent
+        const urgencyMap = {
+          'urgent': '🚨 Urgent',
+          'normal': '⏰ Normal',
+          'flexible': '😌 Flexible'
+        };
+        
+        // Get short city codes
+        const fromCode = post.data.fromCity.toUpperCase();
+        const toCode = post.data.toCity.toUpperCase();
+        
+        label = `📦 ${fromCode}→${toCode} • ${urgencyMap[post.data.urgency] || post.data.urgency}`;
+      }
       
       keyboard.push([
         Markup.button.callback(
@@ -136,6 +161,18 @@ async function handleManagePost(ctx, type, postId) {
       details += formatMessage(messages.commands.myposts.date, { 
         date: formatDate(post.departureDate.toDate ? post.departureDate.toDate() : post.departureDate)
       }) + '\n';
+    } else if (type === 'favor' && post.urgency) {
+      const urgencyLabels = {
+        'urgent': '🚨 Urgent (1-3 days)',
+        'normal': '⏰ Normal (4-7 days)',
+        'flexible': '😌 Flexible (Anytime)'
+      };
+      details += `Urgency: ${urgencyLabels[post.urgency] || post.urgency}\n`;
+      
+      if (post.createdAt) {
+        const createdDate = post.createdAt.toDate ? post.createdAt.toDate() : post.createdAt;
+        details += `Posted: ${formatDate(createdDate)}\n`;
+      }
     }
     
     details += formatMessage(messages.commands.myposts.status, { status: 'Active ✅' }) + '\n\n';
