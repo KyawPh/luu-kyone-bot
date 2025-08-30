@@ -7,6 +7,7 @@ const setupCallbacks = require('./handlers/callbacks');
 const setupChannelHandlers = require('./handlers/channel');
 const travelScene = require('./scenes/travel');
 const favorScene = require('./scenes/favor');
+const settingsScene = require('./scenes/settings');
 const { setupScheduledJobs } = require('./utils/scheduler');
 
 // Initialize bot
@@ -40,7 +41,7 @@ bot.catch((err, ctx) => {
 
 // Register scenes
 const { Stage } = require('telegraf/scenes');
-const stage = new Stage([travelScene, favorScene]);
+const stage = new Stage([travelScene, favorScene, settingsScene]);
 bot.use(stage.middleware());
 
 // Setup handlers

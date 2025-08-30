@@ -276,18 +276,10 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
   
   bot.action('settings', async (ctx) => {
     await ctx.answerCbQuery();
-    await ctx.editMessageText(
-      '⚙️ <b>Settings</b>\n\n' +
-      'To update your profile information, use:\n' +
-      '/profile - View and edit profile\n\n' +
-      'Premium features coming soon!',
-      { parse_mode: 'HTML' }
-    );
-    
-    // Show main menu again
-    setTimeout(() => {
-      ctx.reply('What would you like to do?', mainMenu());
-    }, 500);
+    // Enter the settings scene
+    ctx.scene.enter('settingsScene', { 
+      messageToEdit: ctx.callbackQuery.message 
+    });
   });
   
   // Contact button handler

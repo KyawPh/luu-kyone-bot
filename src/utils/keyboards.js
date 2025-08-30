@@ -60,16 +60,6 @@ const urgencyKeyboard = () => {
   return Markup.inlineKeyboard(buttons);
 };
 
-// Yes/No confirmation keyboard
-const confirmKeyboard = (yesCallback = 'yes', noCallback = 'no') => {
-  return Markup.inlineKeyboard([
-    [
-      Markup.button.callback(messages.buttons.common.yes, yesCallback),
-      Markup.button.callback(messages.buttons.common.no, noCallback)
-    ]
-  ]);
-};
-
 // Back/Cancel keyboard
 const backKeyboard = () => {
   return Markup.inlineKeyboard([
@@ -93,14 +83,6 @@ const dateKeyboard = () => {
       Markup.button.callback(messages.buttons.date.tomorrow, 'date_tomorrow')
     ],
     [Markup.button.callback(messages.buttons.date.custom, 'date_custom')],
-    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
-  ]);
-};
-
-// Skip button
-const skipKeyboard = () => {
-  return Markup.inlineKeyboard([
-    [Markup.button.callback(messages.buttons.common.skip, 'skip')],
     [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
   ]);
 };
@@ -129,10 +111,8 @@ module.exports = {
   cityKeyboard,
   categoryKeyboard,
   urgencyKeyboard,
-  confirmKeyboard,
   backKeyboard,
   contactButton,
   dateKeyboard,
-  skipKeyboard,
   weightKeyboard
 };

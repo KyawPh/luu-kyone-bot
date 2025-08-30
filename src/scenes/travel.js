@@ -5,7 +5,6 @@ const {
   categoryKeyboard, 
   dateKeyboard,
   weightKeyboard,
-  confirmKeyboard,
   mainMenu,
   contactButton
 } = require('../utils/keyboards');
@@ -14,8 +13,7 @@ const {
   formatDate, 
   formatRoute,
   generatePostId,
-  formatPostForChannel,
-  escapeHtml
+  formatPostForChannel
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');

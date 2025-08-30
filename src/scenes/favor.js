@@ -1,5 +1,5 @@
 const { Scenes } = require('telegraf');
-const { collections, storage } = require('../config/firebase');
+const { collections } = require('../config/firebase');
 const { 
   cityKeyboard, 
   categoryKeyboard, 
@@ -11,7 +11,6 @@ const {
 const { 
   generatePostId,
   formatPostForChannel,
-  escapeHtml,
   formatRoute
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES, URGENCY_LEVELS } = require('../config/constants');
