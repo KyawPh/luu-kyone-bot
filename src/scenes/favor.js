@@ -5,8 +5,7 @@ const {
   categoryKeyboard, 
   urgencyKeyboard,
   weightKeyboard,
-  mainMenu,
-  contactButton
+  mainMenu
 } = require('../utils/keyboards');
 const { 
   generatePostId,
@@ -298,8 +297,7 @@ async function postFavorRequest(ctx) {
         config.telegram.channelId,
         channelMessage,
         {
-          parse_mode: 'HTML',
-          ...contactButton(userId, 'favor', postId)
+          parse_mode: 'HTML'
         }
       );
       

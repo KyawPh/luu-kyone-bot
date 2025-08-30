@@ -5,8 +5,7 @@ const {
   categoryKeyboard, 
   dateKeyboard,
   weightKeyboard,
-  mainMenu,
-  contactButton
+  mainMenu
 } = require('../utils/keyboards');
 const { 
   parseDate, 
@@ -314,8 +313,7 @@ travelScene.action('confirm_post', async (ctx) => {
         config.telegram.channelId,
         channelMessage,
         {
-          parse_mode: 'HTML',
-          ...contactButton(userId, 'travel', postId)
+          parse_mode: 'HTML'
         }
       );
       
