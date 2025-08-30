@@ -1,5 +1,5 @@
 const { collections } = require('../config/firebase');
-const { mainMenu, contactButton } = require('../utils/keyboards');
+const { mainMenu } = require('../utils/keyboards');
 const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate, checkChannelMembership, isAdmin, canCreatePost } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');

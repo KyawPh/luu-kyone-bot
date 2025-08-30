@@ -22,69 +22,61 @@ const isAdmin = (userId, adminIds) => {
   return adminIds.includes(userId.toString());
 };
 
-// Validate weight input
-const validateWeight = (text) => {
-  const weightMatch = text.trim().match(/^(\d+)\s*(kg)?$/i);
-  if (!weightMatch) {
-    return null;
-  }
-  return `${weightMatch[1]} kg`;
-};
-
-// Validate that at least one category is selected
-const validateCategories = (categories) => {
-  return categories && Array.isArray(categories) && categories.length > 0;
-};
 
 // Format date for display
 const formatDate = (date) => {
   return moment(date).format('DD MMM YYYY');
 };
 
-// Parse date from user input (DD/MM/YYYY)
-const parseDate = (dateString) => {
-  const formats = ['DD/MM/YYYY', 'D/M/YYYY', 'DD-MM-YYYY', 'D-M-YYYY'];
-  const date = moment(dateString, formats, true);
-  
-  if (!date.isValid()) {
-    return null;
-  }
-  
-  // Check if date is not in the past
-  if (date.isBefore(moment().startOf('day'))) {
-    return null;
-  }
-  
-  return date.toDate();
-};
 
 // Get user's post count for the current month
 const getMonthlyPostCount = async (userId, collections) => {
   const startOfMonth = moment().startOf('month').toDate();
   const endOfMonth = moment().endOf('month').toDate();
   
-  // Simplified queries - get all by userId first, then filter in memory
-  const [travelPlans, favorRequests] = await Promise.all([
-    collections.travelPlans
-      .where('userId', '==', userId)
-      .get(),
-    collections.favorRequests
-      .where('userId', '==', userId)
-      .get()
-  ]);
-  
-  // Filter by date in memory to avoid complex index requirements
-  const travelCount = travelPlans.docs.filter(doc => {
-    const createdAt = doc.data().createdAt.toDate();
-    return createdAt >= startOfMonth && createdAt <= endOfMonth;
-  }).length;
-  
-  const favorCount = favorRequests.docs.filter(doc => {
-    const createdAt = doc.data().createdAt.toDate();
-    return createdAt >= startOfMonth && createdAt <= endOfMonth;
-  }).length;
-  
-  return travelCount + favorCount;
+  // Note: Firestore requires composite indexes for compound queries with inequality operators
+  // If these queries fail, create indexes or fall back to the in-memory filtering approach
+  try {
+    const [travelPlans, favorRequests] = await Promise.all([
+      collections.travelPlans
+        .where('userId', '==', userId)
+        .where('createdAt', '>=', startOfMonth)
+        .where('createdAt', '<=', endOfMonth)
+        .get(),
+      collections.favorRequests
+        .where('userId', '==', userId)
+        .where('createdAt', '>=', startOfMonth)
+        .where('createdAt', '<=', endOfMonth)
+        .get()
+    ]);
+    
+    return travelPlans.size + favorRequests.size;
+  } catch (error) {
+    // Fallback to in-memory filtering if indexes are not set up
+    logger.debug('Using fallback for getMonthlyPostCount - consider adding Firestore indexes', { error: error.message });
+    
+    const [travelPlans, favorRequests] = await Promise.all([
+      collections.travelPlans
+        .where('userId', '==', userId)
+        .get(),
+      collections.favorRequests
+        .where('userId', '==', userId)
+        .get()
+    ]);
+    
+    // Filter by date in memory
+    const travelCount = travelPlans.docs.filter(doc => {
+      const createdAt = doc.data().createdAt.toDate();
+      return createdAt >= startOfMonth && createdAt <= endOfMonth;
+    }).length;
+    
+    const favorCount = favorRequests.docs.filter(doc => {
+      const createdAt = doc.data().createdAt.toDate();
+      return createdAt >= startOfMonth && createdAt <= endOfMonth;
+    }).length;
+    
+    return travelCount + favorCount;
+  }
 };
 
 // Check if user can create more posts
@@ -294,32 +286,9 @@ const userWantsDailySummary = async (userId, collections) => {
   }
 };
 
-// Check if dates overlap
-const datesOverlap = (start1, end1, start2, end2) => {
-  return moment(start1).isSameOrBefore(end2) && moment(end1).isSameOrAfter(start2);
-};
 
-// Match travel plans with favor requests
-const findMatches = (travelPlan, favorRequests) => {
-  return favorRequests.filter(request => {
-    // Check route match (both FROM and TO cities must match)
-    if (request.fromCity !== travelPlan.fromCity || request.toCity !== travelPlan.toCity) {
-      return false;
-    }
-    
-    // Check category match
-    if (!travelPlan.categories.includes(request.category)) return false;
-    
-    // Check date compatibility (favor needed before traveler departs)
-    const favorDeadline = moment(request.createdAt).add(
-      request.urgency === 'urgent' ? 3 : 
-      request.urgency === 'normal' ? 7 : 30, 
-      'days'
-    );
-    
-    return moment(travelPlan.departureDate).isSameOrBefore(favorDeadline);
-  });
-};
+// Re-export validation functions from validation module for backward compatibility
+const { validateWeight, validateCategories, parseDate } = require('./validation');
 
 module.exports = {
   formatDate,
@@ -331,8 +300,6 @@ module.exports = {
   escapeHtml,
   formatPostForChannel,
   userWantsDailySummary,
-  datesOverlap,
-  findMatches,
   checkChannelMembership,
   isAdmin,
   validateWeight,

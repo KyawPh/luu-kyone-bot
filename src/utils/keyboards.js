@@ -45,16 +45,6 @@ const routeKeyboard = () => {
   return Markup.inlineKeyboard(buttons);
 };
 
-// City selection keyboard (kept for backward compatibility if needed)
-const cityKeyboard = (excludeCity = null) => {
-  const buttons = Object.values(CITIES)
-    .filter(city => city.code !== excludeCity)
-    .map(city => [Markup.button.callback(`${city.emoji} ${city.name}`, `city_${city.code}`)]);
-  
-  buttons.push([Markup.button.callback(messages.buttons.common.cancel, 'cancel')]);
-  return Markup.inlineKeyboard(buttons);
-};
-
 // Category selection keyboard (2 columns layout)
 const categoryKeyboard = () => {
   const buttons = [];
@@ -93,13 +83,6 @@ const backKeyboard = () => {
   ]);
 };
 
-// Contact button for posts
-const contactButton = (userId, postType, postId) => {
-  return Markup.inlineKeyboard([
-    [Markup.button.callback(messages.buttons.common.contact, `contact_${postType}_${postId}_${userId}`)]
-  ]);
-};
-
 // Date navigation keyboard
 const dateKeyboard = () => {
   return Markup.inlineKeyboard([
@@ -133,12 +116,10 @@ const weightKeyboard = () => {
 
 module.exports = {
   mainMenu,
-  cityKeyboard,
   routeKeyboard,
   categoryKeyboard,
   urgencyKeyboard,
   backKeyboard,
-  contactButton,
   dateKeyboard,
   weightKeyboard
 };

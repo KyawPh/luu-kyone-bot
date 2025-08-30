@@ -34,6 +34,7 @@ PREMIUM_CHANNEL_ID=your_premium_channel_id
 FIREBASE_SERVICE_ACCOUNT_PATH=./firebase-service-account.json
 NODE_ENV=development
 ADMIN_IDS=your_telegram_id
+BOT_TIMEZONE=Asia/Yangon
 ```
 
 ### 5. Install & Run
@@ -52,8 +53,7 @@ npm start
 - `/start` - Start the bot and set up profile
 - `/travel` - Share your travel plan
 - `/favor` - Request a personal favor
-- `/browse` - Browse active posts
-- `/profile` - View your profile
+- `/myposts` - Manage your active posts
 - `/help` - Get help and guidelines
 
 ## Project Structure
@@ -61,27 +61,44 @@ npm start
 /src
   /bot.js           - Main bot entry point
   /config           - Configuration files
+    /index.js       - Main configuration
+    /constants.js   - App constants (cities, categories, etc.)
+    /messages.js    - All text messages (hybrid: English + Myanmar buttons)
+    /firebase.js    - Firebase initialization
   /handlers         - Command and callback handlers
+    /commands.js    - Command handlers
+    /callbacks.js   - Button callback handlers
+    /channel.js     - Channel event handlers
   /scenes           - Multi-step conversation flows
-  /utils            - Helper functions and keyboards
+    /travel.js      - Travel plan creation flow
+    /favor.js       - Favor request creation flow
+    /settings.js    - User settings management
+  /commands         - Individual command modules
+    /myposts.js     - Post management functionality
+  /utils            - Helper functions
+    /helpers.js     - Utility functions
+    /keyboards.js   - Keyboard layouts
+    /logger.js      - Logging system
+    /scheduler.js   - Scheduled tasks
 ```
 
 ## Phase 1 Features (Free Tier)
 - ✅ User registration and profiles
-- ✅ Travel plan posting
-- ✅ Favor request posting
-- ✅ Channel broadcasting
-- ✅ One-time introductions
+- ✅ Travel plan posting with multi-category support
+- ✅ Favor request posting with multi-category support
+- ✅ Channel broadcasting with comment-based contact
+- ✅ Comment notifications system
 - ✅ 10 posts/month limit
-- ✅ Basic browse functionality
+- ✅ Single-step route selection
+- ✅ Post management (complete/cancel)
+- ✅ Daily summary notifications (optional)
 
 ## Phase 2 Features (Premium - Coming Soon)
 - [ ] Premium membership system
 - [ ] Payment verification
-- [ ] Message relay system
 - [ ] Milestone tracking
-- [ ] Rating system
 - [ ] 30 posts/month for premium
+- [ ] Advanced filtering and search
 
 ## Deployment
 
