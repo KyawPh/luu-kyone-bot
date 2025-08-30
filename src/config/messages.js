@@ -59,13 +59,14 @@ const messages = {
     travel: {
       title: '✈️ <b>Share Your Travel Plan</b>',
       steps: {
+        selectRoute: 'Select your travel route:',
         fromCity: 'Step 1: Where are you traveling FROM?',
         toCity: 'Step 2: Where are you traveling TO?',
-        departure: 'Step 3: When is your DEPARTURE date?',
-        departureCustom: 'Step 3: Please enter the departure date in format DD/MM/YYYY:',
-        weight: 'Step 4: How much luggage space do you have available?',
-        weightCustom: 'Step 4: Enter the available weight in kg (e.g., "20" or "20 kg"):',
-        categories: 'Step 5: What categories can you help with?\n<i>Select multiple categories, then confirm</i>'
+        departure: 'Step 2: When is your DEPARTURE date?',
+        departureCustom: 'Step 2: Please enter the departure date in format DD/MM/YYYY:',
+        weight: 'Step 3: How much luggage space do you have available?',
+        weightCustom: 'Step 3: Enter the available weight in kg (e.g., "20" or "20 kg"):',
+        categories: 'Step 4: What categories can you help with?\n<i>Select multiple categories, then confirm</i>'
       },
       categorySelection: {
         title: 'Selected Categories:',
@@ -85,12 +86,13 @@ const messages = {
     favor: {
       title: '📦 <b>Request a Personal Favor</b>',
       steps: {
+        selectRoute: 'Select your route:',
         fromCity: 'Step 1: Where does the item need to be picked up FROM?',
         toCity: 'Step 2: Where does the item need to be delivered TO?',
-        categories: 'Step 3: What category does your item belong to?',
-        urgency: 'Step 4: How urgent is your request?',
-        weight: 'Step 5: How much does the item weigh?',
-        weightCustom: 'Step 5: Enter the weight in kg (e.g., "20" or "20 kg"):'
+        categories: 'Step 2: What category does your item belong to?',
+        urgency: 'Step 3: How urgent is your request?',
+        weight: 'Step 4: How much does the item weigh?',
+        weightCustom: 'Step 4: Enter the weight in kg (e.g., "20" or "20 kg"):'
       },
       categorySelection: {
         title: 'Selected Categories:',

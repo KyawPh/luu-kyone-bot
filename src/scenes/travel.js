@@ -1,7 +1,7 @@
 const { Scenes } = require('telegraf');
 const { collections } = require('../config/firebase');
 const { 
-  cityKeyboard, 
+  routeKeyboard, 
   categoryKeyboard, 
   dateKeyboard,
   weightKeyboard,
@@ -32,7 +32,7 @@ travelScene.enter(async (ctx) => {
   logEvent.sceneEntered(userId, 'travelScene');
   
   const message = messages.scenes.travel.title + '\n\n' +
-    messages.scenes.travel.steps.fromCity;
+    messages.scenes.travel.steps.selectRoute;
   
   // If we have a message to edit (from menu), edit it. Otherwise, send a new message
   if (ctx.scene.state.messageToEdit) {
@@ -43,7 +43,7 @@ travelScene.enter(async (ctx) => {
       message,
       { 
         parse_mode: 'HTML',
-        ...cityKeyboard()
+        ...routeKeyboard()
       }
     );
   } else {
@@ -51,42 +51,31 @@ travelScene.enter(async (ctx) => {
       message,
       { 
         parse_mode: 'HTML',
-        ...cityKeyboard()
+        ...routeKeyboard()
       }
     );
   }
 });
 
-// Handle city selection
-travelScene.action(/^city_(.+)$/, async (ctx) => {
-  const city = ctx.match[1];
+// Handle route selection
+travelScene.action(/^route_(.+)_(.+)$/, async (ctx) => {
+  const fromCity = ctx.match[1];
+  const toCity = ctx.match[2];
   await ctx.answerCbQuery();
   
-  if (!ctx.scene.state.fromCity) {
-    // First city selection (FROM)
-    ctx.scene.state.fromCity = city;
-    await ctx.editMessageText(
-      messages.scenes.travel.title + '\n\n' +
-      `From: ${CITIES[Object.keys(CITIES).find(k => CITIES[k].code === city)]?.name}\n\n` +
-      messages.scenes.travel.steps.toCity,
-      { 
-        parse_mode: 'HTML',
-        ...cityKeyboard(city) // Exclude the FROM city
-      }
-    );
-  } else if (!ctx.scene.state.toCity) {
-    // Second city selection (TO)
-    ctx.scene.state.toCity = city;
-    await ctx.editMessageText(
-      messages.scenes.travel.title + '\n\n' +
-      `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n\n` +
-      messages.scenes.travel.steps.departure,
-      { 
-        parse_mode: 'HTML',
-        ...dateKeyboard()
-      }
-    );
-  }
+  // Set both cities at once
+  ctx.scene.state.fromCity = fromCity;
+  ctx.scene.state.toCity = toCity;
+  
+  await ctx.editMessageText(
+    messages.scenes.travel.title + '\n\n' +
+    `Route: ${formatRoute(fromCity, toCity)}\n\n` +
+    messages.scenes.travel.steps.departure,
+    { 
+      parse_mode: 'HTML',
+      ...dateKeyboard()
+    }
+  );
 });
 
 // Handle date selection

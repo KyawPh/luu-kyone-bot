@@ -1,7 +1,7 @@
 const { Scenes } = require('telegraf');
 const { collections } = require('../config/firebase');
 const { 
-  cityKeyboard, 
+  routeKeyboard, 
   categoryKeyboard, 
   urgencyKeyboard,
   weightKeyboard,
@@ -31,7 +31,7 @@ favorScene.enter(async (ctx) => {
   logEvent.sceneEntered(userId, 'favorScene');
   
   const message = messages.scenes.favor.title + '\n\n' +
-    messages.scenes.favor.steps.fromCity;
+    messages.scenes.favor.steps.selectRoute;
   
   // If we have a message to edit (from menu), edit it. Otherwise, send a new message
   if (ctx.scene.state.messageToEdit) {
@@ -42,7 +42,7 @@ favorScene.enter(async (ctx) => {
       message,
       { 
         parse_mode: 'HTML',
-        ...cityKeyboard()
+        ...routeKeyboard()
       }
     );
   } else {
@@ -50,47 +50,31 @@ favorScene.enter(async (ctx) => {
       message,
       { 
         parse_mode: 'HTML',
-        ...cityKeyboard()
+        ...routeKeyboard()
       }
     );
   }
 });
 
-// Handle city selection
-favorScene.action(/^city_(.+)$/, async (ctx) => {
-  const city = ctx.match[1];
+// Handle route selection
+favorScene.action(/^route_(.+)_(.+)$/, async (ctx) => {
+  const fromCity = ctx.match[1];
+  const toCity = ctx.match[2];
   await ctx.answerCbQuery();
   
-  if (!ctx.scene.state.fromCity) {
-    // First city selection (FROM)
-    ctx.scene.state.fromCity = city;
-    const cityName = Object.values(CITIES).find(c => c.code === city)?.name;
-    
-    await ctx.editMessageText(
-      messages.scenes.favor.title + '\n\n' +
-      `From: ${cityName}\n\n` +
-      messages.scenes.favor.steps.toCity,
-      { 
-        parse_mode: 'HTML',
-        ...cityKeyboard(city) // Exclude the FROM city
-      }
-    );
-  } else {
-    // Second city selection (TO)
-    ctx.scene.state.toCity = city;
-    const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
-    const toCityName = Object.values(CITIES).find(c => c.code === city)?.name;
-    
-    await ctx.editMessageText(
-      messages.scenes.favor.title + '\n\n' +
-      `Route: ${fromCityName} → ${toCityName}\n\n` +
-      messages.scenes.favor.steps.categories,
-      { 
-        parse_mode: 'HTML',
-        ...categoryKeyboard()
-      }
-    );
-  }
+  // Set both cities at once
+  ctx.scene.state.fromCity = fromCity;
+  ctx.scene.state.toCity = toCity;
+  
+  await ctx.editMessageText(
+    messages.scenes.favor.title + '\n\n' +
+    `Route: ${formatRoute(fromCity, toCity)}\n\n` +
+    messages.scenes.favor.steps.categories,
+    { 
+      parse_mode: 'HTML',
+      ...categoryKeyboard()
+    }
+  );
 });
 
 // Handle category selection
