@@ -133,7 +133,7 @@ const escapeHtml = (text) => {
   return text.replace(/[&<>"']/g, m => map[m]);
 };
 
-// Format post for channel broadcast (compact and private)
+// Format post for channel broadcast (detailed and informative)
 const formatPostForChannel = (post, postType, status = 'active') => {
   let message = '';
   const { CATEGORIES } = require('../config/constants');
@@ -165,7 +165,8 @@ const formatPostForChannel = (post, postType, status = 'active') => {
     
     if (status === 'active') {
       message += `<b>Available:</b> ${post.availableWeight}\n`;
-      message += `<b>Can help with:</b> ${categoriesDisplay}`;
+      message += `<b>Can help with:</b> ${categoriesDisplay}\n\n`;
+      message += `💬 Comment below if interested`;
     } else if (status === 'completed') {
       message += `<b>Status:</b> Successfully completed on ${formatDate(post.completedAt || new Date())}\n`;
       message += `<b>Helper connected:</b> Yes ✅`;
@@ -227,7 +228,8 @@ const formatPostForChannel = (post, postType, status = 'active') => {
       if (post.requestedWeight) {
         message += `<b>Weight:</b> ${post.requestedWeight}\n`;
       }
-      message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}`;
+      message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}\n\n`;
+      message += `💬 Comment below if interested`;
     } else if (status === 'completed') {
       message += `<b>Items:</b> ${categoriesDisplay}\n`;
       message += `<b>Status:</b> Successfully delivered on ${formatDate(post.completedAt || new Date())}`;
@@ -258,15 +260,19 @@ const formatPostForChannel = (post, postType, status = 'active') => {
     hashtags.push(`#${moment(postDate).format('MMM')}${moment(postDate).format('YYYY')}`);
   }
   
-  // Add thank you message for completed posts
-  if (status === 'completed') {
+  // Add hashtags for active posts
+  if (status === 'active') {
+    // Add post ID hashtag for reference
+    const postIdTag = post.postId.replace('-', '');
+    hashtags.push(`#${postIdTag}`);
+    
+    // Add all hashtags at the bottom
+    message += `\n\n${hashtags.join(' ')}`;
+  } else if (status === 'completed') {
     message += '\n\nThank you for spreading kindness! 💚';
   } else if (status === 'cancelled' || status === 'expired') {
     message += '\n\nThis post is no longer active.';
   }
-  
-  // Add all hashtags at the bottom
-  message += `\n\n${hashtags.join(' ')}`;
   
   return message;
 };

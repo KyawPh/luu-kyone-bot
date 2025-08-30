@@ -75,7 +75,7 @@ const setupChannelHandlers = (bot) => {
     }
   });
 
-  // Handle messages in the channel (for future features like commands)
+  // Handle messages/comments in the channel
   bot.on('channel_post', async (ctx) => {
     try {
       // Check if this is our channel
@@ -83,8 +83,67 @@ const setupChannelHandlers = (bot) => {
         return;
       }
       
-      // We could add channel-specific commands here in the future
-      // For example: /stats, /help, etc.
+      // Check if this is a comment (reply to a message)
+      if (ctx.channelPost.reply_to_message) {
+        const originalMessageId = ctx.channelPost.reply_to_message.message_id;
+        const commenter = ctx.channelPost.from;
+        
+        // Skip if no username (can't contact them)
+        if (!commenter || !commenter.username) {
+          return;
+        }
+        
+        // Find the post by channel message ID
+        const [travelPosts, favorPosts] = await Promise.all([
+          collections.travelPlans
+            .where('channelMessageId', '==', originalMessageId)
+            .limit(1)
+            .get(),
+          collections.favorRequests
+            .where('channelMessageId', '==', originalMessageId)
+            .limit(1)
+            .get()
+        ]);
+        
+        let post = null;
+        let postType = null;
+        
+        if (!travelPosts.empty) {
+          post = travelPosts.docs[0].data();
+          postType = 'travel';
+        } else if (!favorPosts.empty) {
+          post = favorPosts.docs[0].data();
+          postType = 'favor';
+        }
+        
+        if (post) {
+          // Don't notify if commenter is the post owner
+          if (commenter.id && commenter.id.toString() === post.userId) {
+            return;
+          }
+          
+          // Send simple notification to post owner
+          const message = `💬 @${commenter.username} commented on your ${postType} post #${post.postId}`;
+          
+          try {
+            await bot.telegram.sendMessage(post.userId, message);
+            
+            // Log the comment notification
+            logger.info('Comment notification sent', {
+              postId: post.postId,
+              postType,
+              commenter: commenter.username,
+              ownerId: post.userId
+            });
+          } catch (error) {
+            // User might have blocked the bot
+            logger.debug('Could not send notification to user', { 
+              userId: post.userId, 
+              error: error.message 
+            });
+          }
+        }
+      }
       
     } catch (error) {
       logger.error('Channel post error', { error: error.message });

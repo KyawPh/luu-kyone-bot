@@ -405,6 +405,14 @@ const messages = {
   postTypes: {
     travel: 'Travel Plan',
     favor: 'Favor Request'
+  },
+
+  // Comment Notifications (ENGLISH - Simple & Short)
+  notifications: {
+    comment: {
+      single: '💬 @{username} commented on your {postType} post #{postId}',
+      multiple: '💬 {count} new comments on #{postId}\n\n{usernames}'
+    }
   }
 };
 
