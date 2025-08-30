@@ -150,8 +150,9 @@ const formatPostForChannel = (post, postType, status = 'active') => {
       hashtags.push(`#${id}`);
     });
     
-    // Add post ID hashtag
-    hashtags.push(`#${post.postId}`);
+    // Add post ID hashtag (remove dash for valid hashtag)
+    const postIdTag = post.postId.replace('-', '');
+    hashtags.push(`#${postIdTag}`);
     
     // Add month hashtag
     const postDate = post.departureDate.toDate ? post.departureDate.toDate() : post.departureDate;
@@ -216,8 +217,9 @@ const formatPostForChannel = (post, postType, status = 'active') => {
       hashtags.push(`#${id}`);
     });
     
-    // Add post ID hashtag
-    hashtags.push(`#${post.postId}`);
+    // Add post ID hashtag (remove dash for valid hashtag)
+    const postIdTag = post.postId.replace('-', '');
+    hashtags.push(`#${postIdTag}`);
     
     // Add month hashtag
     const postDate = post.createdAt && post.createdAt.toDate ? post.createdAt.toDate() : (post.createdAt || new Date());
