@@ -350,11 +350,13 @@ favorScene.action('confirm_favor', async (ctx) => {
     // Format message for channel
     const channelMessage = formatPostForChannel(favorRequest, 'favor');
     
-    // Post to channel
+    // Post to channel and save message ID
     try {
+      let channelMsg;
+      
       if (ctx.scene.state.photoUrl) {
         // Post with photo
-        await ctx.telegram.sendPhoto(
+        channelMsg = await ctx.telegram.sendPhoto(
           process.env.FREE_CHANNEL_ID,
           ctx.scene.state.photoUrl,
           {
@@ -365,7 +367,7 @@ favorScene.action('confirm_favor', async (ctx) => {
         );
       } else {
         // Post without photo
-        await ctx.telegram.sendMessage(
+        channelMsg = await ctx.telegram.sendMessage(
           process.env.FREE_CHANNEL_ID,
           channelMessage,
           {
@@ -374,7 +376,18 @@ favorScene.action('confirm_favor', async (ctx) => {
           }
         );
       }
+      
+      // Save channel message ID for future updates
+      await collections.favorRequests.doc(postId).update({
+        channelMessageId: channelMsg.message_id,
+        channelChatId: process.env.FREE_CHANNEL_ID
+      });
+      
       logEvent.channelMessageSent('favor_request');
+      logger.info('Favor request posted to channel', {
+        postId,
+        channelMessageId: channelMsg.message_id
+      });
     } catch (error) {
       logger.error('Failed to post favor request to channel', { 
         error: error.message, 

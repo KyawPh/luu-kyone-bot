@@ -1,6 +1,6 @@
 const { Markup } = require('telegraf');
 const { collections } = require('../config/firebase');
-const { formatRoute, formatDate } = require('../utils/helpers');
+const { formatRoute, formatDate, formatPostForChannel } = require('../utils/helpers');
 const { messages, formatMessage } = require('../config/messages');
 const { logger, logEvent } = require('../utils/logger');
 
@@ -299,35 +299,77 @@ async function confirmCompletePost(ctx, type, postId) {
     }
     
     // Update status to completed
+    const completedAt = new Date();
     await collection.doc(postId).update({
       status: 'completed',
-      completedAt: new Date()
+      completedAt: completedAt
     });
     
-    // Get user info for channel notification
-    const userDoc = await collections.users.doc(userId).get();
-    const user = userDoc.data();
-    
-    // Send notification to channel
-    const channelMessage = formatMessage(messages.channel.postCompleted, {
-      userName: user.userName || user.firstName,
-      postType: type === 'travel' ? 'Travel Plan' : 'Favor Request',
-      postId: postId
-    });
-    
-    try {
-      await ctx.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
-        channelMessage,
-        { parse_mode: 'HTML' }
-      );
-      logEvent.channelMessageSent('post_completed');
-    } catch (error) {
-      logger.error('Failed to send completion notification to channel', {
-        error: error.message,
-        postId
-      });
+    // Update the channel post if message ID exists
+    if (post.channelMessageId && post.channelChatId) {
+      try {
+        // Re-format the post with completed status
+        const updatedPost = { ...post, completedAt };
+        const updatedMessage = formatPostForChannel(updatedPost, type, 'completed');
+        
+        // Try to edit the original channel message
+        if (post.photoUrl && type === 'favor') {
+          // For posts with photos, we need to edit the caption
+          await ctx.telegram.editMessageCaption(
+            post.channelChatId,
+            post.channelMessageId,
+            null,
+            updatedMessage,
+            { parse_mode: 'HTML' }
+          );
+        } else {
+          // For text-only posts
+          await ctx.telegram.editMessageText(
+            post.channelChatId,
+            post.channelMessageId,
+            null,
+            updatedMessage,
+            { parse_mode: 'HTML' }
+          );
+        }
+        
+        logger.info('Channel post updated to completed', {
+          postId,
+          channelMessageId: post.channelMessageId
+        });
+      } catch (error) {
+        // If editing fails (message deleted, etc.), send a new notification
+        logger.warn('Could not edit original channel post, sending notification', {
+          error: error.message,
+          postId
+        });
+        
+        // Get user info for fallback notification
+        const userDoc = await collections.users.doc(userId).get();
+        const user = userDoc.data();
+        
+        const channelMessage = formatMessage(messages.channel.postCompleted, {
+          userName: user.userName || user.firstName,
+          postType: type === 'travel' ? 'Travel Plan' : 'Favor Request',
+          postId: postId
+        });
+        
+        try {
+          await ctx.telegram.sendMessage(
+            process.env.FREE_CHANNEL_ID,
+            channelMessage,
+            { parse_mode: 'HTML' }
+          );
+        } catch (sendError) {
+          logger.error('Failed to send completion notification', {
+            error: sendError.message,
+            postId
+          });
+        }
+      }
     }
+    
+    logEvent.channelMessageSent('post_completed');
     
     // Update user message
     await ctx.editMessageText(
@@ -380,30 +422,72 @@ async function confirmCancelPost(ctx, type, postId) {
     }
     
     // Update status to cancelled
+    const cancelledAt = new Date();
     await collection.doc(postId).update({
       status: 'cancelled',
-      cancelledAt: new Date()
+      cancelledAt: cancelledAt
     });
     
-    // Send notification to channel
-    const channelMessage = formatMessage(messages.channel.postCancelled, {
-      postType: type === 'travel' ? 'Travel Plan' : 'Favor Request',
-      postId: postId
-    });
-    
-    try {
-      await ctx.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
-        channelMessage,
-        { parse_mode: 'HTML' }
-      );
-      logEvent.channelMessageSent('post_cancelled');
-    } catch (error) {
-      logger.error('Failed to send cancellation notification to channel', {
-        error: error.message,
-        postId
-      });
+    // Update the channel post if message ID exists
+    if (post.channelMessageId && post.channelChatId) {
+      try {
+        // Re-format the post with cancelled status
+        const updatedPost = { ...post, cancelledAt };
+        const updatedMessage = formatPostForChannel(updatedPost, type, 'cancelled');
+        
+        // Try to edit the original channel message
+        if (post.photoUrl && type === 'favor') {
+          // For posts with photos, we need to edit the caption
+          await ctx.telegram.editMessageCaption(
+            post.channelChatId,
+            post.channelMessageId,
+            null,
+            updatedMessage,
+            { parse_mode: 'HTML' }
+          );
+        } else {
+          // For text-only posts
+          await ctx.telegram.editMessageText(
+            post.channelChatId,
+            post.channelMessageId,
+            null,
+            updatedMessage,
+            { parse_mode: 'HTML' }
+          );
+        }
+        
+        logger.info('Channel post updated to cancelled', {
+          postId,
+          channelMessageId: post.channelMessageId
+        });
+      } catch (error) {
+        // If editing fails (message deleted, etc.), send a new notification
+        logger.warn('Could not edit original channel post, sending notification', {
+          error: error.message,
+          postId
+        });
+        
+        const channelMessage = formatMessage(messages.channel.postCancelled, {
+          postType: type === 'travel' ? 'Travel Plan' : 'Favor Request',
+          postId: postId
+        });
+        
+        try {
+          await ctx.telegram.sendMessage(
+            process.env.FREE_CHANNEL_ID,
+            channelMessage,
+            { parse_mode: 'HTML' }
+          );
+        } catch (sendError) {
+          logger.error('Failed to send cancellation notification', {
+            error: sendError.message,
+            postId
+          });
+        }
+      }
     }
+    
+    logEvent.channelMessageSent('post_cancelled');
     
     // Update user message
     await ctx.editMessageText(

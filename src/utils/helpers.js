@@ -99,12 +99,23 @@ const escapeHtml = (text) => {
 };
 
 // Format post for channel broadcast (compact and private)
-const formatPostForChannel = (post, postType) => {
+const formatPostForChannel = (post, postType, status = 'active') => {
   let message = '';
+  const { CATEGORIES } = require('../config/constants');
+  let hashtags = [];
+  
+  // Add status indicator based on current status
+  let statusPrefix = '';
+  if (status === 'completed') {
+    statusPrefix = '✅ COMPLETED - ';
+  } else if (status === 'cancelled') {
+    statusPrefix = '❌ CANCELLED - ';
+  } else if (status === 'expired') {
+    statusPrefix = '⏰ EXPIRED - ';
+  }
   
   if (postType === 'travel') {
     // Get category names with emojis from CATEGORIES constant
-    const { CATEGORIES } = require('../config/constants');
     const categoriesDisplay = post.categories
       .map(id => {
         const cat = CATEGORIES.find(c => c.id === id);
@@ -113,23 +124,54 @@ const formatPostForChannel = (post, postType) => {
       .filter(c => c)
       .join(', ');
     
-    message = `✈️ <b>Travel Plan Available</b>\n\n`;
+    message = `✈️ <b>${statusPrefix}Travel Plan${status === 'active' ? ' Available' : ''}</b>\n\n`;
     message += `<b>Route:</b> ${formatRoute(post.fromCity, post.toCity)}\n`;
     message += `<b>Date:</b> ${formatDate(post.departureDate)}\n`;
-    message += `<b>Available:</b> ${post.availableWeight}\n`;
-    message += `<b>Can help with:</b> ${categoriesDisplay}`;
+    
+    if (status === 'active') {
+      message += `<b>Available:</b> ${post.availableWeight}\n`;
+      message += `<b>Can help with:</b> ${categoriesDisplay}`;
+    } else if (status === 'completed') {
+      message += `<b>Status:</b> Successfully completed on ${formatDate(post.completedAt || new Date())}\n`;
+      message += `<b>Helper connected:</b> Yes ✅`;
+    } else if (status === 'cancelled') {
+      message += `<b>Status:</b> Cancelled by user on ${formatDate(post.cancelledAt || new Date())}`;
+    } else if (status === 'expired') {
+      message += `<b>Status:</b> Expired (departure date passed)`;
+    }
+    
+    // Build hashtags
+    hashtags.push('#travel');
+    hashtags.push(`#${status}`);
+    hashtags.push(`#${post.fromCity.toUpperCase()}_${post.toCity.toUpperCase()}`);
+    
+    // Add category hashtags
+    post.categories.forEach(id => {
+      hashtags.push(`#${id}`);
+    });
+    
+    // Add post ID hashtag
+    hashtags.push(`#${post.postId}`);
+    
+    // Add month hashtag
+    const postDate = post.departureDate.toDate ? post.departureDate.toDate() : post.departureDate;
+    hashtags.push(`#${moment(postDate).format('MMM')}${moment(postDate).format('YYYY')}`);
+    
   } else if (postType === 'favor') {
     // Get urgency label
-    const { URGENCY_LEVELS, CATEGORIES } = require('../config/constants');
+    const { URGENCY_LEVELS } = require('../config/constants');
     const urgencyInfo = URGENCY_LEVELS[post.urgency];
     
     // Handle both old single category and new multiple categories
     let categoriesDisplay;
+    let categoryIds = [];
+    
     if (post.categories && Array.isArray(post.categories)) {
       // New format with multiple categories
       categoriesDisplay = post.categories
         .map(id => {
           const cat = CATEGORIES.find(c => c.id === id);
+          categoryIds.push(id);
           return cat ? `${cat.emoji} ${cat.name}` : '';
         })
         .filter(c => c)
@@ -138,21 +180,59 @@ const formatPostForChannel = (post, postType) => {
       // Old format with single category
       const category = CATEGORIES.find(c => c.name === post.category);
       categoriesDisplay = category ? `${category.emoji} ${post.category}` : post.category;
+      if (category) categoryIds.push(category.id);
     }
     
-    message = `📦 <b>Favor Request</b>\n\n`;
+    message = `📦 <b>${statusPrefix}Favor Request${status === 'active' ? '' : ''}</b>\n\n`;
     message += `<b>Route:</b> ${formatRoute(post.fromCity, post.toCity)}\n`;
-    message += `<b>Items:</b> ${categoriesDisplay}\n`;
-    message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}`;
-    if (post.description) {
-      const shortDesc = post.description.length > 80 
-        ? post.description.substring(0, 80) + '...'
-        : post.description;
-      message += `\n<b>Details:</b> ${escapeHtml(shortDesc)}`;
+    
+    if (status === 'active') {
+      message += `<b>Items:</b> ${categoriesDisplay}\n`;
+      message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}`;
+      if (post.description) {
+        const shortDesc = post.description.length > 80 
+          ? post.description.substring(0, 80) + '...'
+          : post.description;
+        message += `\n<b>Details:</b> ${escapeHtml(shortDesc)}`;
+      }
+    } else if (status === 'completed') {
+      message += `<b>Items:</b> ${categoriesDisplay}\n`;
+      message += `<b>Status:</b> Successfully delivered on ${formatDate(post.completedAt || new Date())}`;
+    } else if (status === 'cancelled') {
+      message += `<b>Status:</b> Cancelled by user on ${formatDate(post.cancelledAt || new Date())}`;
+    } else if (status === 'expired') {
+      const reason = post.urgency === 'urgent' ? 'urgency timeout' : 'time limit reached';
+      message += `<b>Status:</b> Expired (${reason})`;
     }
+    
+    // Build hashtags
+    hashtags.push('#favor');
+    hashtags.push(`#${status}`);
+    hashtags.push(`#${post.fromCity.toUpperCase()}_${post.toCity.toUpperCase()}`);
+    hashtags.push(`#${post.urgency}`);
+    
+    // Add category hashtags
+    categoryIds.forEach(id => {
+      hashtags.push(`#${id}`);
+    });
+    
+    // Add post ID hashtag
+    hashtags.push(`#${post.postId}`);
+    
+    // Add month hashtag
+    const postDate = post.createdAt && post.createdAt.toDate ? post.createdAt.toDate() : (post.createdAt || new Date());
+    hashtags.push(`#${moment(postDate).format('MMM')}${moment(postDate).format('YYYY')}`);
   }
   
-  message += `\n\n#${post.fromCity}to${post.toCity} | Ref: ${post.postId}`;
+  // Add thank you message for completed posts
+  if (status === 'completed') {
+    message += '\n\nThank you for spreading kindness! 💚';
+  } else if (status === 'cancelled' || status === 'expired') {
+    message += '\n\nThis post is no longer active.';
+  }
+  
+  // Add all hashtags at the bottom
+  message += `\n\n${hashtags.join(' ')}`;
   
   return message;
 };

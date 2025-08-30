@@ -323,9 +323,9 @@ travelScene.action('confirm_post', async (ctx) => {
     // Format message for channel
     const channelMessage = formatPostForChannel(travelPlan, 'travel');
     
-    // Post to channel
+    // Post to channel and save message ID
     try {
-      await ctx.telegram.sendMessage(
+      const channelMsg = await ctx.telegram.sendMessage(
         process.env.FREE_CHANNEL_ID,
         channelMessage,
         {
@@ -333,7 +333,18 @@ travelScene.action('confirm_post', async (ctx) => {
           ...contactButton(userId, 'travel', postId)
         }
       );
+      
+      // Save channel message ID for future updates
+      await collections.travelPlans.doc(postId).update({
+        channelMessageId: channelMsg.message_id,
+        channelChatId: process.env.FREE_CHANNEL_ID
+      });
+      
       logEvent.channelMessageSent('travel_plan');
+      logger.info('Travel plan posted to channel', {
+        postId,
+        channelMessageId: channelMsg.message_id
+      });
     } catch (error) {
       logger.error('Failed to post travel plan to channel', { 
         error: error.message, 
