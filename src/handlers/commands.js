@@ -338,6 +338,20 @@ Need help? Join @LuuKyone_Community 🙏
     }
   });
   
+  // Settings command
+  bot.command('settings', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    logEvent.commandUsed(userId, 'settings');
+    
+    try {
+      // Enter the settings scene
+      ctx.scene.enter('settingsScene');
+    } catch (error) {
+      logger.error('Settings command error', { error: error.message, userId });
+      ctx.reply('❌ An error occurred. Please try again.');
+    }
+  });
+  
   // Profile command
   bot.command('profile', async (ctx) => {
     const userId = ctx.from.id.toString();
@@ -443,6 +457,51 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     } catch (error) {
       logger.error('Manual cleanup error', { error: error.message });
       ctx.reply(`❌ Cleanup failed: ${error.message}`);
+    }
+  });
+  
+  // Test notification settings (admin only)
+  bot.command('test_notifications', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
+    
+    if (!ADMIN_IDS.includes(userId)) {
+      return ctx.reply('❌ This command is for admins only.');
+    }
+    
+    const { getUserNotificationSettings } = require('../utils/helpers');
+    
+    try {
+      const settings = await getUserNotificationSettings(userId, collections);
+      
+      let message = '🔔 <b>Testing Notification Settings</b>\n\n';
+      message += `<b>Your Current Settings:</b>\n`;
+      message += `• All Notifications: ${settings.notifications ? '✅ ON' : '❌ OFF'}\n`;
+      message += `• Daily Summary: ${settings.dailySummary ? '✅ ON' : '❌ OFF'}\n`;
+      message += `• Connection Alerts: ${settings.connectionAlerts ? '✅ ON' : '❌ OFF'}\n\n`;
+      
+      if (settings.notifications) {
+        if (settings.dailySummary) {
+          message += '📊 You WILL receive daily summaries\n';
+        } else {
+          message += '📊 You will NOT receive daily summaries\n';
+        }
+        
+        if (settings.connectionAlerts) {
+          message += '👥 You WILL receive connection notifications\n';
+        } else {
+          message += '👥 You will NOT receive connection notifications\n';
+        }
+      } else {
+        message += '🔕 All notifications are disabled - you will not receive any notifications\n';
+      }
+      
+      message += '\n<i>Use /settings to change your preferences</i>';
+      
+      await ctx.reply(message, { parse_mode: 'HTML' });
+    } catch (error) {
+      logger.error('Test notifications error', { error: error.message });
+      ctx.reply('❌ Error testing notification settings.');
     }
   });
   

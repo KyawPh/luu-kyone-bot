@@ -236,6 +236,34 @@ const formatPostForChannel = (post, postType, status = 'active') => {
   return message;
 };
 
+// Get user notification settings with defaults
+const getUserNotificationSettings = async (userId, collections) => {
+  try {
+    const userDoc = await collections.users.doc(userId).get();
+    if (!userDoc.exists) {
+      return {
+        notifications: true,
+        dailySummary: true,
+        connectionAlerts: true
+      };
+    }
+    
+    const user = userDoc.data();
+    return user.settings || {
+      notifications: true,
+      dailySummary: true,
+      connectionAlerts: true
+    };
+  } catch (error) {
+    // Return defaults if error
+    return {
+      notifications: true,
+      dailySummary: true,
+      connectionAlerts: true
+    };
+  }
+};
+
 // Check if dates overlap
 const datesOverlap = (start1, end1, start2, end2) => {
   return moment(start1).isSameOrBefore(end2) && moment(end1).isSameOrAfter(start2);
@@ -272,6 +300,7 @@ module.exports = {
   generatePostId,
   escapeHtml,
   formatPostForChannel,
+  getUserNotificationSettings,
   datesOverlap,
   findMatches
 };

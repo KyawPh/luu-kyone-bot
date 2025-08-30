@@ -1,6 +1,6 @@
 const { collections } = require('../config/firebase');
 const { mainMenu, contactButton } = require('../utils/keyboards');
-const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate } = require('../utils/helpers');
+const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate, getUserNotificationSettings } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
 
@@ -358,22 +358,33 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
         { parse_mode: 'HTML' }
       );
       
-      // To poster
+      // To poster - check notification settings first
       try {
-        const requesterTypeText = postType === 'travel' ? 'needs your help' : 'can help you';
-        await bot.telegram.sendMessage(
-          posterId,
-          `🔔 <b>New Match for Your Post!</b>\n\n` +
-          `Someone ${requesterTypeText} with:\n` +
-          `<b>Route:</b> ${formatRoute(postData.fromCity, postData.toCity)}\n` +
-          `<b>Post ID:</b> #${postId}\n\n` +
-          `<b>Interested person:</b>\n` +
-          `👤 ${escapeHtml(requester.userName)}\n` +
-          `${requester.username ? `💬 @${requester.username}` : `💬 <a href="tg://user?id=${requesterId}">View profile</a>`}\n\n` +
-          `They will contact you soon to discuss details.\n\n` +
-          `<i>💡 If they don't reach out, you can message them first!</i>`,
-          { parse_mode: 'HTML' }
-        );
+        const posterSettings = await getUserNotificationSettings(posterId, collections);
+        
+        // Only send if user has notifications and connection alerts enabled
+        if (posterSettings.notifications && posterSettings.connectionAlerts) {
+          const requesterTypeText = postType === 'travel' ? 'needs your help' : 'can help you';
+          await bot.telegram.sendMessage(
+            posterId,
+            `🔔 <b>New Match for Your Post!</b>\n\n` +
+            `Someone ${requesterTypeText} with:\n` +
+            `<b>Route:</b> ${formatRoute(postData.fromCity, postData.toCity)}\n` +
+            `<b>Post ID:</b> #${postId}\n\n` +
+            `<b>Interested person:</b>\n` +
+            `👤 ${escapeHtml(requester.userName)}\n` +
+            `${requester.username ? `💬 @${requester.username}` : `💬 <a href="tg://user?id=${requesterId}">View profile</a>`}\n\n` +
+            `They will contact you soon to discuss details.\n\n` +
+            `<i>💡 If they don't reach out, you can message them first!</i>`,
+            { parse_mode: 'HTML' }
+          );
+          logger.debug('Connection notification sent to poster', { posterId });
+        } else {
+          logger.debug('Connection notification skipped - user disabled notifications', { 
+            posterId,
+            settings: posterSettings 
+          });
+        }
       } catch (error) {
         logger.error('Failed to notify poster', { error: error.message });
       }

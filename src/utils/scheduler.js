@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const { collections, db } = require('../config/firebase');
-const { formatRoute, formatDate } = require('./helpers');
+const { formatRoute, formatDate, getUserNotificationSettings } = require('./helpers');
 const { messages, formatMessage } = require('../config/messages');
 const { logger, logEvent } = require('./logger');
 const { CITIES } = require('../config/constants');
@@ -84,7 +84,7 @@ async function createDailySummary(isEvening = false) {
   }
 }
 
-// Send summary to channel
+// Send summary to channel and users who have it enabled
 async function sendDailySummary(bot, isEvening = false) {
   try {
     const summaryMessage = await createDailySummary(isEvening);
@@ -94,16 +94,46 @@ async function sendDailySummary(bot, isEvening = false) {
       return;
     }
     
-    // Send to channel
+    // Send to channel (always)
     await bot.telegram.sendMessage(
       process.env.FREE_CHANNEL_ID,
       summaryMessage,
       { parse_mode: 'HTML' }
     );
     
+    // Send to users who have daily summaries enabled
+    const usersSnapshot = await collections.users.get();
+    let sentCount = 0;
+    let skippedCount = 0;
+    
+    for (const userDoc of usersSnapshot.docs) {
+      const userId = userDoc.id;
+      const settings = await getUserNotificationSettings(userId, collections);
+      
+      // Check if user has notifications and daily summaries enabled
+      if (settings.notifications && settings.dailySummary) {
+        try {
+          await bot.telegram.sendMessage(
+            userId,
+            '📊 ' + summaryMessage,
+            { parse_mode: 'HTML' }
+          );
+          sentCount++;
+        } catch (error) {
+          // User might have blocked bot or deleted account
+          logger.debug('Could not send summary to user', { userId, error: error.message });
+        }
+      } else {
+        skippedCount++;
+      }
+    }
+    
     logEvent.channelMessageSent(isEvening ? 'evening_summary' : 'morning_summary');
-    logger.info('Daily summary sent to channel', { 
+    logger.info('Daily summary sent', { 
       type: isEvening ? 'evening' : 'morning',
+      channelSent: true,
+      usersSent: sentCount,
+      usersSkipped: skippedCount,
       timestamp: new Date().toISOString()
     });
     
