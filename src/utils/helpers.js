@@ -189,13 +189,10 @@ const formatPostForChannel = (post, postType, status = 'active') => {
     
     if (status === 'active') {
       message += `<b>Items:</b> ${categoriesDisplay}\n`;
-      message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}`;
-      if (post.description) {
-        const shortDesc = post.description.length > 80 
-          ? post.description.substring(0, 80) + '...'
-          : post.description;
-        message += `\n<b>Details:</b> ${escapeHtml(shortDesc)}`;
+      if (post.requestedWeight) {
+        message += `<b>Weight:</b> ${post.requestedWeight}\n`;
       }
+      message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}`;
     } else if (status === 'completed') {
       message += `<b>Items:</b> ${categoriesDisplay}\n`;
       message += `<b>Status:</b> Successfully delivered on ${formatDate(post.completedAt || new Date())}`;

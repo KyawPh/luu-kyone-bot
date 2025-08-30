@@ -4,10 +4,9 @@ const {
   cityKeyboard, 
   categoryKeyboard, 
   urgencyKeyboard,
-  confirmKeyboard,
+  weightKeyboard,
   mainMenu,
-  contactButton,
-  skipKeyboard
+  contactButton
 } = require('../utils/keyboards');
 const { 
   generatePostId,
@@ -200,110 +199,67 @@ favorScene.action(/^urgency_(.+)$/, async (ctx) => {
     .map(c => `${c.emoji} ${c.name}`)
     .join(', ');
   
+  // Now ask for weight instead of description
   await ctx.editMessageText(
     '📦 <b>Request a Personal Favor</b>\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n` +
     `Categories: ${selectedCats}\n` +
     `Urgency: ${urgency.emoji} ${urgency.label}\n\n` +
-    'Step 5: Describe the item details (size, weight, contents, special handling):',
-    { parse_mode: 'HTML' }
-  );
-  
-  ctx.scene.state.waitingForDescription = true;
-});
-
-// Handle text input for description
-favorScene.on('text', async (ctx) => {
-  if (ctx.scene.state.waitingForDescription) {
-    const description = ctx.message.text;
-    
-    if (description.length < 10) {
-      return ctx.reply('❌ Please provide a more detailed description (at least 10 characters).');
-    }
-    
-    if (description.length > 500) {
-      return ctx.reply('❌ Description is too long. Please keep it under 500 characters.');
-    }
-    
-    ctx.scene.state.description = description;
-    ctx.scene.state.waitingForDescription = false;
-    
-    await ctx.reply(
-      '📦 <b>Request a Personal Favor</b>\n\n' +
-      'Step 6: Would you like to add a photo of the item?\n' +
-      '<i>This helps travelers identify your item</i>',
-      { 
-        parse_mode: 'HTML',
-        ...skipKeyboard()
-      }
-    );
-    
-    ctx.scene.state.waitingForPhoto = true;
-  }
-});
-
-// Handle photo upload
-favorScene.on('photo', async (ctx) => {
-  if (ctx.scene.state.waitingForPhoto) {
-    try {
-      await ctx.reply('📸 Processing photo...');
-      
-      // Get the largest photo
-      const photo = ctx.message.photo[ctx.message.photo.length - 1];
-      const fileId = photo.file_id;
-      
-      // For now, we'll store the Telegram file ID
-      // In production, you'd download and upload to Firebase Storage
-      ctx.scene.state.photoUrl = fileId;
-      ctx.scene.state.waitingForPhoto = false;
-      
-      await confirmFavorRequest(ctx);
-    } catch (error) {
-      logger.error('Error processing photo', { error: error.message });
-      ctx.reply('❌ Failed to process photo. You can skip or try again.');
-    }
-  }
-});
-
-// Handle skip photo
-favorScene.action('skip', async (ctx) => {
-  await ctx.answerCbQuery();
-  ctx.scene.state.waitingForPhoto = false;
-  await confirmFavorRequest(ctx);
-});
-
-// Show confirmation
-async function confirmFavorRequest(ctx) {
-  const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
-  const toCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.toCity)?.name;
-  const urgency = URGENCY_LEVELS[ctx.scene.state.urgency];
-  
-  const selectedCats = ctx.scene.state.categories
-    .map(id => CATEGORIES.find(c => c.id === id))
-    .map(c => `${c.emoji} ${c.name}`)
-    .join(', ');
-  
-  const summary = 
-    '📦 <b>Review Your Favor Request</b>\n\n' +
-    `<b>Route:</b> ${fromCityName} → ${toCityName}\n` +
-    `<b>Categories:</b> ${selectedCats}\n` +
-    `<b>Urgency:</b> ${urgency.emoji} ${urgency.label}\n` +
-    `<b>Description:</b> ${escapeHtml(ctx.scene.state.description)}\n` +
-    `<b>Photo:</b> ${ctx.scene.state.photoUrl ? 'Yes' : 'No'}\n\n` +
-    'Post this favor request?';
-  
-  await ctx.reply(
-    summary,
+    'Step 5: How much does the item weigh?',
     { 
       parse_mode: 'HTML',
-      ...confirmKeyboard('confirm_favor', 'cancel_favor')
+      ...weightKeyboard()
     }
   );
-}
+});
 
-// Confirm and post favor
-favorScene.action('confirm_favor', async (ctx) => {
+// Handle weight selection
+favorScene.action(/^weight_(\w+)$/, async (ctx) => {
+  const weight = ctx.match[1];
   await ctx.answerCbQuery();
+  
+  let weightText = '';
+  switch(weight) {
+    case '1': weightText = '< 1 kg'; break;
+    case '3': weightText = '1-3 kg'; break;
+    case '5': weightText = '3-5 kg'; break;
+    case '10': weightText = '5-10 kg'; break;
+    case 'more': weightText = '> 10 kg'; break;
+    case 'custom':
+      ctx.scene.state.waitingForWeight = true;
+      return ctx.editMessageText(
+        '📦 <b>Request a Personal Favor</b>\n\n' +
+        'Enter the weight in kg (e.g., "20" or "20 kg"):',
+        { parse_mode: 'HTML' }
+      );
+  }
+  
+  ctx.scene.state.requestedWeight = weightText;
+  // Directly post the favor request without confirmation
+  await postFavorRequest(ctx);
+});
+
+// Handle custom weight input
+favorScene.on('text', async (ctx) => {
+  if (ctx.scene.state.waitingForWeight) {
+    const text = ctx.message.text.trim();
+    const weightMatch = text.match(/^(\d+)\s*(kg)?$/i);
+    
+    if (!weightMatch) {
+      return ctx.reply('❌ Please enter weight as a number in kg (e.g., "20" or "20 kg")');
+    }
+    
+    const weightValue = weightMatch[1];
+    ctx.scene.state.requestedWeight = `${weightValue} kg`;
+    ctx.scene.state.waitingForWeight = false;
+    
+    // Directly post the favor request
+    await postFavorRequest(ctx);
+  }
+});
+
+// Direct post function without confirmation
+async function postFavorRequest(ctx) {
   
   try {
     const userId = ctx.from.id.toString();
@@ -320,8 +276,7 @@ favorScene.action('confirm_favor', async (ctx) => {
       toCity: ctx.scene.state.toCity,
       categories: ctx.scene.state.categories, // Now storing array of category IDs
       urgency: ctx.scene.state.urgency,
-      description: ctx.scene.state.description,
-      photoUrl: ctx.scene.state.photoUrl || null,
+      requestedWeight: ctx.scene.state.requestedWeight, // Added weight instead of description
       status: 'active',
       createdAt: new Date()
     };
@@ -344,7 +299,7 @@ favorScene.action('confirm_favor', async (ctx) => {
       route,
       categories: ctx.scene.state.categories.length,
       urgency: ctx.scene.state.urgency,
-      hasPhoto: !!ctx.scene.state.photoUrl
+      weight: ctx.scene.state.requestedWeight
     });
     
     // Format message for channel
@@ -352,30 +307,15 @@ favorScene.action('confirm_favor', async (ctx) => {
     
     // Post to channel and save message ID
     try {
-      let channelMsg;
-      
-      if (ctx.scene.state.photoUrl) {
-        // Post with photo
-        channelMsg = await ctx.telegram.sendPhoto(
-          process.env.FREE_CHANNEL_ID,
-          ctx.scene.state.photoUrl,
-          {
-            caption: channelMessage,
-            parse_mode: 'HTML',
-            ...contactButton(userId, 'favor', postId)
-          }
-        );
-      } else {
-        // Post without photo
-        channelMsg = await ctx.telegram.sendMessage(
-          process.env.FREE_CHANNEL_ID,
-          channelMessage,
-          {
-            parse_mode: 'HTML',
-            ...contactButton(userId, 'favor', postId)
-          }
-        );
-      }
+      // Post without photo (simplified)
+      const channelMsg = await ctx.telegram.sendMessage(
+        process.env.FREE_CHANNEL_ID,
+        channelMessage,
+        {
+          parse_mode: 'HTML',
+          ...contactButton(userId, 'favor', postId)
+        }
+      );
       
       // Save channel message ID for future updates
       await collections.favorRequests.doc(postId).update({
@@ -430,7 +370,7 @@ favorScene.action('confirm_favor', async (ctx) => {
     logEvent.sceneLeft(userId, 'favorScene', 'error');
     ctx.scene.leave();
   }
-});
+}
 
 // Handle cancel
 favorScene.action(['cancel', 'cancel_favor'], async (ctx) => {

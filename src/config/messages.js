@@ -121,21 +121,12 @@ const messages = {
         toCity: 'Step 2: Where does the item need to be delivered TO?',
         categories: 'Step 3: What category does your item belong to?',
         urgency: 'Step 4: How urgent is your request?',
-        description: 'Step 5: Describe the item details (size, weight, contents, special handling):',
-        photo: 'Step 6: Would you like to add a photo of the item?\n<i>This helps travelers identify your item</i>'
+        weight: 'Step 5: How much does the item weigh?',
+        weightCustom: 'Step 5: Enter the weight in kg (e.g., "20" or "20 kg"):'
       },
       categorySelection: {
         title: 'Selected Categories:',
         prompt: 'Add more categories or confirm your selection:'
-      },
-      review: {
-        title: '📦 Review Your Favor Request',
-        route: 'Route:',
-        categories: 'Categories:',
-        urgency: 'Urgency:',
-        description: 'Description:',
-        photo: 'Photo:',
-        confirm: 'Post this favor request?'
       },
       confirmation: {
         title: '✅ Favor Request Posted Successfully!',
@@ -206,8 +197,8 @@ const messages = {
       title: '📦 Favor Request',
       route: 'Route:',
       items: 'Items:',
-      urgency: 'Urgency:',
-      details: 'Details:'
+      weight: 'Weight:',
+      urgency: 'Urgency:'
     },
     welcome: {
       single: '💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot',
