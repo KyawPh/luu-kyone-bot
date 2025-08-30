@@ -20,15 +20,14 @@ const messages = {
 
   // Categories Configuration
   categories: {
-    medicine: { name: 'Medicine', emoji: '💊' },
-    documents: { name: 'Documents', emoji: '📄' },
-    food: { name: 'Food', emoji: '🍜' },
-    electronics: { name: 'Electronics', emoji: '📱' },
-    clothing: { name: 'Clothing', emoji: '👕' },
-    books: { name: 'Books', emoji: '📚' },
-    cosmetics: { name: 'Cosmetics', emoji: '💄' },
-    gifts: { name: 'Gifts', emoji: '🎁' },
-    other: { name: 'Other', emoji: '📦' }
+    medicine: { name: 'ဆေး၀ါး', emoji: '💊' },
+    documents: { name: 'စာရွက်စာတမ်း', emoji: '📄' },
+    food: { name: 'အစားအစာ', emoji: '🍜' },
+    electronics: { name: 'လျှပ်စစ်ပစ္စည်း', emoji: '📱' },
+    clothing: { name: 'အ၀တ်အစား', emoji: '👕' },
+    books: { name: 'စာအုပ်', emoji: '📚' },
+    cosmetics: { name: 'အလှပြင်ပစ္စည်း', emoji: '💄' },
+    other: { name: 'အခြား', emoji: '📦' }
   },
 
   // Urgency Levels
@@ -49,8 +48,8 @@ const messages = {
   // Button Labels
   buttons: {
     mainMenu: {
-      travel: '✈️ Travel',
-      favor: '📦 Favor',
+      travel: '✈️ ခရီးစဥ်',
+      favor: '📦 ပါဆယ်',
       browse: '🔍 Browse',
       profile: '👤 Profile',
       help: '📚 Help',
