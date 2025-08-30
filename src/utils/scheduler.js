@@ -241,6 +241,31 @@ async function cleanupExpiredPosts() {
   }
 }
 
+// Send how-to-use reminder to channel
+async function sendHowToUseReminder(bot) {
+  try {
+    const messages = [
+      `📚 <b>How to Use Luu Kyone</b>\n\n✈️ <b>For Travelers:</b>\n1. Open @luukyonebot\n2. Click "✈️ ခရီးစဥ်" (Travel)\n3. Select your route & date\n4. Choose what you can help with\n5. Your post appears here!\n\n📦 <b>For Senders:</b>\n1. Open @luukyonebot\n2. Click "📦 ပါဆယ်" (Package)\n3. Select route & urgency\n4. Specify item details\n5. Wait for travelers to comment!\n\n💬 <b>To Connect:</b> Comment on any post\n\n#HowToUse #LuuKyone`,
+      
+      `🎯 <b>Quick Start Guide</b>\n\n<b>See a post you can help with?</b>\n→ Comment below the post\n→ Post owner will be notified\n→ Connect directly to arrange\n\n<b>Want to post your own?</b>\n→ @luukyonebot is your starting point\n→ Choose Travel or Package\n→ Fill in simple details\n→ Post appears here instantly!\n\n✅ FREE | ✅ SAFE | ✅ EASY\n\n#QuickStart #Tutorial`,
+      
+      `💡 <b>Did You Know?</b>\n\nYou can help someone today!\n\n• Traveling soon? Check @luukyonebot for requests on your route\n• Need something delivered? Post at @luukyonebot\n• See a post here? Comment to connect!\n\nEvery small act of kindness matters 💚\n\n#DidYouKnow #CommunityTips`
+    ];
+    
+    const randomMessage = messages[Math.floor(Math.random() * messages.length)];
+    
+    await bot.telegram.sendMessage(
+      config.telegram.channelId,
+      randomMessage,
+      { parse_mode: 'HTML' }
+    );
+    
+    logger.info('How-to-use reminder sent to channel');
+  } catch (error) {
+    logger.error('Error sending how-to-use reminder', { error: error.message });
+  }
+}
+
 // Setup all scheduled jobs
 function setupScheduledJobs(bot) {
   try {
@@ -260,6 +285,28 @@ function setupScheduledJobs(bot) {
       timezone: config.bot.timezone
     });
     
+    // How-to-use reminder at 12:00 PM (noon) daily
+    cron.schedule('0 12 * * *', async () => {
+      logger.info('Running how-to-use reminder job');
+      await sendHowToUseReminder(bot);
+    }, {
+      timezone: config.bot.timezone
+    });
+    
+    // Weekly engagement reminder on Mondays at 10:00 AM
+    cron.schedule('0 10 * * 1', async () => {
+      logger.info('Running weekly engagement reminder');
+      const message = `🎉 <b>Weekly Challenge!</b>\n\nThis week, let's aim for:\n• 100+ acts of kindness\n• 50+ new connections\n• 20+ successful deliveries\n\nEvery journey starts with a single step.\nEvery kindness starts with YOU!\n\n👉 Start now: @luukyonebot\n\n#WeeklyChallenge #MondayMotivation #LuuKyone`;
+      
+      await bot.telegram.sendMessage(
+        config.telegram.channelId,
+        message,
+        { parse_mode: 'HTML' }
+      );
+    }, {
+      timezone: config.bot.timezone
+    });
+    
     // Daily cleanup at 2:00 AM
     cron.schedule('0 2 * * *', async () => {
       logger.info('Running daily cleanup job');
@@ -269,7 +316,13 @@ function setupScheduledJobs(bot) {
     });
     
     logger.info('Scheduled jobs setup complete', {
-      jobs: ['morning_summary', 'evening_summary', 'daily_cleanup']
+      jobs: [
+        'morning_summary', 
+        'evening_summary', 
+        'how_to_use_reminder',
+        'weekly_engagement',
+        'daily_cleanup'
+      ]
     });
     
   } catch (error) {

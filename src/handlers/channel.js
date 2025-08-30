@@ -27,10 +27,10 @@ const setupChannelHandlers = (bot) => {
         
         // Send a welcome message to the channel
         const welcomeMessages = [
-          `💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot`,
-          `🤝 Another kind soul joins us!\n\n"Together we're building bridges of kindness across cities."\n\nShare your journey: @luukyonebot`,
-          `✨ Welcome, neighbor!\n\n"Every new member makes our community stronger and kinder."\n\nBegin spreading joy: @luukyonebot`,
-          `🌟 So happy you're here!\n\n"In a world where you can be anything, you chose to be kind."\n\nStart your kindness story: @luukyonebot`
+          `💚 Welcome to Luu Kyone Community!\n\n<b>How to participate:</b>\n1️⃣ Open @luukyonebot\n2️⃣ Share your travel plans or request delivery\n3️⃣ Help connect travelers with those in need\n\n✅ FREE | ✅ SAFE | ✅ COMMUNITY-DRIVEN`,
+          `🤝 Welcome aboard!\n\n<b>Quick Start:</b>\n✈️ Traveling? Post at @luukyonebot\n📦 Need delivery? Request at @luukyonebot\n💬 See a post? Comment to connect!\n\n"Together we're building bridges of kindness"`,
+          `✨ Welcome to our family!\n\n<b>Get Started:</b>\n👉 @luukyonebot - Your gateway to kindness\n\nPost travels, request deliveries, help neighbors!\nYGN ↔️ SG ↔️ BKK Routes`,
+          `🌟 So happy you're here!\n\n<b>Join the movement:</b>\n📱 Bot: @luukyonebot\n💬 Channel: Comment on posts\n🤝 Community: Help each other\n\nEvery small act creates big impact!`
         ];
         
         // Pick a random welcome message

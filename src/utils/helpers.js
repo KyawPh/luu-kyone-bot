@@ -158,7 +158,8 @@ const formatPostForChannel = (post, postType, status = 'active') => {
     if (status === 'active') {
       message += `<b>Available:</b> ${post.availableWeight}\n`;
       message += `<b>Can help with:</b> ${categoriesDisplay}\n\n`;
-      message += `💬 Comment below if interested`;
+      message += `💬 Comment below if interested\n`;
+      message += `📱 Post your travel: @luukyonebot`;
     } else if (status === 'completed') {
       message += `<b>Status:</b> Successfully completed on ${formatDate(post.completedAt || new Date())}\n`;
       message += `<b>Helper connected:</b> Yes ✅`;
@@ -221,7 +222,8 @@ const formatPostForChannel = (post, postType, status = 'active') => {
         message += `<b>Weight:</b> ${post.requestedWeight}\n`;
       }
       message += `<b>Urgency:</b> ${urgencyInfo ? `${urgencyInfo.emoji} ${urgencyInfo.label}` : post.urgency}\n\n`;
-      message += `💬 Comment below if interested`;
+      message += `💬 Comment below if interested\n`;
+      message += `📦 Request delivery: @luukyonebot`;
     } else if (status === 'completed') {
       message += `<b>Items:</b> ${categoriesDisplay}\n`;
       message += `<b>Status:</b> Successfully delivered on ${formatDate(post.completedAt || new Date())}`;

@@ -472,6 +472,107 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     }
   });
   
+  // Channel info command
+  bot.command('channelinfo', async (ctx) => {
+    const channelInfoMessage = `📢 <b>Channel & Bot Relationship</b>\n\n` +
+      `<b>How they work together:</b>\n` +
+      `• Bot (@luukyonebot) - Where you create posts\n` +
+      `• Channel (@LuuKyone_Community) - Where posts are displayed\n\n` +
+      `<b>User Journey:</b>\n` +
+      `1️⃣ Open the bot to create a post\n` +
+      `2️⃣ Post appears in the channel\n` +
+      `3️⃣ Community members comment to connect\n` +
+      `4️⃣ Bot notifies you of comments\n` +
+      `5️⃣ You connect directly to arrange\n\n` +
+      `<b>Why this system?</b>\n` +
+      `• Channel = Public visibility\n` +
+      `• Bot = Private control\n` +
+      `• Comments = Transparent connections\n\n` +
+      `<b>Tips:</b>\n` +
+      `• Check channel for active posts\n` +
+      `• Use bot to create your posts\n` +
+      `• Comment on posts to help\n` +
+      `• Keep notifications on for alerts\n\n` +
+      `Channel: @LuuKyone_Community\n` +
+      `Bot: @luukyonebot`;
+    
+    await ctx.reply(channelInfoMessage, { parse_mode: 'HTML' });
+    logEvent.commandUsed(ctx.from.id.toString(), 'channelinfo');
+  });
+  
+  // Statistics command
+  bot.command('stats', async (ctx) => {
+    try {
+      const userId = ctx.from.id.toString();
+      
+      // Get current stats
+      const now = new Date();
+      const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+      
+      // Count active posts
+      const [travelPlans, favorRequests] = await Promise.all([
+        collections.travelPlans
+          .where('status', '==', 'active')
+          .get(),
+        collections.favorRequests
+          .where('status', '==', 'active')
+          .get()
+      ]);
+      
+      // Count this month's posts
+      const [monthlyTravels, monthlyFavors] = await Promise.all([
+        collections.travelPlans
+          .where('createdAt', '>=', startOfMonth)
+          .get(),
+        collections.favorRequests
+          .where('createdAt', '>=', startOfMonth)
+          .get()
+      ]);
+      
+      // Count completed posts
+      const [completedTravels, completedFavors] = await Promise.all([
+        collections.travelPlans
+          .where('status', '==', 'completed')
+          .get(),
+        collections.favorRequests
+          .where('status', '==', 'completed')
+          .get()
+      ]);
+      
+      // Get total users count
+      const usersSnapshot = await collections.users.get();
+      
+      const statsMessage = `📊 <b>Luu Kyone Statistics</b>\n\n` +
+        `<b>👥 Community:</b>\n` +
+        `• Total Members: ${usersSnapshot.size}\n` +
+        `• Channel: @LuuKyone_Community\n\n` +
+        `<b>📋 Active Posts:</b>\n` +
+        `• Travel Plans: ${travelPlans.size}\n` +
+        `• Favor Requests: ${favorRequests.size}\n` +
+        `• Total Active: ${travelPlans.size + favorRequests.size}\n\n` +
+        `<b>📅 This Month:</b>\n` +
+        `• New Travel Plans: ${monthlyTravels.size}\n` +
+        `• New Favor Requests: ${monthlyFavors.size}\n` +
+        `• Total Posted: ${monthlyTravels.size + monthlyFavors.size}\n\n` +
+        `<b>✅ All Time Success:</b>\n` +
+        `• Completed Travels: ${completedTravels.size}\n` +
+        `• Completed Favors: ${completedFavors.size}\n` +
+        `• Total Helped: ${completedTravels.size + completedFavors.size}\n\n` +
+        `<b>🌟 Impact:</b>\n` +
+        `• ${(completedTravels.size + completedFavors.size) * 2} lives touched\n` +
+        `• 3 countries connected\n` +
+        `• ∞ kindness spread\n\n` +
+        `Join the movement: @luukyonebot`;
+      
+      await ctx.reply(statsMessage, { parse_mode: 'HTML' });
+      
+      logEvent.commandUsed(userId, 'stats');
+    } catch (error) {
+      logger.error('Stats command error', { error: error.message });
+      ctx.reply('❌ Error fetching statistics. Please try again later.');
+    }
+  });
+
   // Test channel features (admin only)
   bot.command('test_channel', async (ctx) => {
     const userId = ctx.from.id.toString();

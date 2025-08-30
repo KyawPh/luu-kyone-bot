@@ -137,6 +137,8 @@ const launch = async () => {
       { command: 'travel', description: '✈️ Share your travel plan' },
       { command: 'favor', description: '💚 Request a kind favor' },
       { command: 'myposts', description: '📋 Manage your active posts' },
+      { command: 'stats', description: '📊 View community statistics' },
+      { command: 'channelinfo', description: '📢 How channel & bot work together' },
       { command: 'help', description: '❓ How to spread kindness' }
     ]);
     
