@@ -55,7 +55,7 @@ async function handleMyPosts(ctx) {
     // If no active posts
     if (posts.length === 0) {
       return ctx.reply(
-        messages.commands.myposts.noActivePosts,
+        messages.myposts.empty,
         { parse_mode: 'HTML' }
       );
     }
@@ -105,8 +105,8 @@ async function handleMyPosts(ctx) {
     
     // Send message with post list
     await ctx.reply(
-      messages.commands.myposts.title + '\n\n' +
-      messages.commands.myposts.selectPost,
+      messages.myposts.title + '\n\n' +
+      messages.myposts.selectPost,
       {
         parse_mode: 'HTML',
         reply_markup: {
@@ -127,7 +127,7 @@ async function handleMyPosts(ctx) {
       error: error.message,
       userId: ctx.from?.id
     });
-    await ctx.reply(messages.commands.myposts.error, { parse_mode: 'HTML' });
+    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
   }
 }
 
@@ -142,23 +142,23 @@ async function handleManagePost(ctx, type, postId) {
     const postDoc = await collection.doc(postId).get();
     
     if (!postDoc.exists) {
-      return ctx.reply('❌ Post not found.');
+      return ctx.reply(messages.errors.postNotFound);
     }
     
     const post = postDoc.data();
     
     // Verify ownership
     if (post.userId !== userId) {
-      return ctx.reply('❌ You can only manage your own posts.');
+      return ctx.reply(messages.common.ownPostsOnly);
     }
     
     // Build post details
     const route = formatRoute(post.fromCity, post.toCity);
-    let details = formatMessage(messages.commands.myposts.managePost, { postId }) + '\n\n';
-    details += formatMessage(messages.commands.myposts.route, { route }) + '\n';
+    let details = messages.myposts.managePost.title + '\n\n';
+    details += formatMessage(messages.myposts.managePost.route, { route }) + '\n';
     
     if (type === 'travel' && post.departureDate) {
-      details += formatMessage(messages.commands.myposts.date, { 
+      details += formatMessage(messages.myposts.managePost.date, { 
         date: formatDate(post.departureDate.toDate ? post.departureDate.toDate() : post.departureDate)
       }) + '\n';
     } else if (type === 'favor' && post.urgency) {
@@ -175,21 +175,21 @@ async function handleManagePost(ctx, type, postId) {
       }
     }
     
-    details += formatMessage(messages.commands.myposts.status, { status: 'Active ✅' }) + '\n\n';
-    details += messages.commands.myposts.whatToDo;
+    details += formatMessage(messages.myposts.managePost.status, { status: 'Active ✅' }) + '\n\n';
+    details += messages.myposts.managePost.selectAction;
     
     // Management options
     const keyboard = [
       [Markup.button.callback(
-        messages.commands.myposts.markComplete,
+        messages.myposts.markComplete,
         `complete_post_${type}_${postId}`
       )],
       [Markup.button.callback(
-        messages.commands.myposts.cancel,
+        messages.myposts.cancelPost,
         `cancel_post_${type}_${postId}`
       )],
       [Markup.button.callback(
-        messages.commands.myposts.back,
+        messages.myposts.backToList,
         'back_to_posts'
       )]
     ];
@@ -208,7 +208,7 @@ async function handleManagePost(ctx, type, postId) {
       type,
       userId: ctx.from?.id
     });
-    await ctx.reply(messages.commands.myposts.error, { parse_mode: 'HTML' });
+    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
   }
 }
 
@@ -227,7 +227,7 @@ async function handleCompletePost(ctx, type, postId) {
     ];
     
     await ctx.editMessageText(
-      messages.commands.myposts.confirmComplete,
+      messages.myposts.confirmComplete.title + '\n\n' + messages.myposts.confirmComplete.message,
       {
         parse_mode: 'HTML',
         reply_markup: {
@@ -259,7 +259,7 @@ async function handleCancelPost(ctx, type, postId) {
     ];
     
     await ctx.editMessageText(
-      messages.commands.myposts.confirmCancel,
+      messages.myposts.confirmCancel.title + '\n\n' + messages.myposts.confirmCancel.message,
       {
         parse_mode: 'HTML',
         reply_markup: {
@@ -288,14 +288,14 @@ async function confirmCompletePost(ctx, type, postId) {
     const postDoc = await collection.doc(postId).get();
     
     if (!postDoc.exists) {
-      return ctx.reply('❌ Post not found.');
+      return ctx.reply(messages.errors.postNotFound);
     }
     
     const post = postDoc.data();
     
     // Verify ownership
     if (post.userId !== userId) {
-      return ctx.reply('❌ You can only manage your own posts.');
+      return ctx.reply(messages.common.ownPostsOnly);
     }
     
     // Update status to completed
@@ -373,7 +373,7 @@ async function confirmCompletePost(ctx, type, postId) {
     
     // Update user message
     await ctx.editMessageText(
-      messages.commands.myposts.postCompleted,
+      messages.myposts.completed,
       { parse_mode: 'HTML' }
     );
     
@@ -396,7 +396,7 @@ async function confirmCompletePost(ctx, type, postId) {
       postId,
       type
     });
-    await ctx.reply(messages.commands.myposts.error, { parse_mode: 'HTML' });
+    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
   }
 }
 
@@ -411,14 +411,14 @@ async function confirmCancelPost(ctx, type, postId) {
     const postDoc = await collection.doc(postId).get();
     
     if (!postDoc.exists) {
-      return ctx.reply('❌ Post not found.');
+      return ctx.reply(messages.errors.postNotFound);
     }
     
     const post = postDoc.data();
     
     // Verify ownership
     if (post.userId !== userId) {
-      return ctx.reply('❌ You can only manage your own posts.');
+      return ctx.reply(messages.common.ownPostsOnly);
     }
     
     // Update status to cancelled
@@ -491,7 +491,7 @@ async function confirmCancelPost(ctx, type, postId) {
     
     // Update user message
     await ctx.editMessageText(
-      messages.commands.myposts.postCancelled,
+      messages.myposts.cancelled,
       { parse_mode: 'HTML' }
     );
     
@@ -514,7 +514,7 @@ async function confirmCancelPost(ctx, type, postId) {
       postId,
       type
     });
-    await ctx.reply(messages.commands.myposts.error, { parse_mode: 'HTML' });
+    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
   }
 }
 

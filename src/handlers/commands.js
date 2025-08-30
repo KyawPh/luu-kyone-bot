@@ -3,6 +3,7 @@ const { mainMenu } = require('../utils/keyboards');
 const { canCreatePost } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
+const { messages, formatMessage } = require('../config/messages');
 
 const setupCommands = (bot) => {
   // Start command
@@ -28,19 +29,18 @@ const setupCommands = (bot) => {
       if (!isMember && canCheckMembership) {
         const joinKeyboard = {
           inline_keyboard: [
-            [{ text: '📢 Join Community Channel', url: 'https://t.me/LuuKyone_Community' }],
-            [{ text: '✅ I\'ve Joined', callback_data: 'check_membership' }]
+            [{ text: '📢 Community Channel သို့ဝင်ရောက်ရန်', url: 'https://t.me/LuuKyone_Community' }],
+            [{ text: '✅ ဝင်ရောက်ပြီးပါပြီ', callback_data: 'check_membership' }]
           ]
         };
         
         return ctx.reply(
           `👋 Welcome ${userName}!\n\n` +
-          `To use <b>Luu Kyone Bot</b>, please join our community channel first.\n\n` +
-          `All travel plans and favor requests are shared there, so you can:\n` +
-          `• See all active posts\n` +
-          `• Connect with other members\n` +
-          `• Build trust in the community\n\n` +
-          `Please join the channel and click "I've Joined" below:`,
+          messages.welcome.notMember.description + '\n\n' +
+          messages.welcome.notMember.steps.title + '\n' +
+          messages.welcome.notMember.steps.step1 + '\n' +
+          messages.welcome.notMember.steps.step2 + '\n' +
+          messages.welcome.notMember.steps.step3,
           {
             parse_mode: 'HTML',
             reply_markup: joinKeyboard
@@ -118,7 +118,7 @@ const setupCommands = (bot) => {
       logEvent.userStarted(userId, userName);
     } catch (error) {
       logEvent.commandError('start', error, userId);
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
@@ -183,7 +183,7 @@ Need help? Join @LuuKyone_Community 🙏
       
       if (!isMember) {
         return ctx.reply(
-          '❌ Please join @LuuKyone_Community first!\n\n' +
+          messages.errors.notMember + '\n\n' +
           'Use /start to get the join link.'
         );
       }
@@ -191,7 +191,7 @@ Need help? Join @LuuKyone_Community 🙏
       // Check if user exists
       const userDoc = await collections.users.doc(userId).get();
       if (!userDoc.exists) {
-        return ctx.reply('Please start the bot first with /start');
+        return ctx.reply(messages.common.startBotFirst);
       }
       
       // Check post limit
@@ -209,7 +209,7 @@ Need help? Join @LuuKyone_Community 🙏
       ctx.scene.enter('travelScene');
     } catch (error) {
       logEvent.commandError('travel', error, userId);
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
@@ -229,7 +229,7 @@ Need help? Join @LuuKyone_Community 🙏
       
       if (!isMember) {
         return ctx.reply(
-          '❌ Please join @LuuKyone_Community first!\n\n' +
+          messages.errors.notMember + '\n\n' +
           'Use /start to get the join link.'
         );
       }
@@ -237,7 +237,7 @@ Need help? Join @LuuKyone_Community 🙏
       // Check if user exists
       const userDoc = await collections.users.doc(userId).get();
       if (!userDoc.exists) {
-        return ctx.reply('Please start the bot first with /start');
+        return ctx.reply(messages.common.startBotFirst);
       }
       
       // Check post limit
@@ -255,7 +255,7 @@ Need help? Join @LuuKyone_Community 🙏
       ctx.scene.enter('favorScene');
     } catch (error) {
       logEvent.commandError('favor', error, userId);
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
@@ -291,7 +291,7 @@ Need help? Join @LuuKyone_Community 🙏
       });
       
       if (activeTravelPlans.length === 0 && activeFavorRequests.length === 0) {
-        return ctx.reply('📭 No active posts at the moment. Check back later!');
+        return ctx.reply(messages.errors.noActivePost);
       }
       
       logEvent.postsViewed('unknown', 'browse', activeTravelPlans.length + activeFavorRequests.length);
@@ -334,7 +334,7 @@ Need help? Join @LuuKyone_Community 🙏
       await ctx.reply(message, { parse_mode: 'HTML' });
     } catch (error) {
       logEvent.commandError('browse', error, 'unknown');
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
@@ -348,7 +348,7 @@ Need help? Join @LuuKyone_Community 🙏
       ctx.scene.enter('settingsScene');
     } catch (error) {
       logger.error('Settings command error', { error: error.message, userId });
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
@@ -360,7 +360,7 @@ Need help? Join @LuuKyone_Community 🙏
       const userDoc = await collections.users.doc(userId).get();
       
       if (!userDoc.exists) {
-        return ctx.reply('Please start the bot first with /start');
+        return ctx.reply(messages.common.startBotFirst);
       }
       
       const user = userDoc.data();
@@ -386,7 +386,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await ctx.reply(profileMessage, { parse_mode: 'HTML' });
     } catch (error) {
       logEvent.commandError('profile', error, userId);
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
@@ -401,7 +401,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     if (ctx.scene) {
       ctx.scene.leave();
     }
-    await ctx.reply('❌ Operation cancelled.', mainMenu());
+    await ctx.reply(messages.common.operationCancelled, mainMenu());
   });
   
   // Test daily summaries (admin only)
@@ -410,7 +410,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
     
     if (!ADMIN_IDS.includes(userId)) {
-      return ctx.reply('❌ This command is for admins only.');
+      return ctx.reply(messages.admin.adminOnly);
     }
     
     const { testDailySummary } = require('../utils/scheduler');
@@ -419,9 +419,9 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       // Show options for morning or evening summary
       const keyboard = {
         inline_keyboard: [
-          [{ text: '☀️ Test Morning Summary', callback_data: 'test_morning_summary' }],
-          [{ text: '🌙 Test Evening Summary', callback_data: 'test_evening_summary' }],
-          [{ text: '❌ Cancel', callback_data: 'cancel' }]
+          [{ text: '☀️ မနက်ပိုင်း အကျဉ်းချုပ် စမ်းသပ်ရန်', callback_data: 'test_morning_summary' }],
+          [{ text: '🌙 ညနေပိုင်း အကျဉ်းချုပ် စမ်းသပ်ရန်', callback_data: 'test_evening_summary' }],
+          [{ text: '❌ မလုပ်တော့ပါ', callback_data: 'cancel' }]
         ]
       };
       
@@ -445,7 +445,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
     
     if (!ADMIN_IDS.includes(userId)) {
-      return ctx.reply('❌ This command is for admins only.');
+      return ctx.reply(messages.admin.adminOnly);
     }
     
     const { cleanupExpiredPosts } = require('../utils/scheduler');
@@ -466,7 +466,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
     
     if (!ADMIN_IDS.includes(userId)) {
-      return ctx.reply('❌ This command is for admins only.');
+      return ctx.reply(messages.admin.adminOnly);
     }
     
     const { userWantsDailySummary } = require('../utils/helpers');
@@ -505,19 +505,19 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
     
     if (!ADMIN_IDS.includes(userId)) {
-      return ctx.reply('❌ This command is for admins only.');
+      return ctx.reply(messages.admin.adminOnly);
     }
     
     try {
       // Show test options
       const testKeyboard = {
         inline_keyboard: [
-          [{ text: '📢 Test Welcome Message', callback_data: 'test_welcome' }],
-          [{ text: '💚 Test Daily Quote', callback_data: 'test_quote' }],
-          [{ text: '🎊 Test Milestone (100 kindness)', callback_data: 'test_milestone_100' }],
-          [{ text: '🎉 Test Milestone (500 members)', callback_data: 'test_milestone_500' }],
-          [{ text: '📊 Test Weekly Stats', callback_data: 'test_stats' }],
-          [{ text: '❌ Cancel', callback_data: 'cancel' }]
+          [{ text: '📢 ကြိုဆိုစကား စမ်းသပ်ရန်', callback_data: 'test_welcome' }],
+          [{ text: '💚 နေ့စဉ် စကားပုံ စမ်းသပ်ရန်', callback_data: 'test_quote' }],
+          [{ text: '🎊 မှတ်တိုင် စမ်းသပ်ရန် (ကူညီမှု ၁၀၀)', callback_data: 'test_milestone_100' }],
+          [{ text: '🎉 မှတ်တိုင် စမ်းသပ်ရန် (အဖွဲ့ဝင် ၅၀၀)', callback_data: 'test_milestone_500' }],
+          [{ text: '📊 အပတ်စဉ် စာရင်းဇယား စမ်းသပ်ရန်', callback_data: 'test_stats' }],
+          [{ text: '❌ မလုပ်တော့ပါ', callback_data: 'cancel' }]
         ]
       };
       

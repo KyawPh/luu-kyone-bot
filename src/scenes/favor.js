@@ -15,6 +15,7 @@ const {
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES, URGENCY_LEVELS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
+const { messages, formatMessage } = require('../config/messages');
 
 const favorScene = new Scenes.BaseScene('favorScene');
 
@@ -26,8 +27,8 @@ favorScene.enter(async (ctx) => {
   const userId = ctx.from.id.toString();
   logEvent.sceneEntered(userId, 'favorScene');
   
-  const message = '📦 <b>Request a Personal Favor</b>\n\n' +
-    'Step 1: Where does the item need to be picked up FROM?';
+  const message = messages.scenes.favor.title + '\n\n' +
+    messages.scenes.favor.steps.fromCity;
   
   // If we have a message to edit (from menu), edit it. Otherwise, send a new message
   if (ctx.scene.state.messageToEdit) {
@@ -63,9 +64,9 @@ favorScene.action(/^city_(.+)$/, async (ctx) => {
     const cityName = Object.values(CITIES).find(c => c.code === city)?.name;
     
     await ctx.editMessageText(
-      '📦 <b>Request a Personal Favor</b>\n\n' +
+      messages.scenes.favor.title + '\n\n' +
       `From: ${cityName}\n\n` +
-      'Step 2: Where does the item need to be delivered TO?',
+      messages.scenes.favor.steps.toCity,
       { 
         parse_mode: 'HTML',
         ...cityKeyboard(city) // Exclude the FROM city
@@ -78,9 +79,9 @@ favorScene.action(/^city_(.+)$/, async (ctx) => {
     const toCityName = Object.values(CITIES).find(c => c.code === city)?.name;
     
     await ctx.editMessageText(
-      '📦 <b>Request a Personal Favor</b>\n\n' +
+      messages.scenes.favor.title + '\n\n' +
       `Route: ${fromCityName} → ${toCityName}\n\n` +
-      'Step 3: What category does your item belong to?',
+      messages.scenes.favor.steps.categories,
       { 
         parse_mode: 'HTML',
         ...categoryKeyboard()
@@ -134,19 +135,19 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
   }
   
   await ctx.editMessageText(
-    '📦 <b>Request a Personal Favor</b>\n\n' +
+    messages.scenes.favor.title + '\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n\n` +
-    '<b>Selected Categories:</b>\n' +
+    messages.scenes.favor.categorySelection.title + '\n' +
     selectedCats + '\n\n' +
-    'Add more categories or confirm your selection:',
+    messages.scenes.favor.categorySelection.prompt,
     { 
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: [
           ...categoryRows,
           [
-            { text: '✅ Confirm Categories', callback_data: 'confirm_categories' },
-            { text: '❌ Cancel', callback_data: 'cancel' }
+            { text: messages.buttons.common.confirmCategories, callback_data: 'confirm_categories' },
+            { text: messages.buttons.common.cancel, callback_data: 'cancel' }
           ]
         ]
       }
@@ -159,7 +160,7 @@ favorScene.action('confirm_categories', async (ctx) => {
   await ctx.answerCbQuery();
   
   if (!ctx.scene.state.categories || ctx.scene.state.categories.length === 0) {
-    return ctx.reply('❌ Please select at least one category.');
+    return ctx.reply(messages.validation.selectCategories);
   }
   
   const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
@@ -171,10 +172,10 @@ favorScene.action('confirm_categories', async (ctx) => {
     .join(', ');
   
   await ctx.editMessageText(
-    '📦 <b>Request a Personal Favor</b>\n\n' +
+    messages.scenes.favor.title + '\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n` +
     `Categories: ${selectedCats}\n\n` +
-    'Step 4: How urgent is your request?',
+    messages.scenes.favor.steps.urgency,
     { 
       parse_mode: 'HTML',
       ...urgencyKeyboard()
@@ -200,11 +201,11 @@ favorScene.action(/^urgency_(.+)$/, async (ctx) => {
   
   // Now ask for weight instead of description
   await ctx.editMessageText(
-    '📦 <b>Request a Personal Favor</b>\n\n' +
+    messages.scenes.favor.title + '\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n` +
     `Categories: ${selectedCats}\n` +
     `Urgency: ${urgency.emoji} ${urgency.label}\n\n` +
-    'Step 5: How much does the item weigh?',
+    messages.scenes.favor.steps.weight,
     { 
       parse_mode: 'HTML',
       ...weightKeyboard()
@@ -227,8 +228,8 @@ favorScene.action(/^weight_(\w+)$/, async (ctx) => {
     case 'custom':
       ctx.scene.state.waitingForWeight = true;
       return ctx.editMessageText(
-        '📦 <b>Request a Personal Favor</b>\n\n' +
-        'Enter the weight in kg (e.g., "20" or "20 kg"):',
+        messages.scenes.favor.title + '\n\n' +
+        messages.scenes.favor.steps.weightCustom,
         { parse_mode: 'HTML' }
       );
   }
@@ -245,7 +246,7 @@ favorScene.on('text', async (ctx) => {
     const weightMatch = text.match(/^(\d+)\s*(kg)?$/i);
     
     if (!weightMatch) {
-      return ctx.reply('❌ Please enter weight as a number in kg (e.g., "20" or "20 kg")');
+      return ctx.reply(messages.validation.enterWeightNumber);
     }
     
     const weightValue = weightMatch[1];
@@ -333,25 +334,22 @@ async function postFavorRequest(ctx) {
         postId 
       });
       await ctx.reply(
-        '⚠️ <b>Note:</b> Your favor request was saved but couldn\'t be posted to the channel.\n\n' +
-        'Please ensure the bot is added as admin to @LuuKyone_Community channel.',
+        messages.errors.channelPostFailed,
         { parse_mode: 'HTML' }
       );
     }
     
     // Success message
     await ctx.editMessageText(
-      '✅ <b>Favor Request Posted Successfully!</b>\n\n' +
-      'Your request has been shared with the community.\n' +
-      'Travelers on your route will be notified.\n\n' +
-      `📌 <b>Reference:</b> ${postId}\n` +
-      `<i>(Share this ID if someone asks about your request)</i>`,
+      messages.scenes.favor.confirmation.title + '\n\n' +
+      messages.scenes.favor.confirmation.body + '\n\n' +
+      formatMessage(messages.scenes.favor.confirmation.reference, { postId }),
       { parse_mode: 'HTML' }
     );
     
     // Show main menu
     setTimeout(() => {
-      ctx.reply('What would you like to do next?', mainMenu());
+      ctx.reply(messages.scenes.favor.nextPrompt, mainMenu());
     }, 1000);
     
     // Leave scene
@@ -365,7 +363,7 @@ async function postFavorRequest(ctx) {
       state: ctx.scene.state 
     });
     logEvent.firebaseError('create_favor_request', error);
-    ctx.reply('❌ An error occurred while posting. Please try again.');
+    ctx.reply(messages.scenes.favor.errorPosting);
     logEvent.sceneLeft(userId, 'favorScene', 'error');
     ctx.scene.leave();
   }
@@ -374,11 +372,11 @@ async function postFavorRequest(ctx) {
 // Handle cancel
 favorScene.action(['cancel', 'cancel_favor'], async (ctx) => {
   await ctx.answerCbQuery();
-  await ctx.editMessageText('❌ Favor request cancelled.');
+  await ctx.editMessageText(messages.scenes.favor.cancelled);
   const userId = ctx.from.id.toString();
   logEvent.sceneLeft(userId, 'favorScene', 'cancelled');
   ctx.scene.leave();
-  ctx.reply('What would you like to do?', mainMenu());
+  ctx.reply(messages.scenes.favor.whatToDo, mainMenu());
 });
 
 module.exports = favorScene;

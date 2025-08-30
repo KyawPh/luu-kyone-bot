@@ -19,9 +19,9 @@ settingsScene.enter(async (ctx) => {
     // Simplified settings - only daily summary preference
     const dailySummaryEnabled = user.settings?.dailySummary !== false; // Default to true
     
-    const message = '⚙️ <b>Settings</b>\n\n' +
-      'Manage your preferences:\n\n' +
-      '💡 <i>Connection notifications are always enabled to ensure you never miss someone who wants to help!</i>';
+    const message = messages.settings.title + '\n\n' +
+      messages.settings.preferences + '\n\n' +
+      messages.settings.tip;
     
     const keyboard = Markup.inlineKeyboard([
       [
@@ -55,7 +55,7 @@ settingsScene.enter(async (ctx) => {
     }
   } catch (error) {
     logger.error('Error entering settings scene', { error: error.message, userId });
-    await ctx.reply('❌ Error loading settings. Please try again.');
+    await ctx.reply(messages.common.genericError);
     ctx.scene.leave();
   }
 });
@@ -70,9 +70,9 @@ async function updateSettingsDisplay(ctx) {
     // Simplified settings - only daily summary preference
     const dailySummaryEnabled = user.settings?.dailySummary !== false; // Default to true
     
-    const message = '⚙️ <b>Settings</b>\n\n' +
-      'Manage your preferences:\n\n' +
-      '💡 <i>Connection notifications are always enabled to ensure you never miss someone who wants to help!</i>';
+    const message = messages.settings.title + '\n\n' +
+      messages.settings.preferences + '\n\n' +
+      messages.settings.tip;
     
     const keyboard = Markup.inlineKeyboard([
       [
@@ -122,13 +122,13 @@ settingsScene.action('toggle_daily_summary', async (ctx) => {
     
     // Show confirmation message
     const confirmMsg = newValue 
-      ? '✅ You will now receive daily summaries at 9am and 6pm'
-      : '📵 Daily summaries disabled';
+      ? messages.settings.confirmOn
+      : messages.settings.confirmOff;
     await ctx.answerCbQuery(confirmMsg, { show_alert: true });
     
   } catch (error) {
     logger.error('Error toggling daily summary', { error: error.message, userId });
-    await ctx.answerCbQuery('❌ Error updating setting');
+    await ctx.answerCbQuery(messages.common.genericError);
   }
 });
 
@@ -175,7 +175,7 @@ settingsScene.action('back_to_menu', async (ctx) => {
   ctx.scene.leave();
   
   const { mainMenu } = require('../utils/keyboards');
-  await ctx.editMessageText('What would you like to do?', mainMenu());
+  await ctx.editMessageText(messages.common.whatToDo, mainMenu());
 });
 
 // Remove the old notification and connection alert handlers since they're no longer needed

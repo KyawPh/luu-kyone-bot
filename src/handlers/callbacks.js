@@ -3,6 +3,7 @@ const { mainMenu, contactButton } = require('../utils/keyboards');
 const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
+const { messages, formatMessage } = require('../config/messages');
 
 const setupCallbacks = (bot) => {
   // Check membership callback
@@ -26,7 +27,7 @@ const setupCallbacks = (bot) => {
       if (!isMember) {
         // Still not a member
         return ctx.reply(
-          '❌ You haven\'t joined the channel yet.\n\n' +
+          messages.errors.notMember + '\n\n' +
           'Please join @LuuKyone_Community first, then click "I\'ve Joined" again.'
         );
       }
@@ -51,15 +52,14 @@ const setupCallbacks = (bot) => {
         
         // Send welcome message
         await ctx.editMessageText(
-          `🎉 <b>Welcome to our Kindness Community!</b>\n\n` +
-          `${userName}, you're now part of something special! 💚\n\n` +
-          `Every day, our members share acts of kindness across borders:\n\n` +
-          `✈️ <b>Traveling soon?</b>\n` +
-          `Turn your empty luggage space into someone's happiness\n\n` +
-          `📦 <b>Need a favor?</b>\n` +
-          `Our kind travelers are ready to help!\n\n` +
-          `<i>"A single act of kindness can change someone's entire day"</i>\n\n` +
-          `Let's spread kindness together! 🤝`,
+          messages.welcome.newUser.title + '\n\n' +
+          formatMessage(messages.welcome.newUser.greeting, { userName }) + '\n\n' +
+          messages.welcome.newUser.intro + '\n\n' +
+          messages.welcome.newUser.benefits.title + '\n' +
+          messages.welcome.newUser.benefits.travel + '\n' +
+          messages.welcome.newUser.benefits.favor + '\n' +
+          messages.welcome.newUser.benefits.connect + '\n\n' +
+          messages.welcome.newUser.start,
           { parse_mode: 'HTML' }
         );
       } else {
@@ -70,23 +70,22 @@ const setupCallbacks = (bot) => {
         });
         
         await ctx.editMessageText(
-          `✅ <b>Welcome back to the kindness network!</b>\n\n` +
-          `${userName}, great to see you again! 🤗\n\n` +
-          `Our community is growing stronger every day.\n` +
-          `Ready to share or receive kindness?\n\n` +
-          `💚 <i>"Every act of kindness creates a ripple"</i>`,
+          messages.welcome.returningUser.title + '\n\n' +
+          formatMessage(messages.welcome.returningUser.greeting, { userName }) + '\n\n' +
+          messages.welcome.returningUser.prompt + '\n\n' +
+          messages.welcome.returningUser.motto,
           { parse_mode: 'HTML' }
         );
       }
       
       // Show main menu after a short delay
       setTimeout(() => {
-        ctx.reply('How can we spread kindness today?', mainMenu());
+        ctx.reply(messages.common.howSpreadKindness, mainMenu());
       }, 500);
       
     } catch (error) {
       logger.error('Check membership error', { error: error.message });
-      ctx.reply('❌ An error occurred. Please try /start again.');
+      ctx.reply(messages.common.genericError + ' Please try /start again.');
     }
   });
   
@@ -140,7 +139,7 @@ const setupCallbacks = (bot) => {
       });
       
       if (activeTravelPlans.length === 0 && activeFavorRequests.length === 0) {
-        return ctx.editMessageText('📭 No active posts at the moment. Check back later!');
+        return ctx.editMessageText(messages.errors.noActivePost);
       }
       
       let message = '📋 <b>Recent Active Posts</b>\n\n';
@@ -173,11 +172,11 @@ const setupCallbacks = (bot) => {
       
       // Show main menu again
       setTimeout(() => {
-        ctx.reply('What would you like to do?', mainMenu());
+        ctx.reply(messages.common.whatToDo, mainMenu());
       }, 500);
     } catch (error) {
       logger.error('Browse callback error', { error: error.message });
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
@@ -189,79 +188,70 @@ const setupCallbacks = (bot) => {
       const userDoc = await collections.users.doc(userId).get();
       
       if (!userDoc.exists) {
-        return ctx.reply('Please start the bot first with /start');
+        return ctx.reply(messages.common.startBotFirst);
       }
       
       const user = userDoc.data();
       const postCount = await getMonthlyPostCount(userId, collections);
       
-      const profileMessage = `
-👤 <b>Your Profile</b>
-
-Name: ${user.userName}
-Username: ${user.username ? `@${user.username}` : 'Not set'}
-Member Type: ${user.isPremium ? '💎 Premium' : '🆓 Free'}
-
-📊 <b>Statistics:</b>
-Posts this month: ${postCount}/${user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth}
-Completed favors: ${user.completedFavors || 0}
-${user.rating > 0 ? `Rating: ${'⭐'.repeat(Math.round(user.rating))} (${user.rating}/5)` : 'No ratings yet'}
-
-Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString()}
-      `;
+      const profileMessage = `${messages.profile.title}\n\n` +
+        `${formatMessage(messages.profile.name, { userName: user.userName })}\n` +
+        `${formatMessage(messages.profile.username, { username: user.username ? `@${user.username}` : 'Not set' })}\n` +
+        `${formatMessage(messages.profile.memberType, { type: user.isPremium ? '💎 Premium' : '🆓 Free' })}\n\n` +
+        `${messages.profile.statistics.title}\n` +
+        `${formatMessage(messages.profile.statistics.posts, { current: postCount, limit: user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth })}\n` +
+        `${formatMessage(messages.profile.statistics.completed, { count: user.completedFavors || 0 })}\n` +
+        `${user.rating > 0 ? formatMessage(messages.profile.statistics.rating, { rating: user.rating }) : messages.profile.statistics.noRating}\n\n` +
+        `${formatMessage(messages.profile.memberSince, { date: new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString() })}`;
       
       await ctx.editMessageText(profileMessage, { parse_mode: 'HTML' });
       
       // Show main menu again
       setTimeout(() => {
-        ctx.reply('What would you like to do?', mainMenu());
+        ctx.reply(messages.common.whatToDo, mainMenu());
       }, 500);
     } catch (error) {
       logger.error('Profile callback error', { error: error.message });
-      ctx.reply('❌ An error occurred. Please try again.');
+      ctx.reply(messages.common.genericError);
     }
   });
   
   bot.action('help', async (ctx) => {
     await ctx.answerCbQuery();
     
-    const helpMessage = `
-📚 <b>How to Use Luu Kyone Bot</b>
-
-<b>For Travelers:</b>
-1. Use /travel to share your travel plan
-2. Specify your route and date
-3. Select categories you can help with
-4. Get connected with people needing favors
-
-<b>For Requesters:</b>
-1. Use /favor to request help
-2. Specify pickup and delivery locations
-3. Add description and photos
-4. Wait for travelers to contact you
-
-<b>Commands:</b>
-/start - Start the bot
-/travel - Share travel plan
-/favor - Request a favor
-/browse - Browse active requests
-/profile - View your profile
-/help - Show this help message
-
-<b>Limits (Free Tier):</b>
-• ${LIMITS.free.postsPerMonth} posts per month
-• One-time introduction only
-• Community trust-based
-
-<b>Safety Tips:</b>
-✅ Meet in public places only
-✅ Verify items before accepting
-✅ Take photos of handover
-✅ Never carry unknown packages
-✅ Trust your instincts
-
-<b>Support:</b> @luukyone_support
-    `;
+    const helpMessage = `${messages.help.title}\n\n` +
+      `${messages.help.intro.title}\n` +
+      `${messages.help.intro.description}\n\n` +
+      `${messages.help.travelers.title}\n` +
+      `${messages.help.travelers.step1}\n` +
+      `${messages.help.travelers.step2}\n` +
+      `${messages.help.travelers.step3}\n` +
+      `${messages.help.travelers.step4}\n\n` +
+      `${messages.help.requesters.title}\n` +
+      `${messages.help.requesters.step1}\n` +
+      `${messages.help.requesters.step2}\n` +
+      `${messages.help.requesters.step3}\n` +
+      `${messages.help.requesters.step4}\n\n` +
+      `${messages.help.commands.title}\n` +
+      `${messages.help.commands.start}\n` +
+      `${messages.help.commands.travel}\n` +
+      `${messages.help.commands.favor}\n` +
+      `${messages.help.commands.browse}\n` +
+      `${messages.help.commands.profile}\n` +
+      `${messages.help.commands.settings}\n` +
+      `${messages.help.commands.help}\n` +
+      `${messages.help.commands.cancel}\n\n` +
+      `${messages.help.limits.title}\n` +
+      `${formatMessage(messages.help.limits.posts, { limit: LIMITS.free.postsPerMonth })}\n` +
+      `${messages.help.limits.introduction}\n` +
+      `${messages.help.limits.trust}\n\n` +
+      `${messages.help.safety.title}\n` +
+      `${messages.help.safety.meet}\n` +
+      `${messages.help.safety.verify}\n` +
+      `${messages.help.safety.photos}\n` +
+      `${messages.help.safety.prohibited}\n` +
+      `${messages.help.safety.instincts}\n\n` +
+      `${messages.help.support}`;
     
     await ctx.editMessageText(helpMessage, { 
       parse_mode: 'HTML',
@@ -270,7 +260,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     
     // Show main menu again
     setTimeout(() => {
-      ctx.reply('What would you like to do?', mainMenu());
+      ctx.reply(messages.common.whatToDo, mainMenu());
     }, 500);
   });
   
@@ -292,14 +282,14 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     try {
       // Check if it's the same user
       if (requesterId === posterId) {
-        await ctx.answerCbQuery("❌ You can't contact yourself!", { show_alert: true });
+        await ctx.answerCbQuery(messages.errors.cannotContactSelf, { show_alert: true });
         return;
       }
       
       // Get requester info
       const requesterDoc = await collections.users.doc(requesterId).get();
       if (!requesterDoc.exists) {
-        await ctx.answerCbQuery('❌ Please start the bot first: @luukyonebot', { show_alert: true });
+        await ctx.answerCbQuery(messages.common.startBotFirstAlert, { show_alert: true });
         return;
       }
       
@@ -314,7 +304,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       
       if (!existingConnection.empty) {
         await ctx.answerCbQuery(
-          "❌ You've already been introduced for this post. Free tier allows one-time introduction only.",
+          messages.errors.alreadyContacted,
           { show_alert: true }
         );
         return;
@@ -343,18 +333,18 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       const postData = postDoc.data();
       
       // Send introduction message PRIVATELY to requester
-      const postTypeDisplay = postType === 'travel' ? 'Travel Plan' : 'Favor Request';
+      const postTypeDisplay = messages.postTypes[postType];
       await bot.telegram.sendMessage(
         requesterId,
-        `✅ <b>Contact Information Received!</b>\n\n` +
-        `You requested contact for this ${postTypeDisplay}:\n` +
-        `<b>Route:</b> ${formatRoute(postData.fromCity, postData.toCity)}\n` +
-        `<b>Date:</b> ${postType === 'travel' ? formatDate(postData.departureDate) : 'As arranged'}\n\n` +
-        `<b>Please contact:</b>\n` +
+        messages.contact.receivedInfo.title + '\n\n' +
+        formatMessage(messages.contact.receivedInfo.postType, { postType: postTypeDisplay }) + '\n' +
+        formatMessage(messages.contact.receivedInfo.route, { route: formatRoute(postData.fromCity, postData.toCity) }) + '\n' +
+        formatMessage(messages.contact.receivedInfo.date, { date: postType === 'travel' ? formatDate(postData.departureDate) : 'As arranged' }) + '\n\n' +
+        messages.contact.receivedInfo.contactPerson + '\n' +
         `👤 ${escapeHtml(poster.userName)}\n` +
         `${poster.username ? `💬 @${poster.username}` : `💬 <a href="tg://user?id=${posterId}">Click here to message</a>`}\n\n` +
-        `<i>💡 Tip: Start by introducing yourself and mentioning the post ID #${postId}</i>\n\n` +
-        `⚠️ <i>Note: This is a one-time introduction. Save this contact for future reference.</i>`,
+        formatMessage(messages.contact.receivedInfo.tip, { postId }) + '\n\n' +
+        messages.contact.receivedInfo.oneTime,
         { parse_mode: 'HTML' }
       );
       
@@ -363,15 +353,15 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
         const requesterTypeText = postType === 'travel' ? 'needs your help' : 'can help you';
         await bot.telegram.sendMessage(
           posterId,
-          `🔔 <b>New Match for Your Post!</b>\n\n` +
-          `Someone ${requesterTypeText} with:\n` +
-          `<b>Route:</b> ${formatRoute(postData.fromCity, postData.toCity)}\n` +
-          `<b>Post ID:</b> #${postId}\n\n` +
-          `<b>Interested person:</b>\n` +
+          messages.contact.newMatch.title + '\n\n' +
+          formatMessage(messages.contact.newMatch.someone, { action: requesterTypeText }) + '\n' +
+          formatMessage(messages.contact.newMatch.route, { route: formatRoute(postData.fromCity, postData.toCity) }) + '\n' +
+          formatMessage(messages.contact.newMatch.postId, { postId }) + '\n\n' +
+          messages.contact.newMatch.interested + '\n' +
           `👤 ${escapeHtml(requester.userName)}\n` +
           `${requester.username ? `💬 @${requester.username}` : `💬 <a href="tg://user?id=${requesterId}">View profile</a>`}\n\n` +
-          `They will contact you soon to discuss details.\n\n` +
-          `<i>💡 If they don't reach out, you can message them first!</i>`,
+          messages.contact.newMatch.willContact + '\n\n' +
+          messages.contact.newMatch.tip,
           { parse_mode: 'HTML' }
         );
       } catch (error) {
@@ -380,7 +370,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       
     } catch (error) {
       logger.error('Contact callback error', { error: error.message });
-      await ctx.answerCbQuery('❌ An error occurred. Please try again.', { show_alert: true });
+      await ctx.answerCbQuery(messages.common.genericError, { show_alert: true });
     }
   });
   
@@ -390,8 +380,8 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     if (ctx.scene) {
       ctx.scene.leave();
     }
-    await ctx.editMessageText('❌ Operation cancelled.');
-    await ctx.reply('What would you like to do?', mainMenu());
+    await ctx.editMessageText(messages.common.operationCancelled);
+    await ctx.reply(messages.common.whatToDo, mainMenu());
   });
   
   // Generic back callback
@@ -399,13 +389,13 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     await ctx.answerCbQuery();
     // This will be handled by specific scenes
     if (!ctx.scene || !ctx.scene.current) {
-      await ctx.reply('What would you like to do?', mainMenu());
+      await ctx.reply(messages.common.whatToDo, mainMenu());
     }
   });
   
   // Test channel callbacks
   bot.action('test_welcome', async (ctx) => {
-    await ctx.answerCbQuery('Sending test welcome message...');
+    await ctx.answerCbQuery(messages.test.sendingWelcome);
     
     try {
       const welcomeMessages = [
@@ -424,46 +414,46 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
         { parse_mode: 'HTML' }
       );
       
-      await ctx.editMessageText('✅ Test welcome message sent to channel!');
+      await ctx.editMessageText(messages.test.welcomeMessageSent);
     } catch (error) {
       logger.error('Test welcome error', { error: error.message });
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}\n\n⚠️ Make sure bot is admin in channel!`);
+      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }) + '\n\n' + messages.common.botAdminRequired);
     }
   });
   
   bot.action('test_quote', async (ctx) => {
-    await ctx.answerCbQuery('Sending daily quote...');
+    await ctx.answerCbQuery(messages.test.sendingQuote);
     
     try {
       await bot.telegram.sendDailyQuote();
-      await ctx.editMessageText('✅ Daily quote sent to channel!');
+      await ctx.editMessageText(messages.test.dailyQuoteSent);
     } catch (error) {
       logger.error('Test quote error', { error: error.message });
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
     }
   });
   
   bot.action('test_milestone_100', async (ctx) => {
-    await ctx.answerCbQuery('Sending milestone celebration...');
+    await ctx.answerCbQuery(messages.test.sendingMilestone);
     
     try {
       await bot.telegram.celebrateMilestone('kindness', 100);
-      await ctx.editMessageText('✅ Milestone celebration sent to channel!');
+      await ctx.editMessageText(messages.test.milestoneMessageSent);
     } catch (error) {
       logger.error('Test milestone error', { error: error.message });
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
     }
   });
   
   bot.action('test_milestone_500', async (ctx) => {
-    await ctx.answerCbQuery('Sending milestone celebration...');
+    await ctx.answerCbQuery(messages.test.sendingMilestone);
     
     try {
       await bot.telegram.celebrateMilestone('members', 500);
-      await ctx.editMessageText('✅ Member milestone sent to channel!');
+      await ctx.editMessageText(messages.test.milestoneMessageSent);
     } catch (error) {
       logger.error('Test milestone error', { error: error.message });
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
     }
   });
   
@@ -511,7 +501,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await ctx.editMessageText('✅ Weekly stats sent to channel!');
     } catch (error) {
       logger.error('Test stats error', { error: error.message });
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
     }
   });
   
@@ -575,7 +565,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await ctx.editMessageText('✅ Morning summary sent to channel!');
     } catch (error) {
       logger.error('Test morning summary error', { error: error.message });
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
     }
   });
   
@@ -588,7 +578,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await ctx.editMessageText('✅ Evening summary sent to channel!');
     } catch (error) {
       logger.error('Test evening summary error', { error: error.message });
-      await ctx.editMessageText(`❌ Failed to send: ${error.message}`);
+      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
     }
   });
 };

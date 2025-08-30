@@ -184,10 +184,7 @@ travelScene.on('text', async (ctx) => {
     const date = parseDate(text);
     
     if (!date) {
-      return ctx.reply(
-        '❌ Invalid date format or date is in the past.\n' +
-        'Please enter in format DD/MM/YYYY:'
-      );
+      return ctx.reply(messages.validation.invalidDate);
     }
     
     ctx.scene.state.departureDate = date;
@@ -200,12 +197,11 @@ travelScene.on('text', async (ctx) => {
 // Category selection
 async function promptCategories(ctx, useReply = false) {
   ctx.scene.state.categories = [];
-  const message = '✈️ <b>Share Your Travel Plan</b>\n\n' +
+  const message = messages.scenes.travel.title + '\n\n' +
     `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
     `Departure: ${formatDate(ctx.scene.state.departureDate)}\n` +
     `Available Space: ${ctx.scene.state.availableWeight}\n\n` +
-    'Step 5: What categories can you help with?\n' +
-    '<i>Select multiple categories, then confirm</i>';
+    messages.scenes.travel.steps.categories;
   
   const options = { 
     parse_mode: 'HTML',
@@ -255,18 +251,18 @@ travelScene.action(/^cat_(.+)$/, async (ctx) => {
   }
   
   await ctx.editMessageText(
-    '✈️ <b>Share Your Travel Plan</b>\n\n' +
-    '<b>Selected Categories:</b>\n' +
+    messages.scenes.travel.title + '\n\n' +
+    messages.scenes.travel.categorySelection.title + '\n' +
     selectedCats + '\n\n' +
-    'Add more categories or confirm to post:',
+    messages.scenes.travel.categorySelection.prompt,
     { 
       parse_mode: 'HTML',
       reply_markup: {
         inline_keyboard: [
           ...categoryRows,
           [
-            { text: '✅ Confirm', callback_data: 'confirm_post' },
-            { text: '❌ Cancel', callback_data: 'cancel' }
+            { text: messages.buttons.common.confirmPost, callback_data: 'confirm_post' },
+            { text: messages.buttons.common.cancel, callback_data: 'cancel' }
           ]
         ]
       }
@@ -279,7 +275,7 @@ travelScene.action('confirm_post', async (ctx) => {
   await ctx.answerCbQuery();
   
   if (ctx.scene.state.categories.length === 0) {
-    return ctx.reply('❌ Please select at least one category.');
+    return ctx.reply(messages.validation.selectCategories);
   }
   
   try {
@@ -349,25 +345,22 @@ travelScene.action('confirm_post', async (ctx) => {
         postId 
       });
       await ctx.reply(
-        '⚠️ <b>Note:</b> Your travel plan was saved but couldn\'t be posted to the channel.\n\n' +
-        'Please ensure the bot is added as admin to @LuuKyone_Community channel.',
+        messages.errors.channelPostFailed,
         { parse_mode: 'HTML' }
       );
     }
     
     // Success message
     await ctx.editMessageText(
-      '✅ <b>Travel Plan Posted Successfully!</b>\n\n' +
-      'Your travel plan has been shared with the community.\n' +
-      'You will be notified when someone needs your help.\n\n' +
-      `📌 <b>Reference:</b> ${postId}\n` +
-      `<i>(Share this ID if someone asks about your post)</i>`,
+      messages.scenes.travel.confirmation.title + '\n\n' +
+      messages.scenes.travel.confirmation.body + '\n\n' +
+      formatMessage(messages.scenes.travel.confirmation.reference, { postId }),
       { parse_mode: 'HTML' }
     );
     
     // Show main menu
     setTimeout(() => {
-      ctx.reply('What would you like to do next?', mainMenu());
+      ctx.reply(messages.scenes.travel.nextPrompt, mainMenu());
     }, 1000);
     
     // Leave scene
@@ -381,7 +374,7 @@ travelScene.action('confirm_post', async (ctx) => {
       state: ctx.scene.state 
     });
     logEvent.firebaseError('create_travel_plan', error);
-    ctx.reply('❌ An error occurred while posting. Please try again.');
+    ctx.reply(messages.scenes.travel.errorPosting);
     logEvent.sceneLeft(userId, 'travelScene', 'error');
     ctx.scene.leave();
   }
@@ -390,11 +383,11 @@ travelScene.action('confirm_post', async (ctx) => {
 // Handle cancel
 travelScene.action('cancel', async (ctx) => {
   await ctx.answerCbQuery();
-  await ctx.editMessageText('❌ Travel plan cancelled.');
+  await ctx.editMessageText(messages.scenes.travel.cancelled);
   const userId = ctx.from.id.toString();
   logEvent.sceneLeft(userId, 'travelScene', 'cancelled');
   ctx.scene.leave();
-  ctx.reply('What would you like to do?', mainMenu());
+  ctx.reply(messages.scenes.travel.whatToDo, mainMenu());
 });
 
 module.exports = travelScene;

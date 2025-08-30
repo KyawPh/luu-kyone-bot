@@ -1,8 +1,8 @@
 // Centralized message configuration for easy maintenance
-// All text content and button labels in one place
+// Messages in English, Buttons in Myanmar
 
 const messages = {
-  // Cities Configuration
+  // Cities Configuration  
   cities: {
     singapore: {
       name: 'Singapore',
@@ -18,7 +18,7 @@ const messages = {
     }
   },
 
-  // Categories Configuration
+  // Categories Configuration (Keep in Myanmar)
   categories: {
     medicine: { name: 'ဆေး၀ါး', emoji: '💊' },
     documents: { name: 'စာရွက်စာတမ်း', emoji: '📄' },
@@ -45,50 +45,51 @@ const messages = {
     kg5to10: '5-10 kg',
     more10: '> 10 kg'
   },
-  // Button Labels
+  
+  // Button Labels (KEEP IN MYANMAR)
   buttons: {
     mainMenu: {
-      travel: '✈️ ခရီးစဥ်',
-      favor: '📦 ပါဆယ်',
-      browse: '🔍 Browse',
-      profile: '👤 Profile',
-      help: '📚 Help',
-      settings: '⚙️ Settings'
+      travel: '✈️ ခရီးစဥ်မျှဝေရန်',
+      favor: '📦 ပါဆယ်တောင်းရန်',
+      browse: '🔍 ရှာဖွေရန်',
+      profile: '👤 ကိုယ်ရေးအချက်အလက်',
+      help: '📚 အကူအညီ',
+      settings: '⚙️ ဆက်တင်'
     },
     common: {
-      cancel: '❌ Cancel',
-      back: '⬅️ Back',
-      skip: '⏭️ Skip',
-      confirm: '✅ Confirm',
-      confirmCategories: '✅ Confirm Categories',
-      confirmPost: '✅ Confirm',
-      yes: '✅ Yes',
-      no: '❌ No',
-      contact: '💬 Contact'
+      cancel: '❌ မလုပ်တော့ပါ',
+      back: '⬅️ နောက်သို့',
+      skip: '⏭️ ကျော်သွားရန်',
+      confirm: '✅ အတည်ပြုမည်',
+      confirmCategories: '✅ အမျိုးအစားများ အတည်ပြုမည်',
+      confirmPost: '✅ အတည်ပြုမည်',
+      yes: '✅ ဟုတ်ကဲ့',
+      no: '❌ မဟုတ်ပါ',
+      contact: '💬 ဆက်သွယ်ရန်'
     },
     date: {
-      today: '📅 Today',
-      tomorrow: '📅 Tomorrow',
-      custom: '📅 Custom Date'
+      today: '📅 ဒီနေ့',
+      tomorrow: '📅 မနက်ဖြန်',
+      custom: '📅 ရက်စွဲ ရွေးရန်'
     },
     weight: {
-      less1: '< 1 kg',
-      kg1to3: '1-3 kg',
-      kg3to5: '3-5 kg',
-      kg5to10: '5-10 kg',
-      more10: '> 10 kg',
-      custom: '✏️ Custom'
+      less1: '< ၁ ကီလို',
+      kg1to3: '၁-၃ ကီလို',
+      kg3to5: '၃-၅ ကီလို',
+      kg5to10: '၅-၁၀ ကီလို',
+      more10: '> ၁၀ ကီလို',
+      custom: '✏️ ကိုယ်တိုင်ထည့်မည်'
     },
     membership: {
-      joinChannel: '📢 Join Community Channel',
-      checkJoined: '✅ I\'ve Joined'
+      joinChannel: '📢 Community Channel သို့ ဝင်ရန်',
+      checkJoined: '✅ ဝင်ပြီးပါပြီ'
     }
   },
 
-  // Scene Messages
+  // Scene Messages (ENGLISH)
   scenes: {
     travel: {
-      title: '✈️ Share Your Travel Plan',
+      title: '✈️ <b>Share Your Travel Plan</b>',
       steps: {
         fromCity: 'Step 1: Where are you traveling FROM?',
         toCity: 'Step 2: Where are you traveling TO?',
@@ -103,9 +104,9 @@ const messages = {
         prompt: 'Add more categories or confirm to post:'
       },
       confirmation: {
-        title: '✅ Travel Plan Posted Successfully!',
+        title: '✅ <b>Travel Plan Posted Successfully!</b>',
         body: 'Your travel plan has been shared with the community.\nYou will be notified when someone needs your help.',
-        reference: '📌 Reference: {postId}\n<i>(Share this ID if someone asks about your post)</i>'
+        reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your post)</i>'
       },
       cancelled: '❌ Travel plan cancelled.',
       nextPrompt: 'What would you like to do next?',
@@ -114,7 +115,7 @@ const messages = {
     },
     
     favor: {
-      title: '📦 Request a Personal Favor',
+      title: '📦 <b>Request a Personal Favor</b>',
       steps: {
         fromCity: 'Step 1: Where does the item need to be picked up FROM?',
         toCity: 'Step 2: Where does the item need to be delivered TO?',
@@ -128,9 +129,9 @@ const messages = {
         prompt: 'Add more categories or confirm your selection:'
       },
       confirmation: {
-        title: '✅ Favor Request Posted Successfully!',
+        title: '✅ <b>Favor Request Posted Successfully!</b>',
         body: 'Your request has been shared with the community.\nTravelers on your route will be notified.',
-        reference: '📌 Reference: {postId}\n<i>(Share this ID if someone asks about your request)</i>'
+        reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your request)</i>'
       },
       cancelled: '❌ Favor request cancelled.',
       photoProcessing: '📸 Processing photo...',
@@ -141,256 +142,310 @@ const messages = {
     }
   },
 
-  // Welcome Messages
+  // Welcome Messages (ENGLISH)
   welcome: {
     newUser: {
-      title: '💚 Welcome to Our Kindness Community!',
+      title: '💚 <b>Welcome to Our Kindness Community!</b>',
       greeting: 'Hi {userName}! You\'ve just joined something special.',
-      intro: 'Luu Kyone (လူကြုံ) connects kind hearts across cities. We\'re neighbors helping neighbors with personal favors - not a delivery service.',
-      howItWorks: {
-        title: 'How it works:',
-        travel: '✈️ Traveling? Your empty luggage space can bring joy',
-        favor: '🤝 Need a favor? Your neighbor might be traveling home'
+      intro: 'Luu Kyone (လူကြုံ) connects Myanmar travelers worldwide. We\'re neighbors helping neighbors with personal favors - not a delivery service.',
+      benefits: {
+        title: '<b>What you can do:</b>',
+        travel: '✈️ <b>Traveling?</b> - Turn empty luggage space into someone\'s happiness',
+        favor: '📦 <b>Need help?</b> - Kind travelers are ready to assist',
+        connect: '🤝 <b>Connect</b> - Arrange thank-you gifts directly'
       },
-      routes: 'Our routes: 🇸🇬 Singapore ↔ 🇹🇭 Bangkok ↔ 🇲🇲 Yangon',
-      quote: '"Small acts, when multiplied by millions of people,\ncan transform the world"',
-      ready: 'Ready to spread kindness? Let\'s start! 🙏'
+      start: '🚀 Ready to get started!',
+      joinChannel: '📢 First, you need to join @LuuKyone_Community'
     },
     
     returningUser: {
-      greeting: 'Welcome back, {userName}! 🤝',
-      quote: '"Every act of kindness creates a ripple"',
-      impact: {
-        title: 'Your impact so far:',
-        favorsMonth: '📊 Favors this month: {current}/{limit}',
-        actsCompleted: '💚 Acts of kindness: {count}',
-        firstAct: '🌱 Your first act of kindness awaits!',
-        makingDifference: '⭐ You\'re making a difference!'
-      },
-      motivation: 'Someone might need your help today. Let\'s see! 🙏'
+      title: '✅ <b>Welcome back to the kindness network!</b>',
+      greeting: '{userName}, great to see you again! 🤗',
+      prompt: 'Our community is growing stronger every day.\nReady to share or receive kindness?',
+      motto: '💚 <i>"Every act of kindness creates a ripple"</i>'
     },
     
     notMember: {
-      title: '👋 Welcome {userName}!',
-      requirement: 'To use Luu Kyone Bot, please join our community channel first.',
-      benefits: 'All travel plans and favor requests are shared there, so you can:\n• See all active posts\n• Connect with other members\n• Build trust in the community',
-      action: 'Please join the channel and click "I\'ve Joined" below:'
-    },
-    
-    membershipVerified: {
-      title: '✅ Welcome back to the kindness network!',
-      message: 'Great! You\'re part of our community.'
+      title: '📢 <b>Join Our Community First</b>',
+      description: 'To use Luu Kyone Bot, you need to join our community channel first.',
+      steps: {
+        title: '<b>How to join:</b>',
+        step1: '1️⃣ Go to @LuuKyone_Community',
+        step2: '2️⃣ Click "Join"',
+        step3: '3️⃣ Come back here and click "I\'ve Joined"'
+      },
+      button: 'Open channel and join!'
     }
   },
 
-  // Channel Messages
+  // Common Messages (ENGLISH)
+  common: {
+    genericError: '❌ An error occurred. Please try again.',
+    operationCancelled: '❌ Operation cancelled.',
+    whatToDo: 'What would you like to do?',
+    howSpreadKindness: 'How can we spread kindness today?',
+    startBotFirst: 'Please start the bot first with /start',
+    startBotFirstAlert: '❌ Please start the bot first: @luukyonebot',
+    ownPostsOnly: '❌ You can only manage your own posts.',
+    failedToSend: '❌ Failed to send: {error}',
+    botAdminRequired: '⚠️ Make sure bot is admin in channel!'
+  },
+
+  // Admin Messages (ENGLISH)
+  admin: {
+    adminOnly: '❌ This command is for admins only.',
+    runningCleanup: '🧹 Running cleanup job...',
+    cleanupCompleted: '✅ Cleanup completed! Check logs for details.',
+    cleanupFailed: '❌ Cleanup failed: {error}',
+    errorAccessingMenu: '❌ Error accessing test menu.'
+  },
+
+  // Test Command Messages (ENGLISH)
+  test: {
+    welcomeMessageSent: '✅ Test welcome message sent to channel!',
+    dailyQuoteSent: '✅ Daily quote sent to channel!',
+    summaryTitle: '📊 <b>Test Daily Summary</b>\n\nSelect which summary to test:',
+    milestoneMessageSent: '✅ Test milestone message sent to channel!',
+    gratitudePostSent: '✅ Test gratitude post sent to channel!',
+    safetyReminderSent: '✅ Test safety reminder sent to channel!',
+    routeHighlightSent: '✅ Test route highlight sent to channel!',
+    sendingWelcome: 'Sending test welcome message...',
+    sendingQuote: 'Sending daily quote...',
+    sendingMilestone: 'Sending milestone celebration...',
+    sendingGratitude: 'Sending gratitude post...',
+    sendingSafety: 'Sending safety reminder...',
+    sendingHighlight: 'Sending route highlight...'
+  },
+
+  // System Messages (ENGLISH)
+  system: {
+    channelMembershipRequired: '📢 First, you need to join @LuuKyone_Community',
+    checkMembership: 'Checking channel membership...',
+    processingPhoto: '📸 Processing photo...',
+    photoError: '❌ Failed to process photo. You can skip or try again.',
+    savingPost: 'Saving your post...',
+    postingToChannel: 'Posting to community channel...'
+  },
+
+  // Validation Messages (ENGLISH)
+  validation: {
+    selectCategories: '❌ Please select at least one category.',
+    enterWeightNumber: '❌ Please enter weight as a number in kg (e.g., "20" or "20 kg")',
+    invalidDate: '❌ Invalid date format or date is in the past.\nPlease enter in format DD/MM/YYYY:',
+    invalidWeight: '❌ Invalid weight format. Please enter as a number (e.g., "20" or "20 kg")'
+  },
+
+  // Error Messages (ENGLISH)
+  errors: {
+    generic: '❌ An error occurred. Please try again.',
+    notMember: '❌ Please join the community channel first.',
+    limitReached: '❌ You\'ve reached this month\'s post limit ({limit} posts).',
+    invalidDate: '❌ Invalid date format or date is in the past.\nPlease enter in format DD/MM/YYYY:',
+    invalidWeight: '❌ Invalid weight format. Please enter as a number (e.g., "20" or "20 kg")',
+    noActivePost: '📭 No active posts at the moment. Check back later!',
+    categoryRequired: '❌ Please select at least one category.',
+    postNotFound: '❌ Post not found.',
+    cannotContactSelf: '❌ You cannot contact yourself!',
+    alreadyContacted: '❌ You\'ve already been introduced for this post. Free tier allows one-time introduction only.',
+    channelPostFailed: '⚠️ <b>Note:</b> Your post was saved but couldn\'t be posted to the channel.\n\nPlease ensure the bot is added as admin to @LuuKyone_Community channel.',
+    chatNotFound: '❌ Chat not found. User might have blocked or deleted the bot.'
+  },
+
+  // Help Messages (ENGLISH)
+  help: {
+    title: '📚 <b>How to Use Luu Kyone Bot</b>',
+    intro: {
+      title: '<b>What is Luu Kyone?</b>',
+      description: 'Connects kind travelers with people needing personal favors.\nBuilt on trust and community kindness.\nNot a commercial delivery service.'
+    },
+    travelers: {
+      title: '<b>For Travelers:</b>',
+      step1: '1. Use /travel to share your travel plan',
+      step2: '2. Specify your route and date',
+      step3: '3. Select categories you can help with',
+      step4: '4. Get connected with people needing favors'
+    },
+    requesters: {
+      title: '<b>For Requesters:</b>',
+      step1: '1. Use /favor to request help',
+      step2: '2. Specify pickup and delivery locations',
+      step3: '3. Select category and urgency',
+      step4: '4. Wait for travelers to contact you'
+    },
+    commands: {
+      title: '<b>Commands:</b>',
+      start: '/start - Start the bot',
+      travel: '/travel - Share travel plan',
+      favor: '/favor - Request a favor',
+      browse: '/browse - View active requests',
+      myposts: '/myposts - Manage your posts',
+      profile: '/profile - View your profile',
+      settings: '/settings - Notification preferences',
+      help: '/help - Show this help message',
+      cancel: '/cancel - Cancel current action'
+    },
+    limits: {
+      title: '<b>Limits (Free Tier):</b>',
+      posts: '• 10 posts per month',
+      introduction: '• One-time introduction only',
+      trust: '• Community trust-based'
+    },
+    safety: {
+      title: '<b>Safety Tips:</b>',
+      meet: '✅ Meet in public places only',
+      verify: '✅ Verify items before accepting',
+      photos: '✅ Take photos of handover',
+      prohibited: '✅ No prohibited items',
+      instincts: '✅ Trust your instincts'
+    },
+    support: '<b>Support:</b> @LuuKyone_Community'
+  },
+
+  // Profile Messages (ENGLISH)
+  profile: {
+    title: '👤 <b>Your Profile</b>',
+    name: 'Name: {userName}',
+    username: 'Username: {username}',
+    memberType: 'Member Type: {type}',
+    statistics: {
+      title: '📊 <b>Statistics:</b>',
+      posts: 'Posts this month: {current}/{limit}',
+      completed: 'Completed favors: {count}',
+      rating: 'Rating: {rating}',
+      noRating: 'No ratings yet'
+    },
+    memberSince: 'Member since: {date}'
+  },
+
+  // Settings Messages (ENGLISH)
+  settings: {
+    title: '⚙️ <b>Settings</b>',
+    preferences: 'Manage your preferences:',
+    notifications: {
+      connection: '🔔 Connection alerts: Always on (core feature)',
+      daily: '📊 Daily Summary: {status}'
+    },
+    tip: '💡 <i>Connection notifications are always enabled to ensure you never miss someone who wants to help!</i>',
+    confirmOn: '✅ You will now receive daily summaries at 9am and 6pm',
+    confirmOff: '📵 Daily summaries disabled'
+  },
+
+  // Channel Messages (ENGLISH)
   channel: {
-    travel: {
-      title: '✈️ Travel Plan Available',
-      route: 'Route:',
-      date: 'Date:',
-      available: 'Available:',
-      canHelp: 'Can help with:'
+    travelPost: {
+      header: '✈️ <b>KIND TRAVELER - CAN HELP</b>',
+      route: '📍 Route: {route}',
+      date: '📅 Date: {date}',
+      weight: '📦 Space: {weight}',
+      categories: '✅ Accepts: {categories}'
     },
-    favor: {
-      title: '📦 Favor Request',
-      route: 'Route:',
-      items: 'Items:',
-      weight: 'Weight:',
-      urgency: 'Urgency:'
+    favorPost: {
+      header: '💝 <b>KINDNESS NEEDED</b>',
+      route: '📍 Route: {route}',
+      urgency: '⏰ Urgency: {urgency}',
+      categories: '📦 Category: {categories}',
+      weight: '⚖️ Weight: {weight}'
     },
-    welcome: {
-      single: '💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot',
-      multiple: 'Welcome to all our new friends! 💚'
-    },
-    milestones: {
-      kindness100: '🎊 MILESTONE CELEBRATION! 🎊\n\nOur community has completed 100 acts of kindness!\n\n"No act of kindness, no matter how small, is ever wasted."\n\nThank you for making the world a better place, one favor at a time! 💚',
-      members500: '🎉 COMMUNITY MILESTONE! 🎉\n\nWe\'ve grown to 500 kind hearts! 🎉\n\nEach of you makes our community special. Together, we\'re proving that kindness has no borders.\n\nHere\'s to many more connections and favors! 🤝',
-      weeklyStats: '📊 This Week in Kindness\n\n✈️ Active Travelers: {travelers}\n📦 Favor Requests: {favors}\n🤝 Connections Made: {connections}\n⭐ Kindness Rating: {rating}/5\n\nKeep spreading the love! 💚'
-    },
-    dailyQuote: '💚 Daily Kindness Reminder\n\n"{quote}"\n\nWhat act of kindness will you do today?',
-    postCompleted: '✅ Post Completed!\n\n{userName} has successfully completed their {postType}!\nPost ID: #{postId}\n\nThank you for spreading kindness! 💚',
-    postCancelled: '❌ Post Cancelled\n\n{postType} #{postId} has been cancelled by the user.',
+    completed: 'This post has been completed. Thank you for spreading kindness! 💚',
+    cancelled: 'This post has been cancelled.',
+    expired: 'This post has expired.',
     dailySummary: {
       morning: {
-        title: '☀️ Good Morning! Active Posts Summary',
-        subtitle: 'Here are today\'s opportunities to spread kindness:',
-        travelCount: '✈️ {count} Active Travel Plans',
-        favorCount: '📦 {count} Active Favor Requests',
-        noActive: 'No active posts at the moment. Be the first to post today!',
-        footer: 'Ready to help? Visit @luukyonebot'
+        title: '☀️ <b>Morning Summary</b>',
+        subtitle: 'Share kindness today',
+        travelCount: '✈️ {count} travel plans:',
+        favorCount: '📦 {count} favor requests:',
+        noActive: 'No active posts at the moment.',
+        footer: 'Share: @luukyonebot\n#MorningSummary #Kindness'
       },
       evening: {
-        title: '🌙 Evening Update! Active Posts Summary',
-        subtitle: 'Still time to help with these:',
-        travelCount: '✈️ {count} Active Travel Plans',
-        favorCount: '📦 {count} Active Favor Requests',
-        noActive: 'All posts have been completed today! Great job, community! 🎉',
-        footer: 'Tomorrow brings new opportunities for kindness 💚'
+        title: '🌙 <b>Evening Summary</b>',
+        subtitle: 'Check how you can help',
+        travelCount: '✈️ {count} travel plans:',
+        favorCount: '📦 {count} favor requests:',
+        noActive: 'No active posts at the moment.',
+        footer: 'Connect: @luukyonebot\n#EveningSummary #LuuKyone'
       }
     }
   },
 
-  // Browse Messages
-  browse: {
-    title: '📋 Recent Active Posts',
-    travelSection: '✈️ Travel Plans:',
-    favorSection: '📦 Favor Requests:',
-    empty: '📭 No active posts at the moment. Check back later!',
-    footer: 'Visit our channel @LuuKyone_Community for details'
-  },
-
-  // Profile Messages
-  profile: {
-    title: '👤 Your Profile',
-    name: 'Name:',
-    username: 'Username:',
-    memberType: 'Member Type:',
-    memberTypeFree: '🆓 Free',
-    memberTypePremium: '💎 Premium',
-    statistics: {
-      title: '📊 Statistics:',
-      postsMonth: 'Posts this month:',
-      completedFavors: 'Completed favors:',
-      rating: 'Rating:',
-      noRating: 'No ratings yet'
-    },
-    memberSince: 'Member since:'
-  },
-
-  // Contact Messages
+  // Contact Messages (ENGLISH)
   contact: {
-    selfContact: '❌ You can\'t contact yourself!',
-    notRegistered: '❌ Please start the bot first: @luukyonebot',
-    alreadyConnected: '❌ You\'ve already been introduced for this post. Free tier allows one-time introduction only.',
-    
-    requesterNotification: {
-      title: '✅ Contact Information Received!',
-      requestedFor: 'You requested contact for this {postType}:',
-      route: 'Route:',
-      date: 'Date:',
-      contact: 'Please contact:',
-      clickToMessage: 'Click here to message',
-      tip: '💡 Tip: Start by introducing yourself and mentioning the post ID #{postId}',
-      note: '⚠️ Note: This is a one-time introduction. Save this contact for future reference.'
+    receivedInfo: {
+      title: '✅ <b>Contact Information Received!</b>',
+      postType: 'You requested contact for this {postType}:',
+      route: '<b>Route:</b> {route}',
+      date: '<b>Date:</b> {date}',
+      contactPerson: '<b>Please contact:</b>',
+      tip: '<i>💡 Tip: Start by introducing yourself and mentioning the post ID #{postId}</i>',
+      oneTime: '<i>⚠️ Note: This is a one-time introduction. Save this contact for future reference.</i>'
     },
-    
-    posterNotification: {
-      title: '🔔 New Match for Your Post!',
-      someoneNeeds: 'Someone needs your help with:',
-      someoneCanHelp: 'Someone can help you with:',
-      route: 'Route:',
-      postId: 'Post ID:',
-      interested: 'Interested person:',
-      viewProfile: 'View profile',
+    newMatch: {
+      title: '🔔 <b>New Match for Your Post!</b>',
+      someone: 'Someone {action}:',
+      route: '<b>Route:</b> {route}',
+      postId: '<b>Post ID:</b> #{postId}',
+      interested: '<b>Interested person:</b>',
       willContact: 'They will contact you soon to discuss details.',
-      tip: '💡 If they don\'t reach out, you can message them first!'
+      tip: '<i>💡 If they don\'t reach out, you can message them first!</i>'
     }
   },
 
-  // Error Messages
-  errors: {
-    generic: '❌ An error occurred. Please try again.',
-    somethingWrong: '😔 Oops! Something went wrong.\n\nDon\'t worry, it happens! Please try again.\n\nIf this keeps happening, our community is here to help:\n👉 @LuuKyone_Community\n\n<i>"Even technology needs kindness sometimes!"</i>',
-    notMember: '❌ Please join @LuuKyone_Community first!\n\nUse /start to get the join link.',
-    startFirst: 'Please start the bot first with /start',
-    limitReached: '❌ You\'ve reached your monthly limit of {limit} posts.\nPosts used: {current}/{limit}\n\nYour limit will reset next month.',
-    channelPostFailed: '⚠️ Note: Your {postType} was saved but couldn\'t be posted to the channel.\n\nPlease ensure the bot is added as admin to @LuuKyone_Community channel.'
+  // My Posts Messages (ENGLISH)
+  myposts: {
+    title: '📋 <b>Your Active Posts</b>',
+    empty: 'You don\'t have any active posts.',
+    selectPost: 'Select a post to manage:',
+    managePost: {
+      title: '📝 <b>Manage Post</b>',
+      type: '<b>Type:</b> {type}',
+      route: '<b>Route:</b> {route}',
+      date: '<b>Date:</b> {date}',
+      urgency: '<b>Urgency:</b> {urgency}',
+      status: '<b>Status:</b> {status}',
+      postId: '<b>Post ID:</b> {postId}',
+      createdAt: '<b>Created:</b> {date}',
+      expiresAt: '<b>Expires:</b> {date}',
+      selectAction: 'Select an action:'
+    },
+    confirmComplete: {
+      title: '✅ <b>Confirm Completion</b>',
+      message: 'Mark this post as completed?\nThis action cannot be undone.'
+    },
+    confirmCancel: {
+      title: '❌ <b>Confirm Cancellation</b>',
+      message: 'Cancel this post?\nThis action cannot be undone.'
+    },
+    completed: '✅ Post marked as completed. Thank you for spreading kindness! 💚',
+    cancelled: '❌ Post has been cancelled.',
+    backToList: '🔙 Back to posts list',
+    markComplete: '✅ Mark Complete',
+    cancelPost: '❌ Cancel Post'
   },
 
-  // Validation Messages
-  validation: {
-    descriptionTooShort: '❌ Please provide a more detailed description (at least 10 characters).',
-    descriptionTooLong: '❌ Description is too long. Please keep it under 500 characters.',
-    invalidDate: '❌ Invalid date format or date is in the past.\nPlease enter in format DD/MM/YYYY:',
-    invalidWeight: '❌ Please enter weight as a number in kg (e.g., "20" or "20 kg"):',
-    selectCategory: '❌ Please select at least one category.',
-    selectAtLeastOne: '❌ Please select at least one option.'
+  // Status Labels (ENGLISH)
+  status: {
+    active: 'Active',
+    completed: 'Completed',
+    cancelled: 'Cancelled',
+    expired: 'Expired'
   },
 
-  // Help Messages
-  help: {
-    title: '❓ How Luu Kyone Works',
-    intro: 'We connect travelers with people needing personal favors.\nIt\'s about kindness, not business. 💚',
-    travelers: {
-      title: '✈️ For Kind Travelers:',
-      content: 'Your empty luggage space = Someone\'s happiness!\n• Tap /travel to share your journey\n• Choose what you\'re comfortable carrying\n• Connect with grateful neighbors\n• 5 minutes of your time brings endless joy'
-    },
-    needers: {
-      title: '🤝 For Those Needing Favors:',
-      content: 'Your neighbor might be traveling home!\n• Tap /favor to request help\n• Describe what you need clearly\n• Add photos for better understanding\n• Small favors, big impact on lives'
-    },
-    safety: {
-      title: '🛡️ Safety First:',
-      content: '• Meet only in public places (airports, cafes)\n• Document everything with photos\n• Trust your instincts always\n• Never carry unknown items'
-    },
-    guidelines: {
-      title: '💚 Community Guidelines:',
-      content: '• This is NOT a delivery service\n• Show gratitude with thank-you gifts\n• Build trust through kindness\n• {limit} favors/month (free members)'
-    },
-    footer: '"Kindness is free. Sprinkle it everywhere!"\n\nNeed help? Join @LuuKyone_Community 🙏'
-  },
-
-  // Common Messages
-  common: {
-    operationCancelled: '❌ Operation cancelled.',
-    whatNext: 'What would you like to do next?',
-    whatToDo: 'What would you like to do?'
-  },
-
-  // Commands Messages
-  commands: {
-    start: {
-      channelRequired: '👉 @LuuKyone_Community',
-      joinFirst: 'Please join the channel and click "I\'ve Joined" below:'
-    },
-    test: {
-      title: '🧪 Channel Test Menu',
-      selectPrompt: 'Select what you want to test:',
-      adminOnly: '❌ This command is for admins only.',
-      error: '❌ Error accessing test menu.'
-    },
-    myposts: {
-      title: '📋 Your Active Posts',
-      noActivePosts: '📭 You don\'t have any active posts at the moment.',
-      travelPlan: '✈️ Travel Plan #{postId}',
-      favorRequest: '📦 Favor Request #{postId}',
-      route: 'Route: {route}',
-      date: 'Date: {date}',
-      status: 'Status: {status}',
-      selectPost: 'Select a post to manage:',
-      managePost: '📋 Managing Post #{postId}',
-      whatToDo: 'What would you like to do with this post?',
-      markComplete: '✅ Mark as Completed',
-      cancel: '❌ Cancel Post',
-      back: '⬅️ Back to List',
-      confirmComplete: 'Are you sure you want to mark this post as completed?',
-      confirmCancel: 'Are you sure you want to cancel this post?',
-      postCompleted: '✅ Post marked as completed!',
-      postCancelled: '❌ Post cancelled.',
-      error: '❌ Error managing posts. Please try again.'
-    }
-  },
-
-  // Admin Messages
-  admin: {
-    testButtons: {
-      welcome: '📢 Test Welcome Message',
-      quote: '💚 Test Daily Quote',
-      milestone100: '🎊 Test Milestone (100 kindness)',
-      milestone500: '🎉 Test Milestone (500 members)',
-      stats: '📊 Test Weekly Stats'
-    }
+  // Post Type Labels (ENGLISH)
+  postTypes: {
+    travel: 'Travel Plan',
+    favor: 'Favor Request'
   }
 };
 
-// Message formatter to replace variables like {userName}
-const formatMessage = (message, variables = {}) => {
-  let formatted = message;
-  Object.keys(variables).forEach(key => {
-    formatted = formatted.replace(new RegExp(`{${key}}`, 'g'), variables[key]);
+// Helper function to format messages with variables
+const formatMessage = (template, variables = {}) => {
+  let message = template;
+  Object.entries(variables).forEach(([key, value]) => {
+    const regex = new RegExp(`{${key}}`, 'g');
+    message = message.replace(regex, value);
   });
-  return formatted;
+  return message;
 };
 
 module.exports = {
