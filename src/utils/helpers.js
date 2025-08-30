@@ -220,7 +220,7 @@ const formatPostForChannel = (post, postType, status = 'active') => {
       if (category) categoryIds.push(category.id);
     }
     
-    message = `📦 <b>${statusPrefix}Favor Request${status === 'active' ? '' : ''}</b>\n\n`;
+    message = `📦 <b>${statusPrefix}Favor Request</b>\n\n`;
     message += `<b>Route:</b> ${formatRoute(post.fromCity, post.toCity)}\n`;
     
     if (status === 'active') {
