@@ -236,31 +236,20 @@ const formatPostForChannel = (post, postType, status = 'active') => {
   return message;
 };
 
-// Get user notification settings with defaults
-const getUserNotificationSettings = async (userId, collections) => {
+// Check if user wants daily summaries (simplified)
+const userWantsDailySummary = async (userId, collections) => {
   try {
     const userDoc = await collections.users.doc(userId).get();
     if (!userDoc.exists) {
-      return {
-        notifications: true,
-        dailySummary: true,
-        connectionAlerts: true
-      };
+      return true; // Default to true for new users
     }
     
     const user = userDoc.data();
-    return user.settings || {
-      notifications: true,
-      dailySummary: true,
-      connectionAlerts: true
-    };
+    // Default to true if not explicitly set to false
+    return user.settings?.dailySummary !== false;
   } catch (error) {
-    // Return defaults if error
-    return {
-      notifications: true,
-      dailySummary: true,
-      connectionAlerts: true
-    };
+    // Return default if error
+    return true;
   }
 };
 
@@ -300,7 +289,7 @@ module.exports = {
   generatePostId,
   escapeHtml,
   formatPostForChannel,
-  getUserNotificationSettings,
+  userWantsDailySummary,
   datesOverlap,
   findMatches
 };

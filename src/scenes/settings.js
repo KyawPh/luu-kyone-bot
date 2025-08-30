@@ -16,32 +16,18 @@ settingsScene.enter(async (ctx) => {
     const userDoc = await collections.users.doc(userId).get();
     const user = userDoc.data();
     
-    const currentSettings = user.settings || {
-      notifications: true,
-      dailySummary: true,
-      connectionAlerts: true
-    };
+    // Simplified settings - only daily summary preference
+    const dailySummaryEnabled = user.settings?.dailySummary !== false; // Default to true
     
     const message = '⚙️ <b>Settings</b>\n\n' +
-      'Manage your notification preferences:';
+      'Manage your preferences:\n\n' +
+      '💡 <i>Connection notifications are always enabled to ensure you never miss someone who wants to help!</i>';
     
     const keyboard = Markup.inlineKeyboard([
       [
         Markup.button.callback(
-          `${currentSettings.notifications ? '🔔' : '🔕'} All Notifications: ${currentSettings.notifications ? 'ON' : 'OFF'}`,
-          'toggle_notifications'
-        )
-      ],
-      [
-        Markup.button.callback(
-          `${currentSettings.dailySummary ? '📊' : '📈'} Daily Summary: ${currentSettings.dailySummary ? 'ON' : 'OFF'}`,
+          `${dailySummaryEnabled ? '📊' : '📈'} Daily Summary: ${dailySummaryEnabled ? 'ON' : 'OFF'}`,
           'toggle_daily_summary'
-        )
-      ],
-      [
-        Markup.button.callback(
-          `${currentSettings.connectionAlerts ? '👥' : '👤'} Connection Alerts: ${currentSettings.connectionAlerts ? 'ON' : 'OFF'}`,
-          'toggle_connection_alerts'
         )
       ],
       [
@@ -81,32 +67,18 @@ async function updateSettingsDisplay(ctx) {
     const userDoc = await collections.users.doc(userId).get();
     const user = userDoc.data();
     
-    const currentSettings = user.settings || {
-      notifications: true,
-      dailySummary: true,
-      connectionAlerts: true
-    };
+    // Simplified settings - only daily summary preference
+    const dailySummaryEnabled = user.settings?.dailySummary !== false; // Default to true
     
     const message = '⚙️ <b>Settings</b>\n\n' +
-      'Manage your notification preferences:';
+      'Manage your preferences:\n\n' +
+      '💡 <i>Connection notifications are always enabled to ensure you never miss someone who wants to help!</i>';
     
     const keyboard = Markup.inlineKeyboard([
       [
         Markup.button.callback(
-          `${currentSettings.notifications ? '🔔' : '🔕'} All Notifications: ${currentSettings.notifications ? 'ON' : 'OFF'}`,
-          'toggle_notifications'
-        )
-      ],
-      [
-        Markup.button.callback(
-          `${currentSettings.dailySummary ? '📊' : '📈'} Daily Summary: ${currentSettings.dailySummary ? 'ON' : 'OFF'}`,
+          `${dailySummaryEnabled ? '📊' : '📈'} Daily Summary: ${dailySummaryEnabled ? 'ON' : 'OFF'}`,
           'toggle_daily_summary'
-        )
-      ],
-      [
-        Markup.button.callback(
-          `${currentSettings.connectionAlerts ? '👥' : '👤'} Connection Alerts: ${currentSettings.connectionAlerts ? 'ON' : 'OFF'}`,
-          'toggle_connection_alerts'
         )
       ],
       [
@@ -124,32 +96,6 @@ async function updateSettingsDisplay(ctx) {
   }
 }
 
-settingsScene.action('toggle_notifications', async (ctx) => {
-  await ctx.answerCbQuery();
-  const userId = ctx.from.id.toString();
-  
-  try {
-    const userDoc = await collections.users.doc(userId).get();
-    const user = userDoc.data();
-    const currentSettings = user.settings || { notifications: true, dailySummary: true, connectionAlerts: true };
-    
-    currentSettings.notifications = !currentSettings.notifications;
-    
-    if (!currentSettings.notifications) {
-      currentSettings.dailySummary = false;
-      currentSettings.connectionAlerts = false;
-    }
-    
-    await collections.users.doc(userId).update({ settings: currentSettings });
-    
-    logEvent.customEvent('settings_updated', { userId, setting: 'notifications', value: currentSettings.notifications });
-    await updateSettingsDisplay(ctx);
-  } catch (error) {
-    logger.error('Error toggling notifications', { error: error.message, userId });
-    await ctx.answerCbQuery('❌ Error updating setting');
-  }
-});
-
 settingsScene.action('toggle_daily_summary', async (ctx) => {
   await ctx.answerCbQuery();
   const userId = ctx.from.id.toString();
@@ -157,47 +103,31 @@ settingsScene.action('toggle_daily_summary', async (ctx) => {
   try {
     const userDoc = await collections.users.doc(userId).get();
     const user = userDoc.data();
-    const currentSettings = user.settings || { notifications: true, dailySummary: true, connectionAlerts: true };
     
-    if (!currentSettings.notifications) {
-      await ctx.answerCbQuery('⚠️ Enable notifications first');
-      return;
-    }
+    // Toggle daily summary setting
+    const currentValue = user.settings?.dailySummary !== false; // Default true
+    const newValue = !currentValue;
     
-    currentSettings.dailySummary = !currentSettings.dailySummary;
+    await collections.users.doc(userId).update({ 
+      'settings.dailySummary': newValue 
+    });
     
-    await collections.users.doc(userId).update({ settings: currentSettings });
+    logEvent.customEvent('settings_updated', { 
+      userId, 
+      setting: 'dailySummary', 
+      value: newValue 
+    });
     
-    logEvent.customEvent('settings_updated', { userId, setting: 'dailySummary', value: currentSettings.dailySummary });
     await updateSettingsDisplay(ctx);
+    
+    // Show confirmation message
+    const confirmMsg = newValue 
+      ? '✅ You will now receive daily summaries at 9am and 6pm'
+      : '📵 Daily summaries disabled';
+    await ctx.answerCbQuery(confirmMsg, { show_alert: true });
+    
   } catch (error) {
     logger.error('Error toggling daily summary', { error: error.message, userId });
-    await ctx.answerCbQuery('❌ Error updating setting');
-  }
-});
-
-settingsScene.action('toggle_connection_alerts', async (ctx) => {
-  await ctx.answerCbQuery();
-  const userId = ctx.from.id.toString();
-  
-  try {
-    const userDoc = await collections.users.doc(userId).get();
-    const user = userDoc.data();
-    const currentSettings = user.settings || { notifications: true, dailySummary: true, connectionAlerts: true };
-    
-    if (!currentSettings.notifications) {
-      await ctx.answerCbQuery('⚠️ Enable notifications first');
-      return;
-    }
-    
-    currentSettings.connectionAlerts = !currentSettings.connectionAlerts;
-    
-    await collections.users.doc(userId).update({ settings: currentSettings });
-    
-    logEvent.customEvent('settings_updated', { userId, setting: 'connectionAlerts', value: currentSettings.connectionAlerts });
-    await updateSettingsDisplay(ctx);
-  } catch (error) {
-    logger.error('Error toggling connection alerts', { error: error.message, userId });
     await ctx.answerCbQuery('❌ Error updating setting');
   }
 });
@@ -215,6 +145,9 @@ settingsScene.action('about', async (ctx) => {
     '• Request personal favors\n' +
     '• Connect with travelers\n' +
     '• Browse active posts\n\n' +
+    '<b>Notifications:</b>\n' +
+    '🔔 Connection alerts: Always on\n' +
+    '📊 Daily summaries: Optional\n\n' +
     '<b>Limits:</b>\n' +
     '• 10 posts per month\n' +
     '• Posts expire after 30 days\n\n' +
@@ -243,6 +176,17 @@ settingsScene.action('back_to_menu', async (ctx) => {
   
   const { mainMenu } = require('../utils/keyboards');
   await ctx.editMessageText('What would you like to do?', mainMenu());
+});
+
+// Remove the old notification and connection alert handlers since they're no longer needed
+settingsScene.action('toggle_notifications', async (ctx) => {
+  await ctx.answerCbQuery('This option has been removed', { show_alert: true });
+  await updateSettingsDisplay(ctx);
+});
+
+settingsScene.action('toggle_connection_alerts', async (ctx) => {
+  await ctx.answerCbQuery('Connection alerts are always enabled', { show_alert: true });
+  await updateSettingsDisplay(ctx);
 });
 
 module.exports = settingsScene;

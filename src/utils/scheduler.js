@@ -1,6 +1,6 @@
 const cron = require('node-cron');
 const { collections, db } = require('../config/firebase');
-const { formatRoute, formatDate, getUserNotificationSettings } = require('./helpers');
+const { formatRoute, formatDate, userWantsDailySummary } = require('./helpers');
 const { messages, formatMessage } = require('../config/messages');
 const { logger, logEvent } = require('./logger');
 const { CITIES } = require('../config/constants');
@@ -108,10 +108,10 @@ async function sendDailySummary(bot, isEvening = false) {
     
     for (const userDoc of usersSnapshot.docs) {
       const userId = userDoc.id;
-      const settings = await getUserNotificationSettings(userId, collections);
+      const wantsSummary = await userWantsDailySummary(userId, collections);
       
-      // Check if user has notifications and daily summaries enabled
-      if (settings.notifications && settings.dailySummary) {
+      // Check if user wants daily summaries
+      if (wantsSummary) {
         try {
           await bot.telegram.sendMessage(
             userId,

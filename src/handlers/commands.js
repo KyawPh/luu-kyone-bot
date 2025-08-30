@@ -469,31 +469,23 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       return ctx.reply('❌ This command is for admins only.');
     }
     
-    const { getUserNotificationSettings } = require('../utils/helpers');
+    const { userWantsDailySummary } = require('../utils/helpers');
     
     try {
-      const settings = await getUserNotificationSettings(userId, collections);
+      const wantsSummary = await userWantsDailySummary(userId, collections);
       
       let message = '🔔 <b>Testing Notification Settings</b>\n\n';
       message += `<b>Your Current Settings:</b>\n`;
-      message += `• All Notifications: ${settings.notifications ? '✅ ON' : '❌ OFF'}\n`;
-      message += `• Daily Summary: ${settings.dailySummary ? '✅ ON' : '❌ OFF'}\n`;
-      message += `• Connection Alerts: ${settings.connectionAlerts ? '✅ ON' : '❌ OFF'}\n\n`;
+      message += `• Connection Alerts: 🔔 Always ON (core feature)\n`;
+      message += `• Daily Summary: ${wantsSummary ? '📊 ON' : '📈 OFF'}\n\n`;
       
-      if (settings.notifications) {
-        if (settings.dailySummary) {
-          message += '📊 You WILL receive daily summaries\n';
-        } else {
-          message += '📊 You will NOT receive daily summaries\n';
-        }
-        
-        if (settings.connectionAlerts) {
-          message += '👥 You WILL receive connection notifications\n';
-        } else {
-          message += '👥 You will NOT receive connection notifications\n';
-        }
+      message += '💡 <b>What this means:</b>\n';
+      message += '• You will ALWAYS be notified when someone contacts you\n';
+      
+      if (wantsSummary) {
+        message += '• You WILL receive daily summaries at 9am and 6pm\n';
       } else {
-        message += '🔕 All notifications are disabled - you will not receive any notifications\n';
+        message += '• You will NOT receive daily summaries\n';
       }
       
       message += '\n<i>Use /settings to change your preferences</i>';
