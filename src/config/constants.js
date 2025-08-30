@@ -23,7 +23,7 @@ const CITIES = {
 };
 
 const CATEGORIES = [
-  { id: 'medicine', name: 'ဆေး၀ါး', nameEn: 'Medicine', emoji: '💊' },
+  { id: 'medicine', name: 'ဆေးဝါး', nameEn: 'Medicine', emoji: '💊' },
   { id: 'documents', name: 'စာရွက်စာတမ်း', nameEn: 'Documents', emoji: '📄' },
   { id: 'food', name: 'အစားအစာ', nameEn: 'Food', emoji: '🍜' },
   { id: 'electronics', name: 'လျှပ်စစ်ပစ္စည်း', nameEn: 'Electronics', emoji: '📱' },

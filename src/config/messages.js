@@ -29,7 +29,7 @@ const messages = {
       back: '⬅️ နောက်သို့',
       skip: '⏭️ ကျော်သွားရန်',
       confirm: '✅ အတည်ပြုမည်',
-      confirmCategories: '✅ အမျိုးအစားများ အတည်ပြုမည်',
+      confirmCategories: '✅ အတည်ပြုမည်',
       confirmPost: '✅ အတည်ပြုမည်',
       yes: '✅ ဟုတ်ကဲ့',
       no: '❌ မဟုတ်ပါ',
