@@ -11,11 +11,14 @@ const {
 const { 
   generatePostId,
   formatPostForChannel,
-  formatRoute
+  formatRoute,
+  validateWeight,
+  validateCategories
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES, URGENCY_LEVELS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
 const { messages, formatMessage } = require('../config/messages');
+const { config } = require('../config');
 
 const favorScene = new Scenes.BaseScene('favorScene');
 
@@ -159,7 +162,7 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
 favorScene.action('confirm_categories', async (ctx) => {
   await ctx.answerCbQuery();
   
-  if (!ctx.scene.state.categories || ctx.scene.state.categories.length === 0) {
+  if (!validateCategories(ctx.scene.state.categories)) {
     return ctx.reply(messages.validation.selectCategories);
   }
   
@@ -242,15 +245,14 @@ favorScene.action(/^weight_(\w+)$/, async (ctx) => {
 // Handle custom weight input
 favorScene.on('text', async (ctx) => {
   if (ctx.scene.state.waitingForWeight) {
-    const text = ctx.message.text.trim();
-    const weightMatch = text.match(/^(\d+)\s*(kg)?$/i);
+    const text = ctx.message.text;
+    const validatedWeight = validateWeight(text);
     
-    if (!weightMatch) {
+    if (!validatedWeight) {
       return ctx.reply(messages.validation.enterWeightNumber);
     }
     
-    const weightValue = weightMatch[1];
-    ctx.scene.state.requestedWeight = `${weightValue} kg`;
+    ctx.scene.state.requestedWeight = validatedWeight;
     ctx.scene.state.waitingForWeight = false;
     
     // Directly post the favor request
@@ -309,7 +311,7 @@ async function postFavorRequest(ctx) {
     try {
       // Post without photo (simplified)
       const channelMsg = await ctx.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         channelMessage,
         {
           parse_mode: 'HTML',
@@ -320,7 +322,7 @@ async function postFavorRequest(ctx) {
       // Save channel message ID for future updates
       await collections.favorRequests.doc(postId).update({
         channelMessageId: channelMsg.message_id,
-        channelChatId: process.env.FREE_CHANNEL_ID
+        channelChatId: config.telegram.channelId
       });
       
       logEvent.channelMessageSent('favor_request');

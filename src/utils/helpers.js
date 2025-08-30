@@ -1,5 +1,40 @@
 const moment = require('moment-timezone');
 const { CITIES, LIMITS } = require('../config/constants');
+const { logger } = require('./logger');
+
+// Check if user is a member of the community channel
+const checkChannelMembership = async (bot, userId, channelId) => {
+  try {
+    const chatMember = await bot.telegram.getChatMember(channelId, userId);
+    return ['member', 'administrator', 'creator'].includes(chatMember.status);
+  } catch (error) {
+    logger.error('Error checking membership', { error: error.message, userId });
+    // If bot is not admin in channel or channel not found
+    if (error.message.includes('chat not found') || error.message.includes('bot is not a member')) {
+      return null; // Cannot check membership
+    }
+    return false;
+  }
+};
+
+// Check if user is an admin
+const isAdmin = (userId, adminIds) => {
+  return adminIds.includes(userId.toString());
+};
+
+// Validate weight input
+const validateWeight = (text) => {
+  const weightMatch = text.trim().match(/^(\d+)\s*(kg)?$/i);
+  if (!weightMatch) {
+    return null;
+  }
+  return `${weightMatch[1]} kg`;
+};
+
+// Validate that at least one category is selected
+const validateCategories = (categories) => {
+  return categories && Array.isArray(categories) && categories.length > 0;
+};
 
 // Format date for display
 const formatDate = (date) => {
@@ -291,5 +326,9 @@ module.exports = {
   formatPostForChannel,
   userWantsDailySummary,
   datesOverlap,
-  findMatches
+  findMatches,
+  checkChannelMembership,
+  isAdmin,
+  validateWeight,
+  validateCategories
 };

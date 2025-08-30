@@ -13,11 +13,13 @@ const {
   formatDate, 
   formatRoute,
   generatePostId,
-  formatPostForChannel
+  formatPostForChannel,
+  validateCategories
 } = require('../utils/helpers');
 const { CITIES, CATEGORIES } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
 const { messages, formatMessage } = require('../config/messages');
+const { config } = require('../config');
 
 const travelScene = new Scenes.BaseScene('travelScene');
 
@@ -274,7 +276,7 @@ travelScene.action(/^cat_(.+)$/, async (ctx) => {
 travelScene.action('confirm_post', async (ctx) => {
   await ctx.answerCbQuery();
   
-  if (ctx.scene.state.categories.length === 0) {
+  if (!validateCategories(ctx.scene.state.categories)) {
     return ctx.reply(messages.validation.selectCategories);
   }
   
@@ -320,7 +322,7 @@ travelScene.action('confirm_post', async (ctx) => {
     // Post to channel and save message ID
     try {
       const channelMsg = await ctx.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         channelMessage,
         {
           parse_mode: 'HTML',
@@ -331,7 +333,7 @@ travelScene.action('confirm_post', async (ctx) => {
       // Save channel message ID for future updates
       await collections.travelPlans.doc(postId).update({
         channelMessageId: channelMsg.message_id,
-        channelChatId: process.env.FREE_CHANNEL_ID
+        channelChatId: config.telegram.channelId
       });
       
       logEvent.channelMessageSent('travel_plan');

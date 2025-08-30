@@ -7,7 +7,7 @@ const setupChannelHandlers = (bot) => {
   bot.on('chat_member', async (ctx) => {
     try {
       // Check if this is for our community channel
-      if (ctx.chat.id.toString() !== process.env.FREE_CHANNEL_ID) {
+      if (ctx.chat.id.toString() !== config.telegram.channelId) {
         return;
       }
 
@@ -37,7 +37,7 @@ const setupChannelHandlers = (bot) => {
         const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
         
         await bot.telegram.sendMessage(
-          process.env.FREE_CHANNEL_ID,
+          config.telegram.channelId,
           `${randomMessage}\n\n` +
           `#WelcomeWednesday #LuuKyoneFamily #KindnessInAction`,
           { parse_mode: 'HTML' }
@@ -79,7 +79,7 @@ const setupChannelHandlers = (bot) => {
   bot.on('channel_post', async (ctx) => {
     try {
       // Check if this is our channel
-      if (ctx.chat.id.toString() !== process.env.FREE_CHANNEL_ID) {
+      if (ctx.chat.id.toString() !== config.telegram.channelId) {
         return;
       }
       
@@ -122,7 +122,7 @@ const setupChannelHandlers = (bot) => {
     if (messages[type]) {
       try {
         await bot.telegram.sendMessage(
-          process.env.FREE_CHANNEL_ID,
+          config.telegram.channelId,
           messages[type] + '\n\n#MilestoneMoment #LuuKyone #KindnessWins',
           { parse_mode: 'HTML' }
         );
@@ -143,7 +143,7 @@ const setupChannelHandlers = (bot) => {
       };
       
       await bot.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         `🙏 <b>Thank You Thursday!</b>\n\n` +
         `This week, our amazing community:\n\n` +
         `💚 Completed ${weeklyStats.favorsCompleted} acts of kindness\n` +
@@ -203,7 +203,7 @@ const setupChannelHandlers = (bot) => {
     
     try {
       await bot.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         `🛡️ <b>Safety First Friday!</b>\n\n` +
         `<b>${safety.title}:</b>\n${safety.tips.join('\n')}\n\n` +
         `<i>${safety.reminder}</i>\n\n` +
@@ -231,7 +231,7 @@ const setupChannelHandlers = (bot) => {
     
     try {
       await bot.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         `📍 <b>Route Spotlight Tuesday!</b>\n\n` +
         `<b>${route.from} → ${route.to}</b>\n\n` +
         `This week on this route:\n` +
@@ -267,7 +267,7 @@ const setupChannelHandlers = (bot) => {
     
     try {
       await bot.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         `🌅 <b>${dayOfWeek} Motivation</b>\n\n` +
         `"${daily.quote}"\n` +
         `<i>— ${daily.author}</i>\n\n` +

@@ -4,6 +4,7 @@ const { formatRoute, formatDate, userWantsDailySummary } = require('./helpers');
 const { messages, formatMessage } = require('../config/messages');
 const { logger, logEvent } = require('./logger');
 const { CITIES } = require('../config/constants');
+const { config } = require('../config');
 
 // Create daily summary message
 async function createDailySummary(isEvening = false) {
@@ -96,7 +97,7 @@ async function sendDailySummary(bot, isEvening = false) {
     
     // Send to channel (always)
     await bot.telegram.sendMessage(
-      process.env.FREE_CHANNEL_ID,
+      config.telegram.channelId,
       summaryMessage,
       { parse_mode: 'HTML' }
     );
@@ -248,7 +249,7 @@ function setupScheduledJobs(bot) {
       logger.info('Running morning summary job');
       await sendDailySummary(bot, false);
     }, {
-      timezone: 'Asia/Singapore' // Adjust timezone as needed
+      timezone: config.bot.timezone
     });
     
     // Evening summary at 6:00 PM
@@ -256,7 +257,7 @@ function setupScheduledJobs(bot) {
       logger.info('Running evening summary job');
       await sendDailySummary(bot, true);
     }, {
-      timezone: 'Asia/Singapore' // Adjust timezone as needed
+      timezone: config.bot.timezone
     });
     
     // Daily cleanup at 2:00 AM

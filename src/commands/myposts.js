@@ -3,6 +3,7 @@ const { collections } = require('../config/firebase');
 const { formatRoute, formatDate, formatPostForChannel } = require('../utils/helpers');
 const { messages, formatMessage } = require('../config/messages');
 const { logger, logEvent } = require('../utils/logger');
+const { config } = require('../config');
 
 // Handle /myposts command
 async function handleMyPosts(ctx) {
@@ -356,7 +357,7 @@ async function confirmCompletePost(ctx, type, postId) {
         
         try {
           await ctx.telegram.sendMessage(
-            process.env.FREE_CHANNEL_ID,
+            config.telegram.channelId,
             channelMessage,
             { parse_mode: 'HTML' }
           );
@@ -474,7 +475,7 @@ async function confirmCancelPost(ctx, type, postId) {
         
         try {
           await ctx.telegram.sendMessage(
-            process.env.FREE_CHANNEL_ID,
+            config.telegram.channelId,
             channelMessage,
             { parse_mode: 'HTML' }
           );

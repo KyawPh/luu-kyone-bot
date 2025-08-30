@@ -1,9 +1,10 @@
 const { collections } = require('../config/firebase');
 const { mainMenu } = require('../utils/keyboards');
-const { canCreatePost } = require('../utils/helpers');
+const { canCreatePost, checkChannelMembership, isAdmin } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
 const { messages, formatMessage } = require('../config/messages');
+const { config } = require('../config');
 
 const setupCommands = (bot) => {
   // Start command
@@ -13,17 +14,9 @@ const setupCommands = (bot) => {
     
     try {
       // Check if user is member of the community channel
-      let isMember = false;
-      let canCheckMembership = true;
-      try {
-        const chatMember = await bot.telegram.getChatMember(process.env.FREE_CHANNEL_ID, userId);
-        isMember = ['member', 'administrator', 'creator'].includes(chatMember.status);
-      } catch (error) {
-        // Check if bot is not admin in channel
-        if (error.message.includes('chat not found') || error.message.includes('bot is not a member')) {
-          canCheckMembership = false;
-        }
-      }
+      const membershipStatus = await checkChannelMembership(bot, userId, config.telegram.channelId);
+      const isMember = membershipStatus === true;
+      const canCheckMembership = membershipStatus !== null;
       
       // If not a member, ask them to join first
       if (!isMember && canCheckMembership) {
@@ -173,13 +166,7 @@ Need help? Join @LuuKyone_Community 🙏
     
     try {
       // Check channel membership first
-      let isMember = false;
-      try {
-        const chatMember = await bot.telegram.getChatMember(process.env.FREE_CHANNEL_ID, userId);
-        isMember = ['member', 'administrator', 'creator'].includes(chatMember.status);
-      } catch (error) {
-        // Membership check failed
-      }
+      const isMember = await checkChannelMembership(bot, userId, config.telegram.channelId);
       
       if (!isMember) {
         return ctx.reply(
@@ -219,13 +206,7 @@ Need help? Join @LuuKyone_Community 🙏
     
     try {
       // Check channel membership first
-      let isMember = false;
-      try {
-        const chatMember = await bot.telegram.getChatMember(process.env.FREE_CHANNEL_ID, userId);
-        isMember = ['member', 'administrator', 'creator'].includes(chatMember.status);
-      } catch (error) {
-        // Membership check failed
-      }
+      const isMember = await checkChannelMembership(bot, userId, config.telegram.channelId);
       
       if (!isMember) {
         return ctx.reply(
@@ -407,9 +388,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
   // Test daily summaries (admin only)
   bot.command('test_summary', async (ctx) => {
     const userId = ctx.from.id.toString();
-    const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
-    
-    if (!ADMIN_IDS.includes(userId)) {
+    if (!isAdmin(userId, config.telegram.adminIds)) {
       return ctx.reply(messages.admin.adminOnly);
     }
     
@@ -442,9 +421,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
   // Cleanup expired posts (admin only)
   bot.command('cleanup', async (ctx) => {
     const userId = ctx.from.id.toString();
-    const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
-    
-    if (!ADMIN_IDS.includes(userId)) {
+    if (!isAdmin(userId, config.telegram.adminIds)) {
       return ctx.reply(messages.admin.adminOnly);
     }
     
@@ -463,9 +440,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
   // Test notification settings (admin only)
   bot.command('test_notifications', async (ctx) => {
     const userId = ctx.from.id.toString();
-    const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
-    
-    if (!ADMIN_IDS.includes(userId)) {
+    if (!isAdmin(userId, config.telegram.adminIds)) {
       return ctx.reply(messages.admin.adminOnly);
     }
     
@@ -502,9 +477,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     const userId = ctx.from.id.toString();
     
     // Check if user is admin (you can add your user ID here)
-    const ADMIN_IDS = ['1633991807']; // Add your Telegram user ID here
-    
-    if (!ADMIN_IDS.includes(userId)) {
+    if (!isAdmin(userId, config.telegram.adminIds)) {
       return ctx.reply(messages.admin.adminOnly);
     }
     

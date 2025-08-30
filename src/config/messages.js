@@ -2,40 +2,8 @@
 // Messages in English, Buttons in Myanmar
 
 const messages = {
-  // Cities Configuration  
-  cities: {
-    singapore: {
-      name: 'Singapore',
-      emoji: '🇸🇬'
-    },
-    bangkok: {
-      name: 'Bangkok', 
-      emoji: '🇹🇭'
-    },
-    yangon: {
-      name: 'Yangon',
-      emoji: '🇲🇲'
-    }
-  },
-
-  // Categories Configuration (Keep in Myanmar)
-  categories: {
-    medicine: { name: 'ဆေး၀ါး', emoji: '💊' },
-    documents: { name: 'စာရွက်စာတမ်း', emoji: '📄' },
-    food: { name: 'အစားအစာ', emoji: '🍜' },
-    electronics: { name: 'လျှပ်စစ်ပစ္စည်း', emoji: '📱' },
-    clothing: { name: 'အ၀တ်အစား', emoji: '👕' },
-    books: { name: 'စာအုပ်', emoji: '📚' },
-    cosmetics: { name: 'အလှပြင်ပစ္စည်း', emoji: '💄' },
-    other: { name: 'အခြား', emoji: '📦' }
-  },
-
-  // Urgency Levels
-  urgency: {
-    urgent: { label: 'Urgent (1-3 days)', emoji: '🚨' },
-    normal: { label: 'Normal (4-7 days)', emoji: '⏰' },
-    flexible: { label: 'Flexible (Anytime)', emoji: '😌' }
-  },
+  // Note: Cities, Categories, and Urgency data are defined in constants.js
+  // This file only contains display messages and button labels
   
   // Weight Options
   weightOptions: {

@@ -40,6 +40,7 @@ const config = {
       },
     },
     sessionTimeoutMinutes: parseInt(getOptionalEnv('SESSION_TIMEOUT_MINUTES', '30'), 10),
+    timezone: getOptionalEnv('BOT_TIMEZONE', 'Asia/Singapore'),
   },
   
   server: {

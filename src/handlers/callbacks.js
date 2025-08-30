@@ -1,9 +1,10 @@
 const { collections } = require('../config/firebase');
 const { mainMenu, contactButton } = require('../utils/keyboards');
-const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate } = require('../utils/helpers');
+const { escapeHtml, getMonthlyPostCount, formatRoute, formatDate, checkChannelMembership, isAdmin } = require('../utils/helpers');
 const { LIMITS } = require('../config/constants');
 const { logger, logEvent } = require('../utils/logger');
 const { messages, formatMessage } = require('../config/messages');
+const { config } = require('../config');
 
 const setupCallbacks = (bot) => {
   // Check membership callback
@@ -14,15 +15,8 @@ const setupCallbacks = (bot) => {
     
     try {
       // Re-check if user has joined the channel
-      let isMember = false;
-      try {
-        const chatMember = await bot.telegram.getChatMember(process.env.FREE_CHANNEL_ID, userId);
-        isMember = ['member', 'administrator', 'creator'].includes(chatMember.status);
-        logEvent.membershipChecked(userId, isMember);
-      } catch (error) {
-        logger.error('Error checking membership', { error: error.message, userId });
-        logEvent.telegramError('getChatMember', error);
-      }
+      const isMember = await checkChannelMembership(bot, userId, config.telegram.channelId);
+      logEvent.membershipChecked(userId, isMember);
       
       if (!isMember) {
         // Still not a member
@@ -408,7 +402,7 @@ const setupCallbacks = (bot) => {
       const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
       
       await bot.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         `🧪 TEST WELCOME MESSAGE\n\n${randomMessage}\n\n` +
         `#WelcomeWednesday #LuuKyoneFamily #KindnessInAction`,
         { parse_mode: 'HTML' }
@@ -493,7 +487,7 @@ const setupCallbacks = (bot) => {
         `#weeklyStats #kindness`;
       
       await bot.telegram.sendMessage(
-        process.env.FREE_CHANNEL_ID,
+        config.telegram.channelId,
         statsMessage,
         { parse_mode: 'HTML' }
       );
