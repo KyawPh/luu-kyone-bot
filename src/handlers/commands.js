@@ -137,81 +137,8 @@ const setupCommands = (bot) => {
   
   // Browse command
   bot.command('browse', async (ctx) => {
-    try {
-      // Get recent posts (simplified to avoid index requirements)
-      const [travelPlans, favorRequests] = await Promise.all([
-        collections.travelPlans
-          .orderBy('createdAt', 'desc')
-          .limit(20)
-          .get(),
-        collections.favorRequests
-          .orderBy('createdAt', 'desc')
-          .limit(20)
-          .get()
-      ]);
-      
-      // Filter for active status in memory
-      const activeTravelPlans = [];
-      const activeFavorRequests = [];
-      
-      travelPlans.forEach(doc => {
-        if (doc.data().status === 'active') {
-          activeTravelPlans.push(doc);
-        }
-      });
-      
-      favorRequests.forEach(doc => {
-        if (doc.data().status === 'active') {
-          activeFavorRequests.push(doc);
-        }
-      });
-      
-      if (activeTravelPlans.length === 0 && activeFavorRequests.length === 0) {
-        return ctx.reply(messages.errors.noActivePost);
-      }
-      
-      logEvent.postsViewed('unknown', 'browse', activeTravelPlans.length + activeFavorRequests.length);
-      
-      let message = messages.commands.browse.title + '\n\n';
-      
-      if (activeTravelPlans.length > 0) {
-        message += messages.commands.browse.travelPlans + '\n';
-        activeTravelPlans.slice(0, 10).forEach(doc => {
-          const plan = doc.data();
-          const fromCity = plan.fromCity || 'Unknown';
-          const toCity = plan.toCity || 'Unknown';
-          const date = plan.departureDate ? new Date(plan.departureDate.toDate()).toLocaleDateString() : 'Date TBD';
-          message += `• ${fromCity} → ${toCity} (${date})\n`;
-        });
-        message += '\n';
-      }
-      
-      if (activeFavorRequests.length > 0) {
-        message += messages.commands.browse.favorRequests + '\n';
-        activeFavorRequests.slice(0, 10).forEach(doc => {
-          const request = doc.data();
-          const fromCity = request.fromCity || 'Unknown';
-          const toCity = request.toCity || 'Unknown';
-          // Handle both old single category and new multiple categories
-          let categoryDisplay = 'Various';
-          if (request.categories && Array.isArray(request.categories)) {
-            categoryDisplay = request.categories.length > 1 
-              ? `${request.categories.length} items` 
-              : request.categories[0];
-          } else if (request.category) {
-            categoryDisplay = request.category;
-          }
-          message += `• ${fromCity} → ${toCity}: ${categoryDisplay} (${request.urgency})\n`;
-        });
-      }
-      
-      message += '\n' + messages.commands.browse.footer;
-      
-      await ctx.reply(message, { parse_mode: 'HTML' });
-    } catch (error) {
-      logEvent.commandError('browse', error, 'unknown');
-      ctx.reply(messages.common.genericError);
-    }
+    const { handleBrowse } = require('./sharedHandlers');
+    await handleBrowse(ctx, false);
   });
   
   // Settings command

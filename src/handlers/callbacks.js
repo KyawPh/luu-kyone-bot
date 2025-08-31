@@ -95,77 +95,8 @@ const setupCallbacks = (bot) => {
   });
   
   bot.action('browse_requests', async (ctx) => {
-    await ctx.answerCbQuery();
-    
-    try {
-      // Get recent travel plans and favor requests (simplified to avoid index requirements)
-      const [travelPlans, favorRequests] = await Promise.all([
-        collections.travelPlans
-          .orderBy('createdAt', 'desc')
-          .limit(20)
-          .get(),
-        collections.favorRequests
-          .orderBy('createdAt', 'desc')
-          .limit(20)
-          .get()
-      ]);
-      
-      // Filter for active status in memory
-      const activeTravelPlans = [];
-      const activeFavorRequests = [];
-      
-      travelPlans.forEach(doc => {
-        if (doc.data().status === 'active') {
-          activeTravelPlans.push(doc);
-        }
-      });
-      
-      favorRequests.forEach(doc => {
-        if (doc.data().status === 'active') {
-          activeFavorRequests.push(doc);
-        }
-      });
-      
-      if (activeTravelPlans.length === 0 && activeFavorRequests.length === 0) {
-        return ctx.editMessageText(messages.errors.noActivePost);
-      }
-      
-      let message = '📋 <b>Recent Active Posts</b>\n\n';
-      
-      if (activeTravelPlans.length > 0) {
-        message += '<b>✈️ Travel Plans:</b>\n';
-        activeTravelPlans.slice(0, 10).forEach(doc => {
-          const plan = doc.data();
-          const fromCity = plan.fromCity || 'Unknown';
-          const toCity = plan.toCity || 'Unknown';
-          const date = plan.departureDate ? new Date(plan.departureDate.toDate()).toLocaleDateString() : 'Date TBD';
-          message += `• ${fromCity} → ${toCity} (${date})\n`;
-        });
-        message += '\n';
-      }
-      
-      if (activeFavorRequests.length > 0) {
-        message += '<b>📦 Favor Requests:</b>\n';
-        activeFavorRequests.slice(0, 10).forEach(doc => {
-          const request = doc.data();
-          const fromCity = request.fromCity || 'Unknown';
-          const toCity = request.toCity || 'Unknown';
-          message += `• ${fromCity} → ${toCity}: ${request.category} (${request.urgency})\n`;
-        });
-      }
-      
-      message += '\n<i>Visit our channel @LuuKyone_Community for details</i>';
-      
-      await ctx.editMessageText(message, { parse_mode: 'HTML' });
-      
-      // Show main menu again
-      setTimeout(() => {
-        ctx.reply(messages.common.whatToDo, mainMenu());
-      }, 500);
-    } catch (error) {
-      logger.error('Browse callback error', { error: error.message });
-      ctx.reply(messages.common.genericError);
-    }
+    const { handleBrowse } = require('./sharedHandlers');
+    await handleBrowse(ctx, true);
   });
   
   bot.action('my_profile', async (ctx) => {
