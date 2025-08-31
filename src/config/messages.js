@@ -57,16 +57,16 @@ const messages = {
   // Scene Messages (ENGLISH)
   scenes: {
     travel: {
-      title: '✈️ <b>Share Your Travel Plan</b>',
+      title: '✈️ <b>ခရီးစဉ်ကို မျှဝေပါ</b>',
       steps: {
-        selectRoute: 'Select your travel route:',
+        selectRoute: 'သင်သွားမယ့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ –',
         fromCity: 'Step 1: Where are you traveling FROM?',
         toCity: 'Step 2: Where are you traveling TO?',
-        departure: 'Step 2: When is your DEPARTURE date?',
+        departure: 'Step 2: ထွက်ခွာမယ့် ရက်စွဲကို ရွေးချယ်ပါ -',
         departureCustom: 'Step 2: Please enter the departure date in format DD/MM/YYYY:',
-        weight: 'Step 3: How much luggage space do you have available?',
+        weight: 'Step 3: သယ်ယူနိုင်သော အလေးချိန်ကို ရွေးချယ်ပါ -',
         weightCustom: 'Step 3: Enter the available weight in kg (e.g., "20" or "20 kg"):',
-        categories: 'Step 4: What categories can you help with?\n<i>Select multiple categories, then confirm</i>'
+        categories: 'Step 4: သယ်ယူရန် အဆင်ပြေသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ\n<i>တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။</i>'
       },
       categorySelection: {
         title: 'Selected Categories:',

@@ -95,7 +95,7 @@ const setupCommands = (bot) => {
         const postsRemaining = (user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth) - postCount;
         
         await ctx.reply(
-          `Welcome back, ${userName}! 🤝\n\n` +
+          `${userName} ကို ပြန်လည် ကြိုဆိုပါတယ်🤝✨\n\n` +
           `<i>"Every act of kindness creates a ripple"</i>\n\n` +
           `<b>Your impact so far:</b>\n` +
           `📊 Favors this month: ${postCount}/${user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth}\n` +
