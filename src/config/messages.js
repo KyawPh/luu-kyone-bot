@@ -54,7 +54,7 @@ const messages = {
     }
   },
 
-  // Scene Messages (ENGLISH)
+  // Scene Messages (MYANMAR)
   scenes: {
     travel: {
       title: '✈️ <b>ခရီးစဉ်ကို မျှဝေပါ</b>',
@@ -69,17 +69,17 @@ const messages = {
         categories: 'Step 4: သယ်ယူရန် အဆင်ပြေသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ။ တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။'
       },
       categorySelection: {
-        title: 'Selected Categories:',
-        prompt: 'Add more categories or confirm to post:'
+        title: 'ရွေးချယ်ထားသော ပစ္စည်းအမျိုးအစားများ - ',
+        prompt: 'တစ်ခုထပ်ပို၍ ရွေးချယ်ပါ (သို့) အတည်ပြု၍ ရှေ့ဆက်ပါ'
       },
       confirmation: {
-        title: '✅ <b>Travel Plan Posted Successfully!</b>',
-        body: 'Your travel plan has been shared with the community.\nYou will be notified when someone needs your help.',
+        title: '✅ <b>ခရီးစဉ်ကို အောင်မြင်စွာ post လုပ်ပြီးပါပြီ။</b>',
+        body: 'သင်၏ ခရီးစဉ်ကို Luu Kyone Community တွင်လည်း share ပြီးပါပြီ။',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your post)</i>'
       },
-      cancelled: '❌ Travel plan cancelled.',
+      cancelled: '❌ ခရီးစဉ်ကို ဖျက်ပြီးပါပြီ။',
       nextPrompt: 'What would you like to do next?',
-      whatToDo: 'What would you like to do?',
+      whatToDo: 'လုပ်ဆောင်လိုသည်ကို ရွေးချယ်ပါ?',
       errorPosting: '❌ An error occurred while posting. Please try again.'
     },
     
@@ -95,19 +95,19 @@ const messages = {
         weightCustom: 'Step 4: ပစ္စည်း အလေးချိန်ကို kg ဖြင့်ထည့်ပါ (e.g., "20" or "20 kg"):'
       },
       categorySelection: {
-        title: 'Selected Categories:',
-        prompt: 'Add more categories or confirm your selection:'
+        title: 'ရွေးချယ်ထားသော ပစ္စည်းအမျိုးအစားများ -',
+        prompt: 'တစ်ခုထပ်ပို၍ ရွေးချယ်ပါ (သို့) အတည်ပြု၍ ရှေ့ဆက်ပါ'
       },
       confirmation: {
-        title: '✅ <b>Favor Request Posted Successfully!</b>',
-        body: 'Your request has been shared with the community.\nTravelers on your route will be notified.',
+        title: '✅ <b>ပစ္စည်းပို့ရန် အောင်မြင်စွာ post လုပ်ပြီးပါပြီ။</b>',
+        body: 'သင်၏ ပစ္စည်းကိုပို့ရန် Luu Kyone Community တွင်လည်း share ပြီးပါပြီ။',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your request)</i>'
       },
-      cancelled: '❌ Favor request cancelled.',
+      cancelled: '❌ ပစ္စည်းပို့ရန်တောင်းဆိုမှုကို ဖျက်ပြီးပါပြီ။',
       photoProcessing: '📸 Processing photo...',
       photoError: '❌ Failed to process photo. You can skip or try again.',
       nextPrompt: 'What would you like to do next?',
-      whatToDo: 'What would you like to do?',
+      whatToDo: 'လုပ်ဆောင်လိုသည်ကို ရွေးချယ်ပါ?',
       errorPosting: '❌ An error occurred while posting. Please try again.'
     }
   },
