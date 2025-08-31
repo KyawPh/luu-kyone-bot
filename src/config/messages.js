@@ -59,14 +59,14 @@ const messages = {
     travel: {
       title: '✈️ <b>ခရီးစဉ်ကို မျှဝေပါ</b>',
       steps: {
-        selectRoute: 'သင်သွားမယ့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ –',
+        selectRoute: 'သင်သွားမယ့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ',
         fromCity: 'Step 1: Where are you traveling FROM?',
         toCity: 'Step 2: Where are you traveling TO?',
-        departure: 'Step 2: ထွက်ခွာမယ့် ရက်စွဲကို ရွေးချယ်ပါ -',
-        departureCustom: 'Step 2: Please enter the departure date in format DD/MM/YYYY:',
-        weight: 'Step 3: သယ်ယူနိုင်သော အလေးချိန်ကို ရွေးချယ်ပါ -',
-        weightCustom: 'Step 3: Enter the available weight in kg (e.g., "20" or "20 kg"):',
-        categories: 'Step 4: သယ်ယူရန် အဆင်ပြေသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ\n<i>တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။</i>'
+        departure: 'Step 2: ထွက်ခွာမယ့် ရက်စွဲကို ရွေးချယ်ပါ',
+        departureCustom: 'Step 2: Please enter the departure date in format \nDD/MM/YYYY:',
+        weight: 'Step 3: သယ်ယူနိုင်သော အလေးချိန်ကို ရွေးချယ်ပါ',
+        weightCustom: 'Step 3: သယ်ယူနိုင်သော အလေးချိန်ကို kg ဖြင့်ထည့်ပါ  (e.g., "20" or "20 kg"):',
+        categories: 'Step 4: သယ်ယူရန် အဆင်ပြေသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ။ တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။'
       },
       categorySelection: {
         title: 'Selected Categories:',
@@ -84,15 +84,15 @@ const messages = {
     },
     
     favor: {
-      title: '📦 <b>Request a Personal Favor</b>',
+      title: '📦 <b>ပစ္စည်းပို့ရန် တောင်းဆိုပါ</b>',
       steps: {
-        selectRoute: 'Select your route:',
+        selectRoute: 'ပစ္စည်းပို့မည့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ',
         fromCity: 'Step 1: Where does the item need to be picked up FROM?',
         toCity: 'Step 2: Where does the item need to be delivered TO?',
-        categories: 'Step 2: What category does your item belong to?',
-        urgency: 'Step 3: How urgent is your request?',
-        weight: 'Step 4: How much does the item weigh?',
-        weightCustom: 'Step 4: Enter the weight in kg (e.g., "20" or "20 kg"):'
+        categories: 'Step 2: ပို့ဆောင်လိုသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ။ တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။?',
+        urgency: 'Step 3: ပို့လိုသော အချိန် အပိုင်းအခြား တစ်ခုကို ရွေးချယ်ပါ',
+        weight: 'Step 4: ပစ္စည်း အလေးချိန်ကို ရွေးချယ်ပါ?',
+        weightCustom: 'Step 4: ပစ္စည်း အလေးချိန်ကို kg ဖြင့်ထည့်ပါ (e.g., "20" or "20 kg"):'
       },
       categorySelection: {
         title: 'Selected Categories:',
