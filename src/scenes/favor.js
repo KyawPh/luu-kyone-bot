@@ -326,7 +326,6 @@ async function postFavorRequest(ctx) {
     // Success message
     await ctx.editMessageText(
       messages.scenes.favor.confirmation.title + '\n\n' +
-      messages.scenes.favor.confirmation.body + '\n\n' +
       formatMessage(messages.scenes.favor.confirmation.reference, { postId }),
       { parse_mode: 'HTML' }
     );

@@ -342,7 +342,6 @@ travelScene.action('confirm_post', async (ctx) => {
     // Success message
     await ctx.editMessageText(
       messages.scenes.travel.confirmation.title + '\n\n' +
-      messages.scenes.travel.confirmation.body + '\n\n' +
       formatMessage(messages.scenes.travel.confirmation.reference, { postId }),
       { parse_mode: 'HTML' }
     );

@@ -58,10 +58,8 @@ const messages = {
       title: '✈️ <b>ခရီးစဉ်ကို မျှဝေပါ</b>',
       steps: {
         selectRoute: 'သင်သွားမယ့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ',
-        fromCity: 'Step 1: Where are you traveling FROM?',
-        toCity: 'Step 2: Where are you traveling TO?',
         departure: 'Step 2: ထွက်ခွာမယ့် ရက်စွဲကို ရွေးချယ်ပါ',
-        departureCustom: 'Step 2: Please enter the departure date in format \nDD/MM/YYYY:',
+        departureCustom: 'Step 2: ထွက်ခွာမယ့် ရက်စွဲကို ပြသထားသော ပုံစံအတိုင်း ဖြည့်ပေးပါ\nDD/MM/YYYY:',
         weight: 'Step 3: သယ်ယူနိုင်သော အလေးချိန်ကို ရွေးချယ်ပါ',
         weightCustom: 'Step 3: သယ်ယူနိုင်သော အလေးချိန်ကို kg ဖြင့်ထည့်ပါ  (e.g., "20" or "20 kg"):',
         categories: 'Step 4: သယ်ယူရန် အဆင်ပြေသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ။ တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။'
@@ -72,7 +70,6 @@ const messages = {
       },
       confirmation: {
         title: '✅ <b>ခရီးစဉ်ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
-        body: 'သင်၏ ခရီးစဉ်ကို Luu Kyone Community တွင်လည်း share ပြီးပါပြီ။',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your post)</i>'
       },
       cancelled: '❌ ခရီးစဉ်ကို ဖျက်ပြီးပါပြီ။',
@@ -98,7 +95,6 @@ const messages = {
       },
       confirmation: {
         title: '✅ <b>ပစ္စည်းပို့ရန် ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
-        body: 'သင်၏ ပစ္စည်းကိုပို့ရန် Luu Kyone Community တွင်လည်း share ပြီးပါပြီ။',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your request)</i>'
       },
       cancelled: '❌ ပစ္စည်းပို့ရန်တောင်းဆိုမှုကို ဖျက်ပြီးပါပြီ။',
