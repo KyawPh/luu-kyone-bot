@@ -125,82 +125,14 @@ const setupCommands = (bot) => {
   
   // Travel command
   bot.command('travel', async (ctx) => {
-    const userId = ctx.from.id.toString();
-    
-    try {
-      // Check channel membership first
-      const isMember = await checkChannelMembership(bot, userId, config.telegram.channelId);
-      
-      if (!isMember) {
-        return ctx.reply(
-          messages.errors.notMember + '\n\n' +
-          'Use /start to get the join link.'
-        );
-      }
-      
-      // Check if user exists
-      const userDoc = await collections.users.doc(userId).get();
-      if (!userDoc.exists) {
-        return ctx.reply(messages.common.startBotFirst);
-      }
-      
-      // Check post limit
-      const postCheck = await canCreatePost(userId, userDoc.data().isPremium, collections);
-      
-      if (!postCheck.canCreate) {
-        return ctx.reply(
-          `❌ You've reached your monthly limit of ${postCheck.limit} posts.\n` +
-          `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
-          `Your limit will reset next month.`
-        );
-      }
-      
-      // Enter travel scene
-      ctx.scene.enter('travelScene');
-    } catch (error) {
-      logEvent.commandError('travel', error, userId);
-      ctx.reply(messages.common.genericError);
-    }
+    const { handleTravel } = require('./sharedHandlers');
+    await handleTravel(ctx, false, bot);
   });
   
   // Favor command
   bot.command('favor', async (ctx) => {
-    const userId = ctx.from.id.toString();
-    
-    try {
-      // Check channel membership first
-      const isMember = await checkChannelMembership(bot, userId, config.telegram.channelId);
-      
-      if (!isMember) {
-        return ctx.reply(
-          messages.errors.notMember + '\n\n' +
-          'Use /start to get the join link.'
-        );
-      }
-      
-      // Check if user exists
-      const userDoc = await collections.users.doc(userId).get();
-      if (!userDoc.exists) {
-        return ctx.reply(messages.common.startBotFirst);
-      }
-      
-      // Check post limit
-      const postCheck = await canCreatePost(userId, userDoc.data().isPremium, collections);
-      
-      if (!postCheck.canCreate) {
-        return ctx.reply(
-          `❌ You've reached your monthly limit of ${postCheck.limit} posts.\n` +
-          `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
-          `Your limit will reset next month.`
-        );
-      }
-      
-      // Enter favor scene
-      ctx.scene.enter('favorScene');
-    } catch (error) {
-      logEvent.commandError('favor', error, userId);
-      ctx.reply(messages.common.genericError);
-    }
+    const { handleFavor } = require('./sharedHandlers');
+    await handleFavor(ctx, false, bot);
   });
   
   // Browse command

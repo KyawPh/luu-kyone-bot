@@ -1,6 +1,10 @@
 const { mainMenu } = require('../utils/keyboards');
 const { LIMITS } = require('../config/constants');
 const { messages, formatMessage } = require('../config/messages');
+const { collections } = require('../config/firebase');
+const { canCreatePost, checkChannelMembership } = require('../utils/helpers');
+const { logger, logEvent } = require('../utils/logger');
+const { config } = require('../config');
 
 /**
  * Generates the help message content
@@ -72,7 +76,127 @@ const handleHelp = async (ctx, isCallback = false) => {
   }
 };
 
+/**
+ * Unified travel handler for both command and inline button
+ * @param {Context} ctx - Telegraf context
+ * @param {boolean} isCallback - Whether this is from an inline button callback
+ * @param {Object} bot - Bot instance (needed for channel membership check)
+ */
+const handleTravel = async (ctx, isCallback = false, bot = null) => {
+  const userId = ctx.from.id.toString();
+  
+  try {
+    // For commands, check channel membership first
+    if (!isCallback && bot) {
+      const isMember = await checkChannelMembership(bot, userId, config.telegram.channelId);
+      
+      if (!isMember) {
+        return ctx.reply(
+          messages.errors.notMember + '\n\n' +
+          'Use /start to get the join link.'
+        );
+      }
+    }
+    
+    // Check if user exists
+    const userDoc = await collections.users.doc(userId).get();
+    if (!userDoc.exists) {
+      const message = messages.common.startBotFirst;
+      return isCallback ? ctx.editMessageText(message) : ctx.reply(message);
+    }
+    
+    // Check post limit
+    const postCheck = await canCreatePost(userId, userDoc.data().isPremium, collections);
+    
+    if (!postCheck.canCreate) {
+      const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
+        `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
+        `Your limit will reset next month.`;
+      
+      return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
+    }
+    
+    // Enter travel scene with appropriate context
+    if (isCallback) {
+      await ctx.answerCbQuery();
+      ctx.scene.enter('travelScene', { 
+        messageToEdit: ctx.callbackQuery.message 
+      });
+    } else {
+      ctx.scene.enter('travelScene');
+    }
+  } catch (error) {
+    const errorContext = isCallback ? 'create_travel callback' : 'travel command';
+    logEvent.commandError(errorContext, error, userId);
+    logger.error(`${errorContext} error`, { error: error.message, userId });
+    
+    const errorMessage = messages.common.genericError;
+    return isCallback ? ctx.editMessageText(errorMessage) : ctx.reply(errorMessage);
+  }
+};
+
+/**
+ * Unified favor handler for both command and inline button
+ * @param {Context} ctx - Telegraf context
+ * @param {boolean} isCallback - Whether this is from an inline button callback
+ * @param {Object} bot - Bot instance (needed for channel membership check)
+ */
+const handleFavor = async (ctx, isCallback = false, bot = null) => {
+  const userId = ctx.from.id.toString();
+  
+  try {
+    // For commands, check channel membership first
+    if (!isCallback && bot) {
+      const isMember = await checkChannelMembership(bot, userId, config.telegram.channelId);
+      
+      if (!isMember) {
+        return ctx.reply(
+          messages.errors.notMember + '\n\n' +
+          'Use /start to get the join link.'
+        );
+      }
+    }
+    
+    // Check if user exists
+    const userDoc = await collections.users.doc(userId).get();
+    if (!userDoc.exists) {
+      const message = messages.common.startBotFirst;
+      return isCallback ? ctx.editMessageText(message) : ctx.reply(message);
+    }
+    
+    // Check post limit
+    const postCheck = await canCreatePost(userId, userDoc.data().isPremium, collections);
+    
+    if (!postCheck.canCreate) {
+      const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
+        `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
+        `Your limit will reset next month.`;
+      
+      return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
+    }
+    
+    // Enter favor scene with appropriate context
+    if (isCallback) {
+      await ctx.answerCbQuery();
+      ctx.scene.enter('favorScene', { 
+        messageToEdit: ctx.callbackQuery.message 
+      });
+    } else {
+      ctx.scene.enter('favorScene');
+    }
+  } catch (error) {
+    const errorContext = isCallback ? 'create_favor callback' : 'favor command';
+    logEvent.commandError(errorContext, error, userId);
+    logger.error(`${errorContext} error`, { error: error.message, userId });
+    
+    const errorMessage = messages.common.genericError;
+    return isCallback ? ctx.editMessageText(errorMessage) : ctx.reply(errorMessage);
+  }
+};
+
 module.exports = {
   generateHelpMessage,
-  handleHelp
+  handleHelp,
+  handleTravel,
+  handleFavor
 };

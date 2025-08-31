@@ -85,67 +85,13 @@ const setupCallbacks = (bot) => {
   
   // Main menu callbacks
   bot.action('create_travel', async (ctx) => {
-    await ctx.answerCbQuery();
-    const userId = ctx.from.id.toString();
-    
-    try {
-      // Check if user exists
-      const userDoc = await collections.users.doc(userId).get();
-      if (!userDoc.exists) {
-        return ctx.editMessageText(messages.common.startBotFirst);
-      }
-      
-      // Check post limit
-      const postCheck = await canCreatePost(userId, userDoc.data().isPremium, collections);
-      
-      if (!postCheck.canCreate) {
-        return ctx.editMessageText(
-          formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
-          `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
-          `Your limit will reset next month.`
-        );
-      }
-      
-      // Pass the message info when entering the scene
-      ctx.scene.enter('travelScene', { 
-        messageToEdit: ctx.callbackQuery.message 
-      });
-    } catch (error) {
-      logger.error('Create travel callback error', { error: error.message, userId });
-      ctx.editMessageText(messages.common.genericError);
-    }
+    const { handleTravel } = require('./sharedHandlers');
+    await handleTravel(ctx, true);
   });
   
   bot.action('create_favor', async (ctx) => {
-    await ctx.answerCbQuery();
-    const userId = ctx.from.id.toString();
-    
-    try {
-      // Check if user exists
-      const userDoc = await collections.users.doc(userId).get();
-      if (!userDoc.exists) {
-        return ctx.editMessageText(messages.common.startBotFirst);
-      }
-      
-      // Check post limit
-      const postCheck = await canCreatePost(userId, userDoc.data().isPremium, collections);
-      
-      if (!postCheck.canCreate) {
-        return ctx.editMessageText(
-          formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
-          `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
-          `Your limit will reset next month.`
-        );
-      }
-      
-      // Pass the message info when entering the scene
-      ctx.scene.enter('favorScene', { 
-        messageToEdit: ctx.callbackQuery.message 
-      });
-    } catch (error) {
-      logger.error('Create favor callback error', { error: error.message, userId });
-      ctx.editMessageText(messages.common.genericError);
-    }
+    const { handleFavor } = require('./sharedHandlers');
+    await handleFavor(ctx, true);
   });
   
   bot.action('browse_requests', async (ctx) => {
