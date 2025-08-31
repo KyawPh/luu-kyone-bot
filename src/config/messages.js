@@ -19,6 +19,8 @@ const messages = {
     mainMenu: {
       travel: '✈️ ခရီးစဥ်',
       favor: '📦 ပါဆယ်',
+      browse: '📋 ကြည့်ရှုရန်',
+      profile: '👤 ပရိုဖိုင်',
       help: '📚 အကူအညီ',
       settings: '⚙️ ဆက်တင်'
     },

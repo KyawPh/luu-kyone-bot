@@ -10,6 +10,10 @@ const mainMenu = () => {
       Markup.button.callback(messages.buttons.mainMenu.favor, 'create_favor')
     ],
     [
+      Markup.button.callback(messages.buttons.mainMenu.browse, 'browse_requests'),
+      Markup.button.callback(messages.buttons.mainMenu.profile, 'my_profile')
+    ],
+    [
       Markup.button.callback(messages.buttons.mainMenu.help, 'help'),
       Markup.button.callback(messages.buttons.mainMenu.settings, 'settings')
     ]
