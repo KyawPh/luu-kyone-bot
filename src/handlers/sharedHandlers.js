@@ -56,17 +56,17 @@ const handleHelp = async (ctx, isCallback = false) => {
   const helpMessage = generateHelpMessage();
   
   if (isCallback) {
-    // For inline button: edit the message and show main menu after
+    // For inline button: edit the message with back button
     await ctx.answerCbQuery();
+    const { Markup } = require('telegraf');
+    const keyboard = Markup.inlineKeyboard([
+      [Markup.button.callback(messages.buttons.common.backToMenu, 'back_to_menu')]
+    ]);
     await ctx.editMessageText(helpMessage, { 
       parse_mode: 'HTML',
-      disable_web_page_preview: true 
+      disable_web_page_preview: true,
+      ...keyboard
     });
-    
-    // Show main menu after a short delay
-    setTimeout(() => {
-      ctx.reply(messages.common.whatToDo, mainMenu());
-    }, 500);
   } else {
     // For command: send as new message
     await ctx.reply(helpMessage, { 
@@ -247,12 +247,15 @@ const handleProfile = async (ctx, isCallback = false) => {
     
     if (isCallback) {
       await ctx.answerCbQuery();
-      await ctx.editMessageText(profileMessage, { parse_mode: 'HTML' });
-      
-      // Show main menu after a short delay
-      setTimeout(() => {
-        ctx.reply(messages.common.whatToDo, mainMenu());
-      }, 500);
+      // Add back to menu button
+      const { Markup } = require('telegraf');
+      const keyboard = Markup.inlineKeyboard([
+        [Markup.button.callback(messages.buttons.common.backToMenu, 'back_to_menu')]
+      ]);
+      await ctx.editMessageText(profileMessage, { 
+        parse_mode: 'HTML',
+        ...keyboard
+      });
     } else {
       await ctx.reply(profileMessage, { parse_mode: 'HTML' });
     }
@@ -369,12 +372,15 @@ const handleBrowse = async (ctx, isCallback = false) => {
     
     if (isCallback) {
       await ctx.answerCbQuery();
-      await ctx.editMessageText(message, { parse_mode: 'HTML' });
-      
-      // Show main menu again
-      setTimeout(() => {
-        ctx.reply(messages.common.whatToDo, mainMenu());
-      }, 500);
+      // Add back to menu button
+      const { Markup } = require('telegraf');
+      const keyboard = Markup.inlineKeyboard([
+        [Markup.button.callback(messages.buttons.common.backToMenu, 'back_to_menu')]
+      ]);
+      await ctx.editMessageText(message, { 
+        parse_mode: 'HTML',
+        ...keyboard
+      });
     } else {
       await ctx.reply(message, { parse_mode: 'HTML' });
     }
@@ -385,6 +391,29 @@ const handleBrowse = async (ctx, isCallback = false) => {
   }
 };
 
+/**
+ * Handle back to menu action
+ * @param {Context} ctx - Telegraf context
+ */
+const handleBackToMenu = async (ctx) => {
+  await ctx.answerCbQuery();
+  const userName = ctx.from.first_name;
+  
+  // Create a welcoming message for returning to menu
+  const menuMessage = [
+    `👋 Hi ${userName}!`,
+    '',
+    '💚 What would you like to do today?',
+    '',
+    'Choose an option below to get started.'
+  ].join('\n');
+  
+  await ctx.editMessageText(menuMessage, {
+    parse_mode: 'HTML',
+    ...mainMenu()
+  });
+};
+
 module.exports = {
   generateHelpMessage,
   handleHelp,
@@ -392,5 +421,6 @@ module.exports = {
   handleFavor,
   handleProfile,
   handleSettings,
-  handleBrowse
+  handleBrowse,
+  handleBackToMenu
 };

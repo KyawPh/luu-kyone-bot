@@ -114,6 +114,11 @@ const setupCallbacks = (bot) => {
     await handleSettings(ctx, true);
   });
   
+  bot.action('back_to_menu', async (ctx) => {
+    const { handleBackToMenu } = require('./sharedHandlers');
+    await handleBackToMenu(ctx);
+  });
+  
   // Contact button handler
   bot.action(/^contact_(.+)_(.+)_(.+)$/, async (ctx) => {
     const [postType, postId, posterId] = ctx.match.slice(1);

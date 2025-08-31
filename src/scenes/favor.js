@@ -353,14 +353,27 @@ async function postFavorRequest(ctx) {
   }
 }
 
-// Handle cancel
+// Handle cancel - return to main menu cleanly
 favorScene.action(['cancel', 'cancel_favor'], async (ctx) => {
   await ctx.answerCbQuery();
-  await ctx.editMessageText(messages.scenes.favor.cancelled);
   const userId = ctx.from.id.toString();
+  const userName = ctx.from.first_name;
   logEvent.sceneLeft(userId, 'favorScene', 'cancelled');
   ctx.scene.leave();
-  ctx.reply(messages.scenes.favor.whatToDo, mainMenu());
+  
+  // Return to main menu directly
+  const menuMessage = [
+    `👋 Hi ${userName}!`,
+    '',
+    '💚 What would you like to do today?',
+    '',
+    'Choose an option below to get started.'
+  ].join('\n');
+  
+  await ctx.editMessageText(menuMessage, {
+    parse_mode: 'HTML',
+    ...mainMenu()
+  });
 });
 
 module.exports = favorScene;

@@ -373,14 +373,27 @@ async function handleConfirmPost(ctx, useReply = false) {
   }
 }
 
-// Handle cancel
+// Handle cancel - return to main menu cleanly
 travelScene.action('cancel', async (ctx) => {
   await ctx.answerCbQuery();
-  await ctx.editMessageText(messages.scenes.travel.cancelled);
   const userId = ctx.from.id.toString();
+  const userName = ctx.from.first_name;
   logEvent.sceneLeft(userId, 'travelScene', 'cancelled');
   ctx.scene.leave();
-  ctx.reply(messages.scenes.travel.whatToDo, mainMenu());
+  
+  // Return to main menu directly
+  const menuMessage = [
+    `👋 Hi ${userName}!`,
+    '',
+    '💚 What would you like to do today?',
+    '',
+    'Choose an option below to get started.'
+  ].join('\n');
+  
+  await ctx.editMessageText(menuMessage, {
+    parse_mode: 'HTML',
+    ...mainMenu()
+  });
 });
 
 module.exports = travelScene;

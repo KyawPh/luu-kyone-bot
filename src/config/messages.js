@@ -27,6 +27,7 @@ const messages = {
     common: {
       cancel: '❌ မလုပ်တော့ပါ',
       back: '⬅️ နောက်သို့',
+      backToMenu: '🏠 မူလစာမျက်နှာ',
       skip: '⏭️ ကျော်သွားရန်',
       confirm: '✅ အတည်ပြုမည်',
       confirmCategories: '✅ အတည်ပြုမည်',
