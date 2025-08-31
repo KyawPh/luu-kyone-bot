@@ -332,7 +332,7 @@ async function postFavorRequest(ctx) {
     
     // Show main menu
     setTimeout(() => {
-      ctx.reply(messages.scenes.favor.nextPrompt, mainMenu());
+      ctx.reply(messages.scenes.favor.whatToDo, mainMenu());
     }, 1000);
     
     // Leave scene

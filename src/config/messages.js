@@ -72,8 +72,7 @@ const messages = {
         title: '✅ <b>ခရီးစဉ်ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your post)</i>'
       },
-      cancelled: '❌ ခရီးစဉ်ကို ဖျက်ပြီးပါပြီ။',
-      nextPrompt: 'What would you like to do next?',
+      cancelled: '❌ ခရီးစဉ်ကို မပြုလုပ်တော့ပါ။',
       whatToDo: 'လုပ်ဆောင်လိုသည်ကို ရွေးချယ်ပါ?',
       errorPosting: '❌ An error occurred while posting. Please try again.'
     },
@@ -82,8 +81,6 @@ const messages = {
       title: '📦 <b>ပစ္စည်းပို့ရန် တောင်းဆိုပါ</b>',
       steps: {
         selectRoute: 'ပစ္စည်းပို့မည့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ',
-        fromCity: 'Step 1: Where does the item need to be picked up FROM?',
-        toCity: 'Step 2: Where does the item need to be delivered TO?',
         categories: 'Step 2: ပို့ဆောင်လိုသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ။ တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။?',
         urgency: 'Step 3: ပို့လိုသော အချိန် အပိုင်းအခြား တစ်ခုကို ရွေးချယ်ပါ',
         weight: 'Step 4: ပစ္စည်း အလေးချိန်ကို ရွေးချယ်ပါ?',
@@ -97,10 +94,7 @@ const messages = {
         title: '✅ <b>ပစ္စည်းပို့ရန် ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your request)</i>'
       },
-      cancelled: '❌ ပစ္စည်းပို့ရန်တောင်းဆိုမှုကို ဖျက်ပြီးပါပြီ။',
-      photoProcessing: '📸 Processing photo...',
-      photoError: '❌ Failed to process photo. You can skip or try again.',
-      nextPrompt: 'What would you like to do next?',
+      cancelled: '❌ ပစ္စည်းပို့ရန်တောင်းဆိုမှုကို မပြုလုပ်တော့ပါ။',
       whatToDo: 'လုပ်ဆောင်လိုသည်ကို ရွေးချယ်ပါ?',
       errorPosting: '❌ An error occurred while posting. Please try again.'
     }
@@ -185,8 +179,6 @@ const messages = {
   system: {
     channelMembershipRequired: '📢 First, you need to join @LuuKyone_Community',
     checkMembership: 'Checking channel membership...',
-    processingPhoto: '📸 Processing photo...',
-    photoError: '❌ Failed to process photo. You can skip or try again.',
     savingPost: 'Saving your post...',
     postingToChannel: 'Posting to community channel...'
   },

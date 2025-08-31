@@ -348,7 +348,7 @@ travelScene.action('confirm_post', async (ctx) => {
     
     // Show main menu
     setTimeout(() => {
-      ctx.reply(messages.scenes.travel.nextPrompt, mainMenu());
+      ctx.reply(messages.scenes.travel.whatToDo, mainMenu());
     }, 1000);
     
     // Leave scene
