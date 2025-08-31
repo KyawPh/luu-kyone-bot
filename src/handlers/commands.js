@@ -67,21 +67,19 @@ const setupCommands = (bot) => {
         logEvent.userJoined(userId, userName);
         
         // Send welcome message for new user
-        await ctx.reply(
-          `💚 <b>Welcome to Our Kindness Community!</b>\n\n` +
-          `Hi ${userName}! You've just joined something special.\n\n` +
-          `<b>Luu Kyone</b> (လူကြုံ) connects kind hearts across cities. We're neighbors helping neighbors with personal favors - not a delivery service.\n\n` +
-          `<b>How it works:</b>\n` +
-          `✈️ <b>Traveling?</b> Your empty luggage space can bring joy\n` +
-          `🤝 <b>Need a favor?</b> Your neighbor might be traveling home\n\n` +
-          `<b>Our routes:</b> 🇸🇬 Singapore ↔ 🇹🇭 Bangkok ↔ 🇲🇲 Yangon\n\n` +
-          `<i>"Small acts, when multiplied by millions of people,\ncan transform the world"</i>\n\n` +
-          `Ready to spread kindness? Let's start! 🙏`,
-          { 
-            parse_mode: 'HTML',
-            ...mainMenu()
-          }
-        );
+        const welcomeMsg = [
+          formatMessage(messages.commands.start.newUser.greeting, { userName }),
+          messages.commands.start.newUser.intro,
+          messages.commands.start.newUser.howItWorks,
+          messages.commands.start.newUser.routes,
+          messages.commands.start.newUser.motto,
+          messages.commands.start.newUser.ready
+        ].join('\n\n');
+        
+        await ctx.reply(welcomeMsg, { 
+          parse_mode: 'HTML',
+          ...mainMenu()
+        });
       } else {
         // Update last active and membership status
         await collections.users.doc(userId).update({
@@ -94,18 +92,22 @@ const setupCommands = (bot) => {
         const postCount = await require('../utils/helpers').getMonthlyPostCount(userId, collections);
         const postsRemaining = (user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth) - postCount;
         
-        await ctx.reply(
-          `${userName} ကို ပြန်လည် ကြိုဆိုပါတယ်🤝✨\n\n` +
-          `<i>"Every act of kindness creates a ripple"</i>\n\n` +
-          `<b>Your impact so far:</b>\n` +
-          `📊 Favors this month: ${postCount}/${user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth}\n` +
-          `${user.completedFavors > 0 ? `💚 Acts of kindness: ${user.completedFavors}\n⭐ You're making a difference!` : `🌱 Your first act of kindness awaits!`}\n\n` +
-          `Someone might need your help today. Let's see! 🙏`,
-          { 
-            parse_mode: 'HTML',
-            ...mainMenu()
-          }
-        );
+        const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
+        const returningMsg = [
+          formatMessage(messages.commands.start.returningUser.greeting, { userName }),
+          messages.commands.start.returningUser.motto,
+          messages.commands.start.returningUser.impact,
+          formatMessage(messages.commands.start.returningUser.postsMonth, { current: postCount, limit }),
+          user.completedFavors > 0 ? 
+            formatMessage(messages.commands.start.returningUser.completedFavors, { count: user.completedFavors }) + '\n' + messages.commands.start.returningUser.makingDifference :
+            messages.commands.start.returningUser.firstAct,
+          messages.commands.start.returningUser.ready
+        ].join('\n\n');
+        
+        await ctx.reply(returningMsg, { 
+          parse_mode: 'HTML',
+          ...mainMenu()
+        });
       }
       
       logEvent.userStarted(userId, userName);
@@ -117,42 +119,15 @@ const setupCommands = (bot) => {
   
   // Help command
   bot.command('help', async (ctx) => {
-    const helpMessage = `
-❓ <b>How Luu Kyone Works</b>
-
-We connect travelers with people needing personal favors.
-It's about <b>kindness, not business</b>. 💚
-
-<b>✈️ For Kind Travelers:</b>
-Your empty luggage space = Someone's happiness!
-• Tap /travel to share your journey
-• Choose what you're comfortable carrying
-• Connect with grateful neighbors
-• <i>5 minutes of your time brings endless joy</i>
-
-<b>🤝 For Those Needing Favors:</b>
-Your neighbor might be traveling home!
-• Tap /favor to request help
-• Describe what you need clearly
-• Add photos for better understanding
-• <i>Small favors, big impact on lives</i>
-
-<b>🛡️ Safety First:</b>
-• Meet only in public places (airports, cafes)
-• Document everything with photos
-• Trust your instincts always
-• Never carry unknown items
-
-<b>💚 Community Guidelines:</b>
-• This is NOT a delivery service
-• Show gratitude with thank-you gifts
-• Build trust through kindness
-• ${LIMITS.free.postsPerMonth} favors/month (free members)
-
-<i>"Kindness is free. Sprinkle it everywhere!"</i>
-
-Need help? Join @LuuKyone_Community 🙏
-    `;
+    const helpMessage = [
+      messages.commands.help.title,
+      messages.commands.help.intro,
+      messages.commands.help.travelers,
+      messages.commands.help.requesters,
+      messages.commands.help.safety,
+      formatMessage(messages.commands.help.guidelines, { limit: LIMITS.free.postsPerMonth }),
+      messages.commands.help.footer
+    ].join('\n\n');
     
     await ctx.reply(helpMessage, { 
       parse_mode: 'HTML',
@@ -277,10 +252,10 @@ Need help? Join @LuuKyone_Community 🙏
       
       logEvent.postsViewed('unknown', 'browse', activeTravelPlans.length + activeFavorRequests.length);
       
-      let message = '📋 <b>Recent Active Posts</b>\n\n';
+      let message = messages.commands.browse.title + '\n\n';
       
       if (activeTravelPlans.length > 0) {
-        message += '<b>✈️ Travel Plans:</b>\n';
+        message += messages.commands.browse.travelPlans + '\n';
         activeTravelPlans.slice(0, 10).forEach(doc => {
           const plan = doc.data();
           const fromCity = plan.fromCity || 'Unknown';
@@ -292,7 +267,7 @@ Need help? Join @LuuKyone_Community 🙏
       }
       
       if (activeFavorRequests.length > 0) {
-        message += '<b>📦 Favor Requests:</b>\n';
+        message += messages.commands.browse.favorRequests + '\n';
         activeFavorRequests.slice(0, 10).forEach(doc => {
           const request = doc.data();
           const fromCity = request.fromCity || 'Unknown';
@@ -310,7 +285,7 @@ Need help? Join @LuuKyone_Community 🙏
         });
       }
       
-      message += '\n<i>Visit our channel @LuuKyone_Community for details</i>';
+      message += '\n' + messages.commands.browse.footer;
       
       await ctx.reply(message, { parse_mode: 'HTML' });
     } catch (error) {
@@ -349,20 +324,34 @@ Need help? Join @LuuKyone_Community 🙏
       
       logEvent.userViewedProfile(userId);
       
-      const profileMessage = `
-👤 <b>Your Profile</b>
-
-Name: ${user.userName}
-Username: ${user.username ? `@${user.username}` : 'Not set'}
-Member Type: ${user.isPremium ? '💎 Premium' : '🆓 Free'}
-
-📊 <b>Statistics:</b>
-Posts this month: ${postCount}/${user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth}
-Completed favors: ${user.completedFavors || 0}
-${user.rating > 0 ? `Rating: ${'⭐'.repeat(Math.round(user.rating))} (${user.rating}/5)` : 'No ratings yet'}
-
-Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString()}
-      `;
+      const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
+      const memberType = user.isPremium ? '💎 Premium' : '🆓 Free';
+      const username = user.username ? `@${user.username}` : 'Not set';
+      const rating = user.rating > 0 ? 
+        formatMessage(messages.commands.profile.ratingStars, {
+          stars: '⭐'.repeat(Math.round(user.rating)),
+          rating: user.rating
+        }) : messages.commands.profile.noRating;
+      const memberSince = new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString();
+      
+      const profileMessage = [
+        messages.commands.profile.title,
+        '',
+        formatMessage(messages.commands.profile.info, {
+          userName: user.userName,
+          username: username,
+          memberType: memberType
+        }),
+        '',
+        formatMessage(messages.commands.profile.statistics, {
+          current: postCount,
+          limit: limit,
+          completed: user.completedFavors || 0,
+          rating: rating
+        }),
+        '',
+        formatMessage(messages.commands.profile.memberSince, { date: memberSince })
+      ].join('\n');
       
       await ctx.reply(profileMessage, { parse_mode: 'HTML' });
     } catch (error) {
@@ -414,7 +403,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       );
     } catch (error) {
       logger.error('Test summary command error', { error: error.message });
-      ctx.reply('❌ Error accessing test menu.');
+      ctx.reply(messages.admin.errorAccessingMenu);
     }
   });
   
@@ -428,12 +417,12 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     const { cleanupExpiredPosts } = require('../utils/scheduler');
     
     try {
-      await ctx.reply('🧹 Running cleanup job...');
+      await ctx.reply(messages.admin.runningCleanup);
       await cleanupExpiredPosts();
-      await ctx.reply('✅ Cleanup completed! Check logs for details.');
+      await ctx.reply(messages.admin.cleanupCompleted);
     } catch (error) {
       logger.error('Manual cleanup error', { error: error.message });
-      ctx.reply(`❌ Cleanup failed: ${error.message}`);
+      ctx.reply(formatMessage(messages.admin.cleanupFailed, { error: error.message }));
     }
   });
   
@@ -451,8 +440,10 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       
       let message = '🔔 <b>Testing Notification Settings</b>\n\n';
       message += `<b>Your Current Settings:</b>\n`;
-      message += `• Connection Alerts: 🔔 Always ON (core feature)\n`;
-      message += `• Daily Summary: ${wantsSummary ? '📊 ON' : '📈 OFF'}\n\n`;
+      message += formatMessage(messages.settings.notifications.connection) + '\n';
+      message += formatMessage(messages.settings.notifications.daily, { 
+        status: wantsSummary ? '📊 ON' : '📈 OFF' 
+      }) + '\n\n';
       
       message += '💡 <b>What this means:</b>\n';
       message += '• You will ALWAYS be notified when someone contacts you\n';
@@ -468,33 +459,25 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       await ctx.reply(message, { parse_mode: 'HTML' });
     } catch (error) {
       logger.error('Test notifications error', { error: error.message });
-      ctx.reply('❌ Error testing notification settings.');
+      ctx.reply(messages.errors.generic);
     }
   });
   
   // Channel info command
   bot.command('channelinfo', async (ctx) => {
-    const channelInfoMessage = `📢 <b>Channel & Bot Relationship</b>\n\n` +
-      `<b>How they work together:</b>\n` +
-      `• Bot (@luukyonebot) - Where you create posts\n` +
-      `• Channel (@LuuKyone_Community) - Where posts are displayed\n\n` +
-      `<b>User Journey:</b>\n` +
-      `1️⃣ Open the bot to create a post\n` +
-      `2️⃣ Post appears in the channel\n` +
-      `3️⃣ Community members comment to connect\n` +
-      `4️⃣ Bot notifies you of comments\n` +
-      `5️⃣ You connect directly to arrange\n\n` +
-      `<b>Why this system?</b>\n` +
-      `• Channel = Public visibility\n` +
-      `• Bot = Private control\n` +
-      `• Comments = Transparent connections\n\n` +
-      `<b>Tips:</b>\n` +
-      `• Check channel for active posts\n` +
-      `• Use bot to create your posts\n` +
-      `• Comment on posts to help\n` +
-      `• Keep notifications on for alerts\n\n` +
-      `Channel: @LuuKyone_Community\n` +
-      `Bot: @luukyonebot`;
+    const channelInfoMessage = [
+      messages.commands.channelInfo.title,
+      '',
+      messages.commands.channelInfo.howTheyWork,
+      '',
+      messages.commands.channelInfo.userJourney,
+      '',
+      messages.commands.channelInfo.whySystem,
+      '',
+      messages.commands.channelInfo.tips,
+      '',
+      messages.commands.channelInfo.footer
+    ].join('\n');
     
     await ctx.reply(channelInfoMessage, { parse_mode: 'HTML' });
     logEvent.commandUsed(ctx.from.id.toString(), 'channelinfo');
@@ -542,34 +525,42 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       // Get total users count
       const usersSnapshot = await collections.users.get();
       
-      const statsMessage = `📊 <b>Luu Kyone Statistics</b>\n\n` +
-        `<b>👥 Community:</b>\n` +
-        `• Total Members: ${usersSnapshot.size}\n` +
-        `• Channel: @LuuKyone_Community\n\n` +
-        `<b>📋 Active Posts:</b>\n` +
-        `• Travel Plans: ${travelPlans.size}\n` +
-        `• Favor Requests: ${favorRequests.size}\n` +
-        `• Total Active: ${travelPlans.size + favorRequests.size}\n\n` +
-        `<b>📅 This Month:</b>\n` +
-        `• New Travel Plans: ${monthlyTravels.size}\n` +
-        `• New Favor Requests: ${monthlyFavors.size}\n` +
-        `• Total Posted: ${monthlyTravels.size + monthlyFavors.size}\n\n` +
-        `<b>✅ All Time Success:</b>\n` +
-        `• Completed Travels: ${completedTravels.size}\n` +
-        `• Completed Favors: ${completedFavors.size}\n` +
-        `• Total Helped: ${completedTravels.size + completedFavors.size}\n\n` +
-        `<b>🌟 Impact:</b>\n` +
-        `• ${(completedTravels.size + completedFavors.size) * 2} lives touched\n` +
-        `• 3 countries connected\n` +
-        `• ∞ kindness spread\n\n` +
-        `Join the movement: @luukyonebot`;
+      const statsMessage = [
+        messages.commands.stats.title,
+        '',
+        formatMessage(messages.commands.stats.community, { members: usersSnapshot.size }),
+        '',
+        formatMessage(messages.commands.stats.activePosts, {
+          travels: travelPlans.size,
+          favors: favorRequests.size,
+          total: travelPlans.size + favorRequests.size
+        }),
+        '',
+        formatMessage(messages.commands.stats.thisMonth, {
+          travels: monthlyTravels.size,
+          favors: monthlyFavors.size,
+          total: monthlyTravels.size + monthlyFavors.size
+        }),
+        '',
+        formatMessage(messages.commands.stats.allTime, {
+          travels: completedTravels.size,
+          favors: completedFavors.size,
+          total: completedTravels.size + completedFavors.size
+        }),
+        '',
+        formatMessage(messages.commands.stats.impact, {
+          lives: (completedTravels.size + completedFavors.size) * 2
+        }),
+        '',
+        messages.commands.stats.footer
+      ].join('\n');
       
       await ctx.reply(statsMessage, { parse_mode: 'HTML' });
       
       logEvent.commandUsed(userId, 'stats');
     } catch (error) {
       logger.error('Stats command error', { error: error.message });
-      ctx.reply('❌ Error fetching statistics. Please try again later.');
+      ctx.reply(messages.errors.generic);
     }
   });
 
@@ -582,14 +573,14 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     }
     
     try {
-      await ctx.reply('🧹 Running cleanup job...');
+      await ctx.reply(messages.admin.runningCleanup);
       const { cleanupExpiredPosts } = require('../utils/scheduler');
       await cleanupExpiredPosts();
-      await ctx.reply('✅ Cleanup completed! Expired posts have been updated.');
+      await ctx.reply(messages.admin.cleanupCompleted);
       logEvent.customEvent('manual_cleanup', { adminId: userId });
     } catch (error) {
       logger.error('Manual cleanup error', { error: error.message });
-      ctx.reply('❌ Cleanup failed: ' + error.message);
+      ctx.reply(formatMessage(messages.admin.cleanupFailed, { error: error.message }));
     }
   });
 
@@ -625,7 +616,7 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
       );
     } catch (error) {
       logger.error('Test command error', { error: error.message });
-      ctx.reply('❌ Error accessing test menu.');
+      ctx.reply(messages.admin.errorAccessingMenu);
     }
   });
 };

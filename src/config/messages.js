@@ -19,8 +19,6 @@ const messages = {
     mainMenu: {
       travel: '✈️ ခရီးစဥ်',
       favor: '📦 ပါဆယ်',
-      browse: '🔍 ရှာဖွေရန်',
-      profile: '👤 အချက်အလက်',
       help: '📚 အကူအညီ',
       settings: '⚙️ ဆက်တင်'
     },
@@ -73,7 +71,7 @@ const messages = {
         prompt: 'တစ်ခုထပ်ပို၍ ရွေးချယ်ပါ (သို့) အတည်ပြု၍ ရှေ့ဆက်ပါ'
       },
       confirmation: {
-        title: '✅ <b>ခရီးစဉ်ကို အောင်မြင်စွာ post လုပ်ပြီးပါပြီ။</b>',
+        title: '✅ <b>ခရီးစဉ်ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
         body: 'သင်၏ ခရီးစဉ်ကို Luu Kyone Community တွင်လည်း share ပြီးပါပြီ။',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your post)</i>'
       },
@@ -99,7 +97,7 @@ const messages = {
         prompt: 'တစ်ခုထပ်ပို၍ ရွေးချယ်ပါ (သို့) အတည်ပြု၍ ရှေ့ဆက်ပါ'
       },
       confirmation: {
-        title: '✅ <b>ပစ္စည်းပို့ရန် အောင်မြင်စွာ post လုပ်ပြီးပါပြီ။</b>',
+        title: '✅ <b>ပစ္စည်းပို့ရန် ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
         body: 'သင်၏ ပစ္စည်းကိုပို့ရန် Luu Kyone Community တွင်လည်း share ပြီးပါပြီ။',
         reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your request)</i>'
       },
@@ -247,9 +245,7 @@ const messages = {
       start: '/start - Start the bot',
       travel: '/travel - Share travel plan',
       favor: '/favor - Request a favor',
-      browse: '/browse - View active requests',
       myposts: '/myposts - Manage your posts',
-      profile: '/profile - View your profile',
       settings: '/settings - Notification preferences',
       help: '/help - Show this help message',
       cancel: '/cancel - Cancel current action'
@@ -271,20 +267,71 @@ const messages = {
     support: '<b>Support:</b> @LuuKyone_Community'
   },
 
-  // Profile Messages (ENGLISH)
-  profile: {
-    title: '👤 <b>Your Profile</b>',
-    name: 'Name: {userName}',
-    username: 'Username: {username}',
-    memberType: 'Member Type: {type}',
-    statistics: {
-      title: '📊 <b>Statistics:</b>',
-      posts: 'Posts this month: {current}/{limit}',
-      completed: 'Completed favors: {count}',
-      rating: 'Rating: {rating}',
-      noRating: 'No ratings yet'
+  // Command Messages for /start, /help, /stats, /channelinfo
+  commands: {
+    start: {
+      newUser: {
+        greeting: '💚 <b>Welcome to Our Kindness Community!</b>\n\nHi {userName}! You\'ve just joined something special.',
+        intro: '<b>Luu Kyone</b> (လူကြုံ) connects kind hearts across cities. We\'re neighbors helping neighbors with personal favors - not a delivery service.',
+        howItWorks: '<b>How it works:</b>\n✈️ <b>Traveling?</b> Your empty luggage space can bring joy\n🤝 <b>Need a favor?</b> Your neighbor might be traveling home',
+        routes: '<b>Our routes:</b> 🇸🇬 Singapore ↔ 🇹🇭 Bangkok ↔ 🇲🇲 Yangon',
+        motto: '<i>"Small acts, when multiplied by millions of people,\ncan transform the world"</i>',
+        ready: 'Ready to spread kindness? Let\'s start! 🙏'
+      },
+      returningUser: {
+        greeting: '{userName} ကို ပြန်လည် ကြိုဆိုပါတယ်🤝✨',
+        motto: '<i>"Every act of kindness creates a ripple"</i>',
+        impact: '<b>Your impact so far:</b>',
+        postsMonth: '📊 Favors this month: {current}/{limit}',
+        completedFavors: '💚 Acts of kindness: {count}',
+        makingDifference: '⭐ You\'re making a difference!',
+        firstAct: '🌱 Your first act of kindness awaits!',
+        ready: 'Someone might need your help today. Let\'s see! 🙏'
+      }
     },
-    memberSince: 'Member since: {date}'
+    help: {
+      title: '❓ <b>How Luu Kyone Works</b>',
+      intro: 'We connect travelers with people needing personal favors.\nIt\'s about <b>kindness, not business</b>. 💚',
+      travelers: '<b>✈️ For Kind Travelers:</b>\nYour empty luggage space = Someone\'s happiness!\n• Tap /travel to share your journey\n• Choose what you\'re comfortable carrying\n• Connect with grateful neighbors\n• <i>5 minutes of your time brings endless joy</i>',
+      requesters: '<b>🤝 For Those Needing Favors:</b>\nYour neighbor might be traveling home!\n• Tap /favor to request help\n• Describe what you need clearly\n• Add photos for better understanding\n• <i>Small favors, big impact on lives</i>',
+      safety: '<b>🛡️ Safety First:</b>\n• Meet only in public places (airports, cafes)\n• Document everything with photos\n• Trust your instincts always\n• Never carry unknown items',
+      guidelines: '<b>💚 Community Guidelines:</b>\n• This is NOT a delivery service\n• Show gratitude with thank-you gifts\n• Build trust through kindness\n• {limit} favors/month (free members)',
+      footer: '<i>"Kindness is free. Sprinkle it everywhere!"</i>\n\nNeed help? Join @LuuKyone_Community 🙏'
+    },
+    stats: {
+      title: '📊 <b>Luu Kyone Statistics</b>',
+      community: '<b>👥 Community:</b>\n• Total Members: {members}\n• Channel: @LuuKyone_Community',
+      activePosts: '<b>📋 Active Posts:</b>\n• Travel Plans: {travels}\n• Favor Requests: {favors}\n• Total Active: {total}',
+      thisMonth: '<b>📅 This Month:</b>\n• New Travel Plans: {travels}\n• New Favor Requests: {favors}\n• Total Posted: {total}',
+      allTime: '<b>✅ All Time Success:</b>\n• Completed Travels: {travels}\n• Completed Favors: {favors}\n• Total Helped: {total}',
+      impact: '<b>🌟 Impact:</b>\n• {lives} lives touched\n• 3 countries connected\n• ∞ kindness spread',
+      footer: 'Join the movement: @luukyonebot'
+    },
+    channelInfo: {
+      title: '📢 <b>Channel & Bot Relationship</b>',
+      howTheyWork: '<b>How they work together:</b>\n• Bot (@luukyonebot) - Where you create posts\n• Channel (@LuuKyone_Community) - Where posts are displayed',
+      userJourney: '<b>User Journey:</b>\n1️⃣ Open the bot to create a post\n2️⃣ Post appears in the channel\n3️⃣ Community members comment to connect\n4️⃣ Bot notifies you of comments\n5️⃣ You connect directly to arrange',
+      whySystem: '<b>Why this system?</b>\n• Channel = Public visibility\n• Bot = Private control\n• Comments = Transparent connections',
+      tips: '<b>Tips:</b>\n• Check channel for active posts\n• Use bot to create your posts\n• Comment on posts to help\n• Keep notifications on for alerts',
+      footer: 'Channel: @LuuKyone_Community\nBot: @luukyonebot'
+    },
+    profile: {
+      title: '👤 <b>Your Profile</b>',
+      info: 'Name: {userName}\nUsername: {username}\nMember Type: {memberType}',
+      statistics: '<b>📊 Statistics:</b>\nPosts this month: {current}/{limit}\nCompleted favors: {completed}\n{rating}',
+      memberSince: 'Member since: {date}',
+      noRating: 'No ratings yet',
+      ratingStars: 'Rating: {stars} ({rating}/5)'
+    },
+    browse: {
+      title: '📋 <b>Recent Active Posts</b>',
+      travelPlans: '<b>✈️ Travel Plans:</b>',
+      favorRequests: '<b>📦 Favor Requests:</b>',
+      footer: '<i>Visit our channel @LuuKyone_Community for details</i>'
+    },
+    postLimit: {
+      reached: '❌ You\'ve reached your monthly limit of {limit} posts.\nPosts used: {current}/{limit}\n\nYour limit will reset next month.'
+    }
   },
 
   // Settings Messages (ENGLISH)
