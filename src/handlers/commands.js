@@ -230,54 +230,8 @@ const setupCommands = (bot) => {
   
   // Profile command
   bot.command('profile', async (ctx) => {
-    const userId = ctx.from.id.toString();
-    
-    try {
-      const userDoc = await collections.users.doc(userId).get();
-      
-      if (!userDoc.exists) {
-        return ctx.reply(messages.common.startBotFirst);
-      }
-      
-      const user = userDoc.data();
-      const postCount = await require('../utils/helpers').getMonthlyPostCount(userId, collections);
-      
-      logEvent.userViewedProfile(userId);
-      
-      const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
-      const memberType = user.isPremium ? '💎 Premium' : '🆓 Free';
-      const username = user.username ? `@${user.username}` : 'Not set';
-      const rating = user.rating > 0 ? 
-        formatMessage(messages.commands.profile.ratingStars, {
-          stars: '⭐'.repeat(Math.round(user.rating)),
-          rating: user.rating
-        }) : messages.commands.profile.noRating;
-      const memberSince = new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString();
-      
-      const profileMessage = [
-        messages.commands.profile.title,
-        '',
-        formatMessage(messages.commands.profile.info, {
-          userName: user.userName,
-          username: username,
-          memberType: memberType
-        }),
-        '',
-        formatMessage(messages.commands.profile.statistics, {
-          current: postCount,
-          limit: limit,
-          completed: user.completedFavors || 0,
-          rating: rating
-        }),
-        '',
-        formatMessage(messages.commands.profile.memberSince, { date: memberSince })
-      ].join('\n');
-      
-      await ctx.reply(profileMessage, { parse_mode: 'HTML' });
-    } catch (error) {
-      logEvent.commandError('profile', error, userId);
-      ctx.reply(messages.common.genericError);
-    }
+    const { handleProfile } = require('./sharedHandlers');
+    await handleProfile(ctx, false);
   });
   
   // My Posts command - manage active posts

@@ -194,9 +194,80 @@ const handleFavor = async (ctx, isCallback = false, bot = null) => {
   }
 };
 
+/**
+ * Unified profile handler for both command and inline button
+ * @param {Context} ctx - Telegraf context
+ * @param {boolean} isCallback - Whether this is from an inline button callback
+ */
+const handleProfile = async (ctx, isCallback = false) => {
+  const userId = ctx.from.id.toString();
+  
+  try {
+    const userDoc = await collections.users.doc(userId).get();
+    
+    if (!userDoc.exists) {
+      const message = messages.common.startBotFirst;
+      return isCallback ? ctx.reply(message) : ctx.reply(message);
+    }
+    
+    const user = userDoc.data();
+    const { getMonthlyPostCount } = require('../utils/helpers');
+    const postCount = await getMonthlyPostCount(userId, collections);
+    
+    logEvent.userViewedProfile(userId);
+    
+    const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
+    const memberType = user.isPremium ? '💎 Premium' : '🆓 Free';
+    const username = user.username ? `@${user.username}` : 'Not set';
+    const rating = user.rating > 0 ? 
+      formatMessage(messages.commands.profile.ratingStars, {
+        stars: '⭐'.repeat(Math.round(user.rating)),
+        rating: user.rating
+      }) : messages.commands.profile.noRating;
+    const memberSince = new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString();
+    
+    const profileMessage = [
+      messages.commands.profile.title,
+      '',
+      formatMessage(messages.commands.profile.info, {
+        userName: user.userName,
+        username: username,
+        memberType: memberType
+      }),
+      '',
+      formatMessage(messages.commands.profile.statistics, {
+        current: postCount,
+        limit: limit,
+        completed: user.completedFavors || 0,
+        rating: rating
+      }),
+      '',
+      formatMessage(messages.commands.profile.memberSince, { date: memberSince })
+    ].join('\n');
+    
+    if (isCallback) {
+      await ctx.answerCbQuery();
+      await ctx.editMessageText(profileMessage, { parse_mode: 'HTML' });
+      
+      // Show main menu after a short delay
+      setTimeout(() => {
+        ctx.reply(messages.common.whatToDo, mainMenu());
+      }, 500);
+    } else {
+      await ctx.reply(profileMessage, { parse_mode: 'HTML' });
+    }
+  } catch (error) {
+    const errorContext = isCallback ? 'profile callback' : 'profile command';
+    logEvent.commandError(errorContext, error, userId);
+    logger.error(`${errorContext} error`, { error: error.message, userId });
+    ctx.reply(messages.common.genericError);
+  }
+};
+
 module.exports = {
   generateHelpMessage,
   handleHelp,
   handleTravel,
-  handleFavor
+  handleFavor,
+  handleProfile
 };

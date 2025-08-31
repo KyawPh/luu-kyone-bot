@@ -169,39 +169,8 @@ const setupCallbacks = (bot) => {
   });
   
   bot.action('my_profile', async (ctx) => {
-    await ctx.answerCbQuery();
-    const userId = ctx.from.id.toString();
-    
-    try {
-      const userDoc = await collections.users.doc(userId).get();
-      
-      if (!userDoc.exists) {
-        return ctx.reply(messages.common.startBotFirst);
-      }
-      
-      const user = userDoc.data();
-      const postCount = await getMonthlyPostCount(userId, collections);
-      
-      const profileMessage = `${messages.profile.title}\n\n` +
-        `${formatMessage(messages.profile.name, { userName: user.userName })}\n` +
-        `${formatMessage(messages.profile.username, { username: user.username ? `@${user.username}` : 'Not set' })}\n` +
-        `${formatMessage(messages.profile.memberType, { type: user.isPremium ? '💎 Premium' : '🆓 Free' })}\n\n` +
-        `${messages.profile.statistics.title}\n` +
-        `${formatMessage(messages.profile.statistics.posts, { current: postCount, limit: user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth })}\n` +
-        `${formatMessage(messages.profile.statistics.completed, { count: user.completedFavors || 0 })}\n` +
-        `${user.rating > 0 ? formatMessage(messages.profile.statistics.rating, { rating: user.rating }) : messages.profile.statistics.noRating}\n\n` +
-        `${formatMessage(messages.profile.memberSince, { date: new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString() })}`;
-      
-      await ctx.editMessageText(profileMessage, { parse_mode: 'HTML' });
-      
-      // Show main menu again
-      setTimeout(() => {
-        ctx.reply(messages.common.whatToDo, mainMenu());
-      }, 500);
-    } catch (error) {
-      logger.error('Profile callback error', { error: error.message });
-      ctx.reply(messages.common.genericError);
-    }
+    const { handleProfile } = require('./sharedHandlers');
+    await handleProfile(ctx, true);
   });
   
   bot.action('help', async (ctx) => {
