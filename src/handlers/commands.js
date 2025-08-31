@@ -573,6 +573,26 @@ Member since: ${new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.jo
     }
   });
 
+  // Cleanup command (admin only) - manually trigger cleanup
+  bot.command('cleanup', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      await ctx.reply('🧹 Running cleanup job...');
+      const { cleanupExpiredPosts } = require('../utils/scheduler');
+      await cleanupExpiredPosts();
+      await ctx.reply('✅ Cleanup completed! Expired posts have been updated.');
+      logEvent.customEvent('manual_cleanup', { adminId: userId });
+    } catch (error) {
+      logger.error('Manual cleanup error', { error: error.message });
+      ctx.reply('❌ Cleanup failed: ' + error.message);
+    }
+  });
+
   // Test channel features (admin only)
   bot.command('test_channel', async (ctx) => {
     const userId = ctx.from.id.toString();

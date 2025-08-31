@@ -9,12 +9,15 @@ const { config } = require('../config');
 // Create daily summary message
 async function createDailySummary(isEvening = false) {
   try {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Start of today
+    
     // Fetch all active posts
-    const [travelPlans, favorRequests] = await Promise.all([
+    const [travelPlansSnapshot, favorRequests] = await Promise.all([
       collections.travelPlans
         .where('status', '==', 'active')
         .orderBy('departureDate', 'asc')
-        .limit(10)
+        .limit(15) // Get extra to account for filtering
         .get(),
       collections.favorRequests
         .where('status', '==', 'active')
@@ -23,7 +26,14 @@ async function createDailySummary(isEvening = false) {
         .get()
     ]);
     
-    const travelCount = travelPlans.size;
+    // Filter out travel plans with past departure dates
+    const travelPlans = travelPlansSnapshot.docs.filter(doc => {
+      const plan = doc.data();
+      const departureDate = plan.departureDate.toDate ? plan.departureDate.toDate() : plan.departureDate;
+      return departureDate >= today; // Only include future or today's travels
+    });
+    
+    const travelCount = travelPlans.length;
     const favorCount = favorRequests.size;
     
     // If no active posts
@@ -46,7 +56,7 @@ async function createDailySummary(isEvening = false) {
       }) + '\n';
       
       let travelList = '';
-      travelPlans.forEach(doc => {
+      travelPlans.slice(0, 10).forEach(doc => { // Limit to 10 for display
         const plan = doc.data();
         const route = formatRoute(plan.fromCity, plan.toCity);
         const date = formatDate(plan.departureDate.toDate ? plan.departureDate.toDate() : plan.departureDate);
@@ -150,17 +160,17 @@ async function sendDailySummary(bot, isEvening = false) {
 async function cleanupExpiredPosts() {
   try {
     const now = new Date();
-    const yesterday = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()); // Start of today
     const sevenDaysAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
     const thirtyDaysAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
     
     const batch = db.batch();
     let expiredCount = 0;
     
-    // Update expired travel plans (departure date has passed)
+    // Update expired travel plans (departure date has passed - check against start of today)
     const expiredTravels = await collections.travelPlans
       .where('status', '==', 'active')
-      .where('departureDate', '<', yesterday)
+      .where('departureDate', '<', today)
       .get();
     
     expiredTravels.forEach(doc => {
