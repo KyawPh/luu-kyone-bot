@@ -119,20 +119,8 @@ const setupCommands = (bot) => {
   
   // Help command
   bot.command('help', async (ctx) => {
-    const helpMessage = [
-      messages.commands.help.title,
-      messages.commands.help.intro,
-      messages.commands.help.travelers,
-      messages.commands.help.requesters,
-      messages.commands.help.safety,
-      formatMessage(messages.commands.help.guidelines, { limit: LIMITS.free.postsPerMonth }),
-      messages.commands.help.footer
-    ].join('\n\n');
-    
-    await ctx.reply(helpMessage, { 
-      parse_mode: 'HTML',
-      disable_web_page_preview: true 
-    });
+    const { handleHelp } = require('./sharedHandlers');
+    await handleHelp(ctx, false);
   });
   
   // Travel command
@@ -404,25 +392,6 @@ const setupCommands = (bot) => {
     } catch (error) {
       logger.error('Test summary command error', { error: error.message });
       ctx.reply(messages.admin.errorAccessingMenu);
-    }
-  });
-  
-  // Cleanup expired posts (admin only)
-  bot.command('cleanup', async (ctx) => {
-    const userId = ctx.from.id.toString();
-    if (!isAdmin(userId, config.telegram.adminIds)) {
-      return ctx.reply(messages.admin.adminOnly);
-    }
-    
-    const { cleanupExpiredPosts } = require('../utils/scheduler');
-    
-    try {
-      await ctx.reply(messages.admin.runningCleanup);
-      await cleanupExpiredPosts();
-      await ctx.reply(messages.admin.cleanupCompleted);
-    } catch (error) {
-      logger.error('Manual cleanup error', { error: error.message });
-      ctx.reply(formatMessage(messages.admin.cleanupFailed, { error: error.message }));
     }
   });
   

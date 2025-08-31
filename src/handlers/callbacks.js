@@ -259,51 +259,8 @@ const setupCallbacks = (bot) => {
   });
   
   bot.action('help', async (ctx) => {
-    await ctx.answerCbQuery();
-    
-    const helpMessage = `${messages.help.title}\n\n` +
-      `${messages.help.intro.title}\n` +
-      `${messages.help.intro.description}\n\n` +
-      `${messages.help.travelers.title}\n` +
-      `${messages.help.travelers.step1}\n` +
-      `${messages.help.travelers.step2}\n` +
-      `${messages.help.travelers.step3}\n` +
-      `${messages.help.travelers.step4}\n\n` +
-      `${messages.help.requesters.title}\n` +
-      `${messages.help.requesters.step1}\n` +
-      `${messages.help.requesters.step2}\n` +
-      `${messages.help.requesters.step3}\n` +
-      `${messages.help.requesters.step4}\n\n` +
-      `${messages.help.commands.title}\n` +
-      `${messages.help.commands.start}\n` +
-      `${messages.help.commands.travel}\n` +
-      `${messages.help.commands.favor}\n` +
-      `${messages.help.commands.browse}\n` +
-      `${messages.help.commands.profile}\n` +
-      `${messages.help.commands.settings}\n` +
-      `${messages.help.commands.help}\n` +
-      `${messages.help.commands.cancel}\n\n` +
-      `${messages.help.limits.title}\n` +
-      `${formatMessage(messages.help.limits.posts, { limit: LIMITS.free.postsPerMonth })}\n` +
-      `${messages.help.limits.introduction}\n` +
-      `${messages.help.limits.trust}\n\n` +
-      `${messages.help.safety.title}\n` +
-      `${messages.help.safety.meet}\n` +
-      `${messages.help.safety.verify}\n` +
-      `${messages.help.safety.photos}\n` +
-      `${messages.help.safety.prohibited}\n` +
-      `${messages.help.safety.instincts}\n\n` +
-      `${messages.help.support}`;
-    
-    await ctx.editMessageText(helpMessage, { 
-      parse_mode: 'HTML',
-      disable_web_page_preview: true 
-    });
-    
-    // Show main menu again
-    setTimeout(() => {
-      ctx.reply(messages.common.whatToDo, mainMenu());
-    }, 500);
+    const { handleHelp } = require('./sharedHandlers');
+    await handleHelp(ctx, true);
   });
   
   bot.action('settings', async (ctx) => {

@@ -277,15 +277,6 @@ const messages = {
         ready: 'Someone might need your help today. Let\'s see! 🙏'
       }
     },
-    help: {
-      title: '❓ <b>How Luu Kyone Works</b>',
-      intro: 'We connect travelers with people needing personal favors.\nIt\'s about <b>kindness, not business</b>. 💚',
-      travelers: '<b>✈️ For Kind Travelers:</b>\nYour empty luggage space = Someone\'s happiness!\n• Tap /travel to share your journey\n• Choose what you\'re comfortable carrying\n• Connect with grateful neighbors\n• <i>5 minutes of your time brings endless joy</i>',
-      requesters: '<b>🤝 For Those Needing Favors:</b>\nYour neighbor might be traveling home!\n• Tap /favor to request help\n• Describe what you need clearly\n• Add photos for better understanding\n• <i>Small favors, big impact on lives</i>',
-      safety: '<b>🛡️ Safety First:</b>\n• Meet only in public places (airports, cafes)\n• Document everything with photos\n• Trust your instincts always\n• Never carry unknown items',
-      guidelines: '<b>💚 Community Guidelines:</b>\n• This is NOT a delivery service\n• Show gratitude with thank-you gifts\n• Build trust through kindness\n• {limit} favors/month (free members)',
-      footer: '<i>"Kindness is free. Sprinkle it everywhere!"</i>\n\nNeed help? Join @LuuKyone_Community 🙏'
-    },
     stats: {
       title: '📊 <b>Luu Kyone Statistics</b>',
       community: '<b>👥 Community:</b>\n• Total Members: {members}\n• Channel: @LuuKyone_Community',
