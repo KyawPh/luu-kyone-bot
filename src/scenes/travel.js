@@ -82,7 +82,7 @@ travelScene.action('date_today', async (ctx) => {
   await ctx.answerCbQuery();
   const today = new Date();
   ctx.scene.state.departureDate = today;
-  await promptWeight(ctx);
+  await promptCategories(ctx);
 });
 
 travelScene.action('date_tomorrow', async (ctx) => {
@@ -90,7 +90,7 @@ travelScene.action('date_tomorrow', async (ctx) => {
   const tomorrow = new Date();
   tomorrow.setDate(tomorrow.getDate() + 1);
   ctx.scene.state.departureDate = tomorrow;
-  await promptWeight(ctx);
+  await promptCategories(ctx);
 });
 
 travelScene.action('date_custom', async (ctx) => {
@@ -149,7 +149,7 @@ travelScene.action(/^weight_(\w+)$/, async (ctx) => {
   }
   
   ctx.scene.state.availableWeight = weightText;
-  await promptCategories(ctx);
+  await handleConfirmPost(ctx);
 });
 
 // Handle custom weight input
@@ -168,8 +168,8 @@ travelScene.on('text', async (ctx) => {
     ctx.scene.state.availableWeight = `${weightValue} kg`;
     ctx.scene.state.waitingForWeight = false;
     
-    // Call promptCategories with useReply flag since we're responding to text input
-    await promptCategories(ctx, true);
+    // Call handleConfirmPost with useReply flag since we're responding to text input
+    await handleConfirmPost(ctx, true);
   } else if (ctx.scene.state.waitingForDate) {
     const date = parseDate(text);
     
@@ -180,7 +180,7 @@ travelScene.on('text', async (ctx) => {
     ctx.scene.state.departureDate = date;
     ctx.scene.state.waitingForDate = null;
     // Use reply mode since this is responding to text input
-    await promptWeight(ctx, true);
+    await promptCategories(ctx, true);
   }
 });
 
@@ -260,7 +260,7 @@ travelScene.action(/^cat_(.+)$/, async (ctx) => {
   );
 });
 
-// Confirm and post
+// Confirm categories and move to weight selection
 travelScene.action('confirm_post', async (ctx) => {
   await ctx.answerCbQuery();
   
@@ -268,8 +268,13 @@ travelScene.action('confirm_post', async (ctx) => {
     return ctx.reply(messages.validation.selectCategories);
   }
   
+  await promptWeight(ctx);
+});
+
+// Create the travel post
+async function handleConfirmPost(ctx, useReply = false) {
   try {
-    const userId = ctx.from.id.toString();
+    const userId = ctx.from?.id?.toString() || ctx.from.id.toString();
     const userDoc = await collections.users.doc(userId).get();
     const user = userDoc.data();
     
@@ -366,7 +371,7 @@ travelScene.action('confirm_post', async (ctx) => {
     logEvent.sceneLeft(userId, 'travelScene', 'error');
     ctx.scene.leave();
   }
-});
+}
 
 // Handle cancel
 travelScene.action('cancel', async (ctx) => {

@@ -68,10 +68,10 @@ favorScene.action(/^route_(.+)_(.+)$/, async (ctx) => {
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
     `Route: ${formatRoute(fromCity, toCity)}\n\n` +
-    messages.scenes.favor.steps.categories,
+    messages.scenes.favor.steps.urgency,
     { 
       parse_mode: 'HTML',
-      ...categoryKeyboard()
+      ...urgencyKeyboard()
     }
   );
 });
@@ -93,6 +93,7 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
   
   const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
   const toCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.toCity)?.name;
+  const urgency = URGENCY_LEVELS[ctx.scene.state.urgency];
   
   const selectedCats = ctx.scene.state.categories
     .map(id => CATEGORIES.find(c => c.id === id))
@@ -122,7 +123,8 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
   
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
-    `Route: ${fromCityName} → ${toCityName}\n\n` +
+    `Route: ${fromCityName} → ${toCityName}\n` +
+    `Urgency: ${urgency.emoji} ${urgency.label}\n\n` +
     messages.scenes.favor.categorySelection.title + '\n' +
     selectedCats + '\n\n' +
     messages.scenes.favor.categorySelection.prompt,
@@ -141,7 +143,7 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
   );
 });
 
-// Handle category confirmation
+// Handle category confirmation and move to weight
 favorScene.action('confirm_categories', async (ctx) => {
   await ctx.answerCbQuery();
   
@@ -157,19 +159,22 @@ favorScene.action('confirm_categories', async (ctx) => {
     .map(c => `${c.emoji} ${c.name}`)
     .join(', ');
   
+  const urgency = URGENCY_LEVELS[ctx.scene.state.urgency];
+  
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n` +
+    `Urgency: ${urgency.emoji} ${urgency.label}\n` +
     `Categories: ${selectedCats}\n\n` +
-    messages.scenes.favor.steps.urgency,
+    messages.scenes.favor.steps.weight,
     { 
       parse_mode: 'HTML',
-      ...urgencyKeyboard()
+      ...weightKeyboard()
     }
   );
 });
 
-// Handle urgency selection
+// Handle urgency selection and move to categories
 favorScene.action(/^urgency_(.+)$/, async (ctx) => {
   const urgencyKey = ctx.match[1];
   await ctx.answerCbQuery();
@@ -180,21 +185,17 @@ favorScene.action(/^urgency_(.+)$/, async (ctx) => {
   const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
   const toCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.toCity)?.name;
   
-  const selectedCats = ctx.scene.state.categories
-    .map(id => CATEGORIES.find(c => c.id === id))
-    .map(c => `${c.emoji} ${c.name}`)
-    .join(', ');
+  // Initialize categories array
+  ctx.scene.state.categories = [];
   
-  // Now ask for weight instead of description
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
     `Route: ${fromCityName} → ${toCityName}\n` +
-    `Categories: ${selectedCats}\n` +
     `Urgency: ${urgency.emoji} ${urgency.label}\n\n` +
-    messages.scenes.favor.steps.weight,
+    messages.scenes.favor.steps.categories,
     { 
       parse_mode: 'HTML',
-      ...weightKeyboard()
+      ...categoryKeyboard()
     }
   );
 });
