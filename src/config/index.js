@@ -16,7 +16,7 @@ const config = {
   telegram: {
     botToken: getRequiredEnv('BOT_TOKEN'),
     channelId: getRequiredEnv('FREE_CHANNEL_ID'),
-    adminIds: getOptionalEnv('ADMIN_IDS', '1633991807').split(','),
+    adminIds: getOptionalEnv('ADMIN_IDS', '').split(',').filter(id => id.trim()),
     webhookDomain: getOptionalEnv('WEBHOOK_DOMAIN'),
   },
   

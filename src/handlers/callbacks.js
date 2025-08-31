@@ -22,7 +22,7 @@ const setupCallbacks = (bot) => {
         // Still not a member
         return ctx.reply(
           messages.errors.notMember + '\n\n' +
-          'Please join @LuuKyone_Community first, then click "I\'ve Joined" again.'
+          messages.callbacks.pleaseJoinFirst
         );
       }
       
@@ -124,7 +124,7 @@ const setupCallbacks = (bot) => {
     const [postType, postId, posterId] = ctx.match.slice(1);
     const requesterId = ctx.from.id.toString();
     
-    await ctx.answerCbQuery('Processing your request...');
+    await ctx.answerCbQuery(messages.callbacks.processing);
     
     try {
       // Check if it's the same user
@@ -245,12 +245,7 @@ const setupCallbacks = (bot) => {
     await ctx.answerCbQuery(messages.test.sendingWelcome);
     
     try {
-      const welcomeMessages = [
-        `💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot`,
-        `🤝 Another kind soul joins us!\n\n"Together we're building bridges of kindness across cities."\n\nShare your journey: @luukyonebot`,
-        `✨ Welcome, neighbor!\n\n"Every new member makes our community stronger and kinder."\n\nBegin spreading joy: @luukyonebot`,
-        `🌟 So happy you're here!\n\n"In a world where you can be anything, you chose to be kind."\n\nStart your kindness story: @luukyonebot`
-      ];
+      const welcomeMessages = messages.channelWelcome;
       
       const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
       
@@ -305,7 +300,7 @@ const setupCallbacks = (bot) => {
   });
   
   bot.action('test_stats', async (ctx) => {
-    await ctx.answerCbQuery('Generating stats...');
+    await ctx.answerCbQuery(messages.callbacks.generatingStats);
     
     try {
       // Get some real stats
@@ -345,7 +340,7 @@ const setupCallbacks = (bot) => {
         { parse_mode: 'HTML' }
       );
       
-      await ctx.editMessageText('✅ Weekly stats sent to channel!');
+      await ctx.editMessageText(messages.callbacks.weeklyStatsSent);
     } catch (error) {
       logger.error('Test stats error', { error: error.message });
       await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
@@ -409,7 +404,7 @@ const setupCallbacks = (bot) => {
     
     try {
       await testDailySummary(bot, false);
-      await ctx.editMessageText('✅ Morning summary sent to channel!');
+      await ctx.editMessageText(messages.callbacks.morningSummarySent);
     } catch (error) {
       logger.error('Test morning summary error', { error: error.message });
       await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
@@ -422,7 +417,7 @@ const setupCallbacks = (bot) => {
     
     try {
       await testDailySummary(bot, true);
-      await ctx.editMessageText('✅ Evening summary sent to channel!');
+      await ctx.editMessageText(messages.callbacks.eveningSummarySent);
     } catch (error) {
       logger.error('Test evening summary error', { error: error.message });
       await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));

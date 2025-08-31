@@ -93,7 +93,7 @@ const handleTravel = async (ctx, isCallback = false, bot = null) => {
       if (!isMember) {
         return ctx.reply(
           messages.errors.notMember + '\n\n' +
-          'Use /start to get the join link.'
+          messages.shared.useStartForLink
         );
       }
     }
@@ -111,7 +111,7 @@ const handleTravel = async (ctx, isCallback = false, bot = null) => {
     if (!postCheck.canCreate) {
       const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
         `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
-        `Your limit will reset next month.`;
+        messages.shared.limitResetsNextMonth;
       
       return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
     }
@@ -152,7 +152,7 @@ const handleFavor = async (ctx, isCallback = false, bot = null) => {
       if (!isMember) {
         return ctx.reply(
           messages.errors.notMember + '\n\n' +
-          'Use /start to get the join link.'
+          messages.shared.useStartForLink
         );
       }
     }
@@ -170,7 +170,7 @@ const handleFavor = async (ctx, isCallback = false, bot = null) => {
     if (!postCheck.canCreate) {
       const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
         `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
-        `Your limit will reset next month.`;
+        messages.shared.limitResetsNextMonth;
       
       return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
     }
@@ -405,7 +405,7 @@ const handleBackToMenu = async (ctx) => {
     '',
     '💚 What would you like to do today?',
     '',
-    'Choose an option below to get started.'
+    messages.shared.chooseOptionBelow
   ].join('\n');
   
   await ctx.editMessageText(menuMessage, {

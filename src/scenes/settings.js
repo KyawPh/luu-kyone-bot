@@ -180,12 +180,12 @@ settingsScene.action('back_to_menu', async (ctx) => {
 
 // Remove the old notification and connection alert handlers since they're no longer needed
 settingsScene.action('toggle_notifications', async (ctx) => {
-  await ctx.answerCbQuery('This option has been removed', { show_alert: true });
+  await ctx.answerCbQuery(messages.callbacks.thisOptionRemoved, { show_alert: true });
   await updateSettingsDisplay(ctx);
 });
 
 settingsScene.action('toggle_connection_alerts', async (ctx) => {
-  await ctx.answerCbQuery('Connection alerts are always enabled', { show_alert: true });
+  await ctx.answerCbQuery(messages.callbacks.connectionAlertsAlwaysOn, { show_alert: true });
   await updateSettingsDisplay(ctx);
 });
 

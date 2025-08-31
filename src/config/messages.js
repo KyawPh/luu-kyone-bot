@@ -442,6 +442,58 @@ const messages = {
       single: '💬 @{username} commented on your {postType} post #{postId}',
       multiple: '💬 {count} new comments on #{postId}\n\n{usernames}'
     }
+  },
+  
+  // Callback Processing Messages
+  callbacks: {
+    processing: 'Processing your request...',
+    generatingStats: 'Generating stats...',
+    weeklyStatsSent: '✅ Weekly stats sent to channel!',
+    morningSummarySent: '✅ Morning summary sent to channel!',
+    eveningSummarySent: '✅ Evening summary sent to channel!',
+    pleaseJoinFirst: 'Please join @LuuKyone_Community first, then click "I\'ve Joined" again.',
+    thisOptionRemoved: 'This option has been removed',
+    connectionAlertsAlwaysOn: 'Connection alerts are always enabled'
+  },
+  
+  // Shared Handler Messages
+  shared: {
+    useStartForLink: 'Use /start to get the join link.',
+    limitResetsNextMonth: 'Your limit will reset next month.',
+    chooseOptionBelow: 'Choose an option below to get started.'
+  },
+  
+  // Channel Welcome Messages
+  channelWelcome: [
+    '💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot',
+    '🤝 Another kind soul joins us!\n\n"Together we\'re building bridges of kindness across cities."\n\nShare your journey: @luukyonebot',
+    '✨ Welcome, neighbor!\n\n"Every new member makes our community stronger and kinder."\n\nBegin spreading joy: @luukyonebot',
+    '🌟 So happy you\'re here!\n\n"In a world where you can be anything, you chose to be kind."\n\nStart your kindness story: @luukyonebot'
+  ],
+  
+  // Channel Motivational Quotes
+  channelQuotes: {
+    milestone: {
+      acts100: '"Together, we\'re not just moving items.\nWe\'re moving hearts."',
+      members500: '"Every new member makes our\nkindness network stronger!"',
+      generic: '"Small acts × {number} = Big impact!"'
+    },
+    gratitude: '"Alone we can do so little;\ntogether we can do so much."'
+  },
+  
+  // Safety Reminders
+  safetyReminders: {
+    general: 'Your safety = Our priority!',
+    documentation: 'Document everything, stay protected!',
+    trust: 'If something feels wrong, it probably is!'
+  },
+  
+  // Bot System Messages
+  system: {
+    techNeedsKindness: '"Even technology needs kindness sometimes!"',
+    productionWebhookRequired: 'Production requires webhook mode. Set RAILWAY_PUBLIC_DOMAIN in Railway.',
+    webhookUrlChanged: 'Webhook URL changed, updating...',
+    webhookAlreadyConfigured: 'Webhook already configured correctly, skipping update'
   }
 };
 

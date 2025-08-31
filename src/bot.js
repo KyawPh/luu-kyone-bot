@@ -2,6 +2,7 @@ const { Telegraf, session } = require('telegraf');
 const { config } = require('./config');
 const { collections } = require('./config/firebase');
 const { logger, logEvent } = require('./utils/logger');
+const { messages } = require('./config/messages');
 const setupCommands = require('./handlers/commands');
 const setupCallbacks = require('./handlers/callbacks');
 const setupChannelHandlers = require('./handlers/channel');
@@ -34,7 +35,7 @@ bot.catch((err, ctx) => {
     `Don't worry, it happens! Please try again.\n\n` +
     `If this keeps happening, our community is here to help:\n` +
     `👉 @LuuKyone_Community\n\n` +
-    `<i>"Even technology needs kindness sometimes!"</i>`,
+    `<i>${messages.system.techNeedsKindness}</i>`,
     { parse_mode: 'HTML' }
   ).catch(() => {}); // Ignore reply errors
 });
@@ -63,7 +64,7 @@ const launch = async () => {
         logger.error('Please set RAILWAY_PUBLIC_DOMAIN in Railway environment variables');
         logger.error('The bot cannot run in polling mode on Railway as it causes conflicts');
         // Exit to prevent polling mode conflicts in production
-        throw new Error('Production requires webhook mode. Set RAILWAY_PUBLIC_DOMAIN in Railway.');
+        throw new Error(messages.system.productionWebhookRequired);
       } else {
         const webhookUrl = `https://${domain}/webhook`;
         
@@ -72,14 +73,14 @@ const launch = async () => {
         try {
           const webhookInfo = await bot.telegram.getWebhookInfo();
           if (webhookInfo.url !== webhookUrl) {
-            logger.info('Webhook URL changed, updating...');
+            logger.info(messages.system.webhookUrlChanged);
             // Only delete if we need to change the webhook
             await bot.telegram.deleteWebhook({ drop_pending_updates: true });
             // Add small delay to avoid rate limiting
             await new Promise(resolve => setTimeout(resolve, 1500));
             webhookNeedsUpdate = true;
           } else {
-            logger.info('Webhook already configured correctly, skipping update');
+            logger.info(messages.system.webhookAlreadyConfigured);
           }
         } catch (error) {
           logger.warn('Could not check webhook info, will set webhook', { error: error.message });

@@ -1,6 +1,7 @@
 const { collections, admin } = require('../config/firebase');
 const { logger, logEvent } = require('../utils/logger');
 const { config } = require('../config');
+const { messages, formatMessage } = require('../config/messages');
 
 const setupChannelHandlers = (bot) => {
   // Handle new members joining the channel
@@ -158,7 +159,7 @@ const setupChannelHandlers = (bot) => {
                 `That's ${number} times someone smiled because of YOUR help.\n` +
                 `${number} families connected across borders.\n` +
                 `${number} proofs that humanity is beautiful.\n\n` +
-                `<i>"Together, we're not just moving items.\nWe're moving hearts."</i>\n\n` +
+                `<i>${messages.channelQuotes.milestone.acts100}</i>\n\n` +
                 `Thank you for being part of this journey! 🙏`,
       
       members: `🎉 <b>COMMUNITY MILESTONE!</b>\n\n` +
@@ -166,7 +167,7 @@ const setupChannelHandlers = (bot) => {
                `That's ${number} people choosing kindness.\n` +
                `${number} neighbors ready to help.\n` +
                `${number} reasons to believe in good.\n\n` +
-               `<i>"Every new member makes our\nkindness network stronger!"</i>\n\n` +
+               `<i>${messages.channelQuotes.milestone.members500}</i>\n\n` +
                `Welcome to all our new friends! 💚`,
       
       posts: `✨ <b>ACTIVITY MILESTONE!</b>\n\n` +
@@ -174,7 +175,7 @@ const setupChannelHandlers = (bot) => {
              `Every post is a chance for kindness.\n` +
              `Every journey, an opportunity to help.\n` +
              `Every favor, a life touched.\n\n` +
-             `<i>"Small acts × ${number} = Big impact!"</i>\n\n` +
+             `<i>${formatMessage(messages.channelQuotes.milestone.generic, { number })}</i>\n\n` +
              `Keep the kindness flowing! 🌊`
     };
     
@@ -210,7 +211,7 @@ const setupChannelHandlers = (bot) => {
         `🤝 Welcomed ${weeklyStats.newMembers} new neighbors\n\n` +
         `Every favor matters. Every journey counts.\n` +
         `Every one of YOU makes this possible.\n\n` +
-        `<i>"Alone we can do so little;\ntogether we can do so much."</i>\n\n` +
+        `<i>${messages.channelQuotes.gratitude}</i>\n\n` +
         `Thank you for choosing kindness! 🙏\n\n` +
         `#ThankYouThursday #GratefulHeart #LuuKyoneFamily`,
         { parse_mode: 'HTML' }
@@ -232,7 +233,7 @@ const setupChannelHandlers = (bot) => {
           "❌ Private homes",
           "❌ Dark alleys"
         ],
-        reminder: "Your safety = Our priority!"
+        reminder: messages.safetyReminders.general
       },
       {
         title: "Smart Documentation",
@@ -243,7 +244,7 @@ const setupChannelHandlers = (bot) => {
           "💬 Save chat history",
           "📝 Note contact details"
         ],
-        reminder: "Document everything, stay protected!"
+        reminder: messages.safetyReminders.documentation
       },
       {
         title: "Trust Your Instincts",
@@ -254,7 +255,7 @@ const setupChannelHandlers = (bot) => {
           "✅ Clear communication",
           "✅ Verified items only"
         ],
-        reminder: "If something feels wrong, it probably is!"
+        reminder: messages.safetyReminders.trust
       }
     ];
     
