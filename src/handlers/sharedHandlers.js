@@ -264,10 +264,37 @@ const handleProfile = async (ctx, isCallback = false) => {
   }
 };
 
+/**
+ * Unified settings handler for both command and inline button
+ * @param {Context} ctx - Telegraf context
+ * @param {boolean} isCallback - Whether this is from an inline button callback
+ */
+const handleSettings = async (ctx, isCallback = false) => {
+  const userId = ctx.from.id.toString();
+  logEvent.commandUsed(userId, 'settings');
+  
+  try {
+    if (isCallback) {
+      await ctx.answerCbQuery();
+      // Enter the settings scene with message to edit
+      ctx.scene.enter('settingsScene', { 
+        messageToEdit: ctx.callbackQuery.message 
+      });
+    } else {
+      // Enter the settings scene
+      ctx.scene.enter('settingsScene');
+    }
+  } catch (error) {
+    logger.error('Settings error', { error: error.message, userId });
+    ctx.reply(messages.common.genericError);
+  }
+};
+
 module.exports = {
   generateHelpMessage,
   handleHelp,
   handleTravel,
   handleFavor,
-  handleProfile
+  handleProfile,
+  handleSettings
 };

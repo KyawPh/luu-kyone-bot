@@ -216,16 +216,8 @@ const setupCommands = (bot) => {
   
   // Settings command
   bot.command('settings', async (ctx) => {
-    const userId = ctx.from.id.toString();
-    logEvent.commandUsed(userId, 'settings');
-    
-    try {
-      // Enter the settings scene
-      ctx.scene.enter('settingsScene');
-    } catch (error) {
-      logger.error('Settings command error', { error: error.message, userId });
-      ctx.reply(messages.common.genericError);
-    }
+    const { handleSettings } = require('./sharedHandlers');
+    await handleSettings(ctx, false);
   });
   
   // Profile command

@@ -179,11 +179,8 @@ const setupCallbacks = (bot) => {
   });
   
   bot.action('settings', async (ctx) => {
-    await ctx.answerCbQuery();
-    // Enter the settings scene
-    ctx.scene.enter('settingsScene', { 
-      messageToEdit: ctx.callbackQuery.message 
-    });
+    const { handleSettings } = require('./sharedHandlers');
+    await handleSettings(ctx, true);
   });
   
   // Contact button handler
