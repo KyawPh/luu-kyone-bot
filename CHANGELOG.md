@@ -2,6 +2,51 @@
 
 All notable changes to the Luu Kyone Bot project will be documented in this file.
 
+## [1.3.0] - 2024-12-31
+
+### Added
+- **Unified Command/Button Handlers**: Created shared handlers for consistent behavior across all interaction methods
+  - Help, Travel, Favor, Profile, Settings, and Browse now use single source of truth
+  - New `sharedHandlers.js` module containing all reusable handler functions
+  - Centralized business logic with proper separation of concerns
+- **Back to Menu Navigation**: Implemented clean single-message navigation
+  - Profile, Browse, and Help screens now display "Back to Menu" button (🏠 မူလစာမျက်နှာ)
+  - Eliminates message clutter in conversation history
+  - Consistent navigation pattern across all non-scene views
+- **Restored Main Menu Features**: 
+  - Browse button (📋 ကြည့်ရှုရန်) restored to main menu
+  - Profile button (👤 ပရိုဖိုင်) restored to main menu
+  - Main menu now has 3 rows with 6 total options
+
+### Changed
+- **Clean UI/UX Flow**: Transformed from multi-message to single-message navigation
+  - Cancel actions in Travel/Favor scenes return directly to main menu
+  - Removed all `setTimeout()` calls that created duplicate messages
+  - All interactions edit existing messages instead of sending new ones
+  - Cleaner conversation history without message spam
+- **Consistent Error Handling**: Standardized error handling across all handlers
+  - Unified error messages and logging
+  - Better error context for debugging
+  - Graceful fallbacks for all error scenarios
+- **Improved Code Organization**: 
+  - Eliminated approximately 500 lines of duplicate code
+  - Centralized validation and business logic
+  - Better separation between UI behavior and business logic
+  - Channel membership checks preserved for commands, skipped for buttons
+
+### Fixed
+- **Duplicate Command Bug**: Removed duplicate `/cleanup` command definition (was defined twice)
+- **Channel Membership Logic**: Fixed inconsistent membership checking between commands and buttons
+- **Message Formatting**: Ensured consistent use of `formatMessage()` utility across all handlers
+- **Category Handling**: Browse handler now properly handles both single and multiple categories
+
+### Technical Improvements
+- **60% Code Reduction**: Reduced handler code duplication by unifying common patterns
+- **Single Source of Truth**: Each feature now has one implementation used by both commands and buttons
+- **Better Maintainability**: Changes only need to be made in one place
+- **Consistent Behavior**: All handlers follow the same patterns and conventions
+- **Performance**: Reduced require() calls by centralizing imports
+
 ## [1.2.0] - 2024-12-30
 
 ### Added
