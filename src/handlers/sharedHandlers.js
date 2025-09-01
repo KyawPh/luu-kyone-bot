@@ -402,9 +402,7 @@ const handleBackToMenu = async (ctx) => {
   // Create a welcoming message for returning to menu
   const menuMessage = [
     formatMessage(messages.shared.backToMenuGreeting, { userName }),
-    '',
     messages.shared.backToMenuPrompt,
-    '',
     messages.shared.chooseOptionBelow
   ].join('\n');
   
