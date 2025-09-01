@@ -117,10 +117,7 @@ const handleSceneCancel = async (ctx, sceneName, cancelMessage) => {
   
   // Show main menu
   const { mainMenu } = require('./keyboards');
-  const whatToDoMessage = sceneName.includes('travel') 
-    ? messages.scenes.travel.whatToDo 
-    : messages.scenes.favor.whatToDo;
-  ctx.reply(whatToDoMessage, mainMenu());
+  ctx.reply(messages.common.whatToDo, mainMenu());
 };
 
 /**

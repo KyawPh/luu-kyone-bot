@@ -143,7 +143,7 @@ travelScene.action(/^weight_(\w+)$/, async (ctx) => {
         messages.scenes.travel.title + '\n\n' +
         `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
         `Departure: ${formatDate(ctx.scene.state.departureDate)}\n\n` +
-        messages.scenes.travel.steps.weightCustom,
+        messages.common.weightCustomPrompt,
         { parse_mode: 'HTML' }
       );
   }
@@ -244,7 +244,7 @@ travelScene.action(/^cat_(.+)$/, async (ctx) => {
     messages.scenes.travel.title + '\n\n' +
     messages.scenes.travel.categorySelection.title + '\n' +
     selectedCats + '\n\n' +
-    messages.scenes.travel.categorySelection.prompt,
+    messages.common.categoryPrompt,
     { 
       parse_mode: 'HTML',
       reply_markup: {
@@ -347,13 +347,13 @@ async function handleConfirmPost(ctx, useReply = false) {
     // Success message
     await ctx.editMessageText(
       messages.scenes.travel.confirmation.title + '\n\n' +
-      formatMessage(messages.scenes.travel.confirmation.reference, { postId }),
+      formatMessage(messages.common.referenceId, { postId }),
       { parse_mode: 'HTML' }
     );
     
     // Show main menu
     setTimeout(() => {
-      ctx.reply(messages.scenes.travel.whatToDo, mainMenu());
+      ctx.reply(messages.common.whatToDo, mainMenu());
     }, 1000);
     
     // Leave scene
@@ -367,7 +367,7 @@ async function handleConfirmPost(ctx, useReply = false) {
       state: ctx.scene.state 
     });
     logEvent.firebaseError('create_travel_plan', error);
-    ctx.reply(messages.scenes.travel.errorPosting);
+    ctx.reply(messages.common.errorPosting);
     logEvent.sceneLeft(userId, 'travelScene', 'error');
     ctx.scene.leave();
   }

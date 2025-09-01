@@ -127,7 +127,7 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
     `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n\n` +
     messages.scenes.favor.categorySelection.title + '\n' +
     selectedCats + '\n\n' +
-    messages.scenes.favor.categorySelection.prompt,
+    messages.common.categoryPrompt,
     { 
       parse_mode: 'HTML',
       reply_markup: {
@@ -216,7 +216,7 @@ favorScene.action(/^weight_(\w+)$/, async (ctx) => {
       ctx.scene.state.waitingForWeight = true;
       return ctx.editMessageText(
         messages.scenes.favor.title + '\n\n' +
-        messages.scenes.favor.steps.weightCustom,
+        messages.common.weightCustomPrompt,
         { parse_mode: 'HTML' }
       );
   }
@@ -327,13 +327,13 @@ async function postFavorRequest(ctx) {
     // Success message
     await ctx.editMessageText(
       messages.scenes.favor.confirmation.title + '\n\n' +
-      formatMessage(messages.scenes.favor.confirmation.reference, { postId }),
+      formatMessage(messages.common.referenceId, { postId }),
       { parse_mode: 'HTML' }
     );
     
     // Show main menu
     setTimeout(() => {
-      ctx.reply(messages.scenes.favor.whatToDo, mainMenu());
+      ctx.reply(messages.common.whatToDo, mainMenu());
     }, 1000);
     
     // Leave scene
@@ -347,7 +347,7 @@ async function postFavorRequest(ctx) {
       state: ctx.scene.state 
     });
     logEvent.firebaseError('create_favor_request', error);
-    ctx.reply(messages.scenes.favor.errorPosting);
+    ctx.reply(messages.common.errorPosting);
     logEvent.sceneLeft(userId, 'favorScene', 'error');
     ctx.scene.leave();
   }

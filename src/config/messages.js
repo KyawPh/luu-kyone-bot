@@ -55,20 +55,15 @@ const messages = {
         departure: 'ထွက်ခွာမည့်ရက်ရွေးပါ',
         departureCustom: 'ထွက်ခွာမည့်ရက် ရိုက်ထည့်ပါ (DD/MM/YYYY):',
         categories: 'သယ်ဆောင်နိုင်သည့် ပစ္စည်းအမျိုးအစားရွေးပါ',
-        weight: 'သယ်ဆောင်နိုင်သည့် အလေးချိန်ရွေးပါ',
-        weightCustom: 'အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ (ဥပမာ - "၂၀"):'
+        weight: 'သယ်ဆောင်နိုင်သည့် အလေးချိန်ရွေးပါ'
       },
       categorySelection: {
-        title: 'ရွေးထားသောအမျိုးအစားများ - ',
-        prompt: 'ထပ်ရွေးရန် (သို့) အတည်ပြုရန်'
+        title: 'ရွေးထားသောအမျိုးအစားများ - '
       },
       confirmation: {
-        title: '✅ <b>ခရီးစဉ်တင်ပြီးပါပြီ</b>',
-        reference: '📌 <b>Reference ID:</b> {postId}'
+        title: '✅ <b>ခရီးစဉ်တင်ပြီးပါပြီ</b>'
       },
-      cancelled: '❌ ခရီးစဉ်တင်ခြင်း ပယ်ဖျက်ပြီ',
-      whatToDo: 'ဘာလုပ်ချင်ပါသလဲ?',
-      errorPosting: '❌ တင်ရန်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။'
+      cancelled: '❌ ခရီးစဉ်တင်ခြင်း ပယ်ဖျက်ပြီ'
     },
 
     favor: {
@@ -77,20 +72,15 @@ const messages = {
         selectRoute: 'ပို့ဆောင်လိုသော လမ်းကြောင်းရွေးပါ',
         urgency: 'ပို့ဆောင်လိုသော အချိန်ရွေးပါ',
         categories: 'ပို့ဆောင်လိုသော ပစ္စည်းအမျိုးအစားရွေးပါ',
-        weight: 'ပစ္စည်းအလေးချိန်ရွေးပါ',
-        weightCustom: 'အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ (ဥပမာ - "၂၀"):'
+        weight: 'ပစ္စည်းအလေးချိန်ရွေးပါ'
       },
       categorySelection: {
-        title: 'ရွေးထားသောအမျိုးအစားများ -',
-        prompt: 'ထပ်ရွေးရန် (သို့) အတည်ပြုရန်'
+        title: 'ရွေးထားသောအမျိုးအစားများ -'
       },
       confirmation: {
-        title: '✅ <b>တောင်းဆိုချက်တင်ပြီးပါပြီ</b>',
-        reference: '📌 <b>Reference ID:</b> {postId}'
+        title: '✅ <b>တောင်းဆိုချက်တင်ပြီးပါပြီ</b>'
       },
-      cancelled: '❌ တောင်းဆိုချက်တင်ခြင်း ပယ်ဖျက်ပြီ',
-      whatToDo: 'ဘာလုပ်ချင်ပါသလဲ?',
-      errorPosting: '❌ တင်ရန်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။'
+      cancelled: '❌ တောင်းဆိုချက်တင်ခြင်း ပယ်ဖျက်ပြီ'
     }
   },
 
@@ -103,7 +93,15 @@ const messages = {
     startBotFirstAlert: '❌ @luukyonebot ကို အရင်စတင်ပါ',
     ownPostsOnly: '❌ ကိုယ့်ပို့စ်ကိုသာ စီမံနိုင်သည်',
     failedToSend: '❌ ပို့မရ - {error}',
-    botAdminRequired: '⚠️ ဗော့ကို ချန်နယ်စီမံခွင့်ပေးပါ'
+    botAdminRequired: '⚠️ ဗော့ကို ချန်နယ်စီမံခွင့်ပေးပါ',
+    // Shared scene messages
+    errorPosting: '❌ တင်ရန်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။',
+    referenceId: '📌 <b>Reference ID:</b> {postId}',
+    weightCustomPrompt: 'အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ (ဥပမာ - "၂၀"):',
+    categoryPrompt: 'ထပ်ရွေးရန် (သို့) အတည်ပြုရန်',
+    // Daily summary shared
+    dailySummaryFooter: '@luukyonebot',
+    noActivePosts: '📭 လက်ရှိတွင် ပို့စ်မရှိပါ'
   },
 
   // Admin Messages
@@ -138,14 +136,6 @@ const messages = {
     checkMembership: 'အဖွဲ့ဝင်အခြေအနေ စစ်ဆေးနေသည်...',
     savingPost: 'ပို့စ်သိမ်းဆည်းနေသည်...',
     postingToChannel: 'ချန်နယ်သို့ တင်နေသည်...'
-  },
-
-  // Validation Messages
-  validation: {
-    selectCategories: '❌ အမျိုးအစား အနည်းဆုံးတစ်ခုရွေးပါ',
-    enterWeightNumber: '❌ အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ',
-    invalidDate: '❌ ရက်စွဲမှားယွင်းနေပါသည်',
-    invalidWeight: '❌ အလေးချိန်မှားယွင်းနေပါသည်'
   },
 
   // Error Messages
@@ -344,17 +334,13 @@ const messages = {
         title: '☀️ <b>နံနက်ခင်း အကျဉ်းချုပ်</b>',
         subtitle: 'ဒီနေ့ ကြင်နာမှုမျှဝေပါ',
         travelCount: '✈️ ခရီးစဉ် {count} ခု-',
-        favorCount: '📦 တောင်းဆိုချက် {count} ခု-',
-        noActive: '📭 လက်ရှိတွင် ပို့စ်မရှိပါ',
-        footer: '@luukyonebot'
+        favorCount: '📦 တောင်းဆိုချက် {count} ခု-'
       },
       evening: {
         title: '🌙 <b>ညနေခင်း အကျဉ်းချုပ်</b>',
         subtitle: 'သင်ဘယ်လိုကူညီနိုင်မလဲ စစ်ဆေးကြည့်ပါ',
         travelCount: '✈️ ခရီးစဉ် {count} ခု-',
-        favorCount: '📦 တောင်းဆိုချက် {count} ခု-',
-        noActive: '📭 လက်ရှိတွင် ပို့စ်မရှိပါ',
-        footer: '@luukyonebot'
+        favorCount: '📦 တောင်းဆိုချက် {count} ခု-'
       }
     }
   },

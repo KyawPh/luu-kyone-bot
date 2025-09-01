@@ -2,6 +2,34 @@
 
 All notable changes to the Luu Kyone Bot project will be documented in this file.
 
+## [1.3.1] - 2025-01-01
+
+### Added
+- **Scene Utilities Module**: New `sceneUtils.js` module for consistent scene behavior
+  - `buildSceneMessage()` - Unified message formatting across scenes
+  - `handleSceneEntry()` - Standardized scene initialization
+  - `handleSceneCancel()` - Consistent cancellation flow
+  - `handleSceneError()` - Centralized error handling
+
+### Changed
+- **Myanmar Language Updates**: Enhanced Myanmar translations in messages
+  - Updated back-to-menu greeting messages with better Myanmar phrasing
+  - Refined button labels for better clarity
+  - Improved scene navigation prompts
+- **Scene Navigation Flow**: Smoother transitions in travel and favor scenes
+  - Direct return to main menu on cancel without intermediate messages
+  - Cleaner single-edit message updates throughout scene flow
+  - Eliminated redundant message sending after scene completion
+
+### Fixed
+- **Message Flow**: Removed duplicate "What would you like to do?" messages after scene actions
+- **Cancel Action**: Fixed cancel behavior to properly return to main menu with greeting
+
+### Technical Improvements
+- **Code Reusability**: Extracted common scene patterns to utility functions
+- **Consistency**: Standardized scene behavior across travel and favor flows
+- **Maintainability**: Centralized scene-related logic for easier updates
+
 ## [1.3.0] - 2024-12-31
 
 ### Added
