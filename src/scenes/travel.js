@@ -68,7 +68,7 @@ travelScene.action(/^route_(.+)_(.+)$/, async (ctx) => {
   
   await ctx.editMessageText(
     messages.scenes.travel.title + '\n\n' +
-    `Route: ${formatRoute(fromCity, toCity)}\n\n` +
+    `${messages.fieldLabels.route}: ${formatRoute(fromCity, toCity)}\n\n` +
     messages.scenes.travel.steps.departure,
     { 
       parse_mode: 'HTML',
@@ -99,7 +99,7 @@ travelScene.action('date_custom', async (ctx) => {
   // We need to send a new message for text input since user needs to see the prompt while typing
   await ctx.editMessageText(
     messages.scenes.travel.title + '\n\n' +
-    `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n\n` +
+    `${messages.fieldLabels.route}: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n\n` +
     messages.scenes.travel.steps.departureCustom,
     { parse_mode: 'HTML' }
   );
@@ -109,8 +109,8 @@ travelScene.action('date_custom', async (ctx) => {
 // Weight selection prompt
 async function promptWeight(ctx, useReply = false) {
   const message = messages.scenes.travel.title + '\n\n' +
-    `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
-    `Departure: ${formatDate(ctx.scene.state.departureDate)}\n\n` +
+    `${messages.fieldLabels.route}: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
+    `${messages.fieldLabels.departure}: ${formatDate(ctx.scene.state.departureDate)}\n\n` +
     messages.scenes.travel.steps.weight;
   
   const options = { 
@@ -188,9 +188,9 @@ travelScene.on('text', async (ctx) => {
 async function promptCategories(ctx, useReply = false) {
   ctx.scene.state.categories = [];
   const message = messages.scenes.travel.title + '\n\n' +
-    `Route: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
-    `Departure: ${formatDate(ctx.scene.state.departureDate)}\n` +
-    `Available Space: ${ctx.scene.state.availableWeight}\n\n` +
+    `${messages.fieldLabels.route}: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
+    `${messages.fieldLabels.departure}: ${formatDate(ctx.scene.state.departureDate)}\n` +
+    `${messages.fieldLabels.availableSpace}: ${ctx.scene.state.availableWeight}\n\n` +
     messages.scenes.travel.steps.categories;
   
   const options = { 
@@ -383,11 +383,11 @@ travelScene.action('cancel', async (ctx) => {
   
   // Return to main menu directly
   const menuMessage = [
-    `👋 Hi ${userName}!`,
+    formatMessage(messages.shared.backToMenuGreeting, { userName }),
     '',
-    '💚 What would you like to do today?',
+    messages.shared.backToMenuPrompt,
     '',
-    'Choose an option below to get started.'
+    messages.shared.chooseOption
   ].join('\n');
   
   await ctx.editMessageText(menuMessage, {

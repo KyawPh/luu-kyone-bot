@@ -110,7 +110,7 @@ const handleTravel = async (ctx, isCallback = false, bot = null) => {
     
     if (!postCheck.canCreate) {
       const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
-        `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
+        formatMessage(messages.shared.postsUsed, { current: postCheck.current, limit: postCheck.limit }) + '\n\n' +
         messages.shared.limitResetsNextMonth;
       
       return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
@@ -169,7 +169,7 @@ const handleFavor = async (ctx, isCallback = false, bot = null) => {
     
     if (!postCheck.canCreate) {
       const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
-        `Posts used: ${postCheck.current}/${postCheck.limit}\n\n` +
+        formatMessage(messages.shared.postsUsed, { current: postCheck.current, limit: postCheck.limit }) + '\n\n' +
         messages.shared.limitResetsNextMonth;
       
       return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
@@ -217,8 +217,8 @@ const handleProfile = async (ctx, isCallback = false) => {
     logEvent.userViewedProfile(userId);
     
     const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
-    const memberType = user.isPremium ? '💎 Premium' : '🆓 Free';
-    const username = user.username ? `@${user.username}` : 'Not set';
+    const memberType = user.isPremium ? messages.userTypes.premium : messages.userTypes.free;
+    const username = user.username ? `@${user.username}` : messages.userTypes.notSet;
     const rating = user.rating > 0 ? 
       formatMessage(messages.commands.profile.ratingStars, {
         stars: '⭐'.repeat(Math.round(user.rating)),
@@ -343,7 +343,7 @@ const handleBrowse = async (ctx, isCallback = false) => {
         const plan = doc.data();
         const fromCity = plan.fromCity || 'Unknown';
         const toCity = plan.toCity || 'Unknown';
-        const date = plan.departureDate ? new Date(plan.departureDate.toDate()).toLocaleDateString() : 'Date TBD';
+        const date = plan.departureDate ? new Date(plan.departureDate.toDate()).toLocaleDateString() : messages.shared.dateTBD;
         message += `• ${fromCity} → ${toCity} (${date})\n`;
       });
       message += '\n';
@@ -356,10 +356,10 @@ const handleBrowse = async (ctx, isCallback = false) => {
         const fromCity = request.fromCity || 'Unknown';
         const toCity = request.toCity || 'Unknown';
         // Handle both old single category and new multiple categories
-        let categoryDisplay = 'Various';
+        let categoryDisplay = messages.shared.various;
         if (request.categories && Array.isArray(request.categories)) {
           categoryDisplay = request.categories.length > 1 
-            ? `${request.categories.length} items` 
+            ? formatMessage(messages.shared.itemsCount, { count: request.categories.length }) 
             : request.categories[0];
         } else if (request.category) {
           categoryDisplay = request.category;
@@ -401,9 +401,9 @@ const handleBackToMenu = async (ctx) => {
   
   // Create a welcoming message for returning to menu
   const menuMessage = [
-    `👋 Hi ${userName}!`,
+    formatMessage(messages.shared.backToMenuGreeting, { userName }),
     '',
-    '💚 What would you like to do today?',
+    messages.shared.backToMenuPrompt,
     '',
     messages.shared.chooseOptionBelow
   ].join('\n');

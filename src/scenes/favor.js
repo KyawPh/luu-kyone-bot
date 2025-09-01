@@ -67,7 +67,7 @@ favorScene.action(/^route_(.+)_(.+)$/, async (ctx) => {
   
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
-    `Route: ${formatRoute(fromCity, toCity)}\n\n` +
+    `${messages.fieldLabels.route}: ${formatRoute(fromCity, toCity)}\n\n` +
     messages.scenes.favor.steps.urgency,
     { 
       parse_mode: 'HTML',
@@ -123,8 +123,8 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
   
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
-    `Route: ${fromCityName} → ${toCityName}\n` +
-    `Urgency: ${urgency.emoji} ${urgency.label}\n\n` +
+    `${messages.fieldLabels.route}: ${fromCityName} → ${toCityName}\n` +
+    `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n\n` +
     messages.scenes.favor.categorySelection.title + '\n' +
     selectedCats + '\n\n' +
     messages.scenes.favor.categorySelection.prompt,
@@ -163,9 +163,9 @@ favorScene.action('confirm_categories', async (ctx) => {
   
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
-    `Route: ${fromCityName} → ${toCityName}\n` +
-    `Urgency: ${urgency.emoji} ${urgency.label}\n` +
-    `Categories: ${selectedCats}\n\n` +
+    `${messages.fieldLabels.route}: ${fromCityName} → ${toCityName}\n` +
+    `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n` +
+    `${messages.fieldLabels.categories}: ${selectedCats}\n\n` +
     messages.scenes.favor.steps.weight,
     { 
       parse_mode: 'HTML',
@@ -190,8 +190,8 @@ favorScene.action(/^urgency_(.+)$/, async (ctx) => {
   
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
-    `Route: ${fromCityName} → ${toCityName}\n` +
-    `Urgency: ${urgency.emoji} ${urgency.label}\n\n` +
+    `${messages.fieldLabels.route}: ${fromCityName} → ${toCityName}\n` +
+    `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n\n` +
     messages.scenes.favor.steps.categories,
     { 
       parse_mode: 'HTML',
@@ -363,11 +363,11 @@ favorScene.action(['cancel', 'cancel_favor'], async (ctx) => {
   
   // Return to main menu directly
   const menuMessage = [
-    `👋 Hi ${userName}!`,
+    formatMessage(messages.shared.backToMenuGreeting, { userName }),
     '',
-    '💚 What would you like to do today?',
+    messages.shared.backToMenuPrompt,
     '',
-    'Choose an option below to get started.'
+    messages.shared.chooseOption
   ].join('\n');
   
   await ctx.editMessageText(menuMessage, {

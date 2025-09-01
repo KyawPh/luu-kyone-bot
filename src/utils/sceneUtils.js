@@ -13,18 +13,18 @@ const buildSceneMessage = (title, state, prompt) => {
   
   // Add route if available
   if (state.fromCity && state.toCity) {
-    message += `Route: ${formatRoute(state.fromCity, state.toCity)}\n`;
+    message += `${messages.fieldLabels.route}: ${formatRoute(state.fromCity, state.toCity)}\n`;
   }
   
   // Add departure date if available (travel scene)
   if (state.departureDate) {
-    message += `Departure: ${formatDate(state.departureDate)}\n`;
+    message += `${messages.fieldLabels.departure}: ${formatDate(state.departureDate)}\n`;
   }
   
   // Add weight if available
   if (state.availableWeight || state.requestedWeight) {
     const weight = state.availableWeight || state.requestedWeight;
-    message += `Weight: ${weight}\n`;
+    message += `${messages.fieldLabels.weight}: ${weight}\n`;
   }
   
   // Add categories if selected
@@ -37,7 +37,7 @@ const buildSceneMessage = (title, state, prompt) => {
       })
       .filter(c => c)
       .join(', ');
-    message += `Categories: ${categoriesDisplay}\n`;
+    message += `${messages.fieldLabels.categories}: ${categoriesDisplay}\n`;
   }
   
   // Add urgency if available (favor scene)
@@ -45,7 +45,7 @@ const buildSceneMessage = (title, state, prompt) => {
     const { URGENCY_LEVELS } = require('../config/constants');
     const urgency = URGENCY_LEVELS[state.urgency];
     if (urgency) {
-      message += `Urgency: ${urgency.emoji} ${urgency.label}\n`;
+      message += `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n`;
     }
   }
   

@@ -304,7 +304,20 @@ const messages = {
     },
     tip: '💡 ချိတ်ဆက်မှုအသိပေးချက်များကို အမြဲဖွင့်ထားပါ',
     confirmOn: '✅ နေ့စဉ်အကျဉ်းချုပ်များ ဖွင့်ထားပြီ',
-    confirmOff: '📵 နေ့စဉ်အကျဉ်းချုပ်များ ပိတ်ထားပြီ'
+    confirmOff: '📵 နေ့စဉ်အကျဉ်းချုပ်များ ပိတ်ထားပြီ',
+    about: {
+      title: '📱 <b>Luu Kyone Bot အကြောင်း</b>',
+      tagline: '🤝 ကမ္ဘာတစ်ဝှမ်းက မြန်မာခရီးသွားတွေကို ချိတ်ဆက်ပေးတဲ့ platform',
+      version: '<b>Version:</b> 1.0.0',
+      status: '<b>Status:</b> {status}',
+      community: '<b>Community:</b> @LuuKyone_Community',
+      features: '<b>အဓိက Features:</b>',
+      featuresList: '• ခရီးစဉ်တွေ မျှဝေနိုင်\n• ကိုယ်ရေးကိုယ်တာ အကူအညီတောင်း\n• ခရီးသွားတွေနဲ့ ချိတ်ဆက်\n• လက်ရှိပို့စ်တွေ ကြည့်ရှု',
+      notifications: '<b>အသိပေးချက်များ:</b>',
+      notificationStatus: '🔔 ချိတ်ဆက်မှုသတင်း: အမြဲဖွင့်\n📊 နေ့စဉ်အကျဉ်းချုပ်: {status}',
+      notificationsOn: 'ဖွင့်ထား (မနက် ၉နာရီ ညနေ ၆နာရီ)',
+      notificationsOff: 'ပိတ်ထား'
+    }
   },
 
   // Channel Messages
@@ -407,6 +420,14 @@ const messages = {
     cancelled: 'Cancelled',
     expired: 'Expired'
   },
+  
+  // User Types
+  userTypes: {
+    free: '🆓 Free',
+    premium: '💎 Premium',
+    notSet: 'Not set',
+    freeTier: 'Free Tier'
+  },
 
   // Post Type Labels (ENGLISH)
   postTypes: {
@@ -438,7 +459,24 @@ const messages = {
   shared: {
     useStartForLink: '/start ဖြင့် လင့်ခ်ရယူပါ',
     limitResetsNextMonth: 'လာမည့်လတွင် အကန့်အသတ် ပြန်စမည်',
-    chooseOptionBelow: 'စတင်ရန် အောက်ပါရွေးချယ်ခွင့်များထဲမှ တစ်ခုရွေးပါ'
+    chooseOptionBelow: 'စတင်ရန် အောက်ပါရွေးချယ်ခွင့်များထဲမှ တစ်ခုရွေးပါ',
+    postsUsed: 'သုံးပြီးသား ပို့စ်များ: {current}/{limit}',
+    dateTBD: 'ရက်စွဲ သတ်မှတ်ရန် ကျန်ရှိ',
+    itemsCount: '{count} မျိုး',
+    various: 'အမျိုးမျိုး',
+    backToMenuGreeting: '👋 {userName} ပြန်လာတာ ဝမ်းသာပါတယ်!',
+    backToMenuPrompt: '💚 ဒီနေ့ ဘာလုပ်ချင်ပါသလဲ?',
+    chooseOption: 'စတင်ရန် အောက်က option တစ်ခုရွေးပါ။'
+  },
+  
+  // Scene Field Labels
+  fieldLabels: {
+    route: 'Route',
+    departure: 'Departure',
+    urgency: 'Urgency',
+    categories: 'Categories',
+    weight: 'Weight',
+    availableSpace: 'Available Space'
   },
 
   // Channel Welcome Messages
