@@ -429,8 +429,8 @@ const messages = {
     dateTBD: 'ရက်စွဲ သတ်မှတ်ရန် ကျန်ရှိ',
     itemsCount: '{count} မျိုး',
     various: 'အမျိုးမျိုး',
-    backToMenuGreeting: '👋 {userName} ပြန်လာတာ ဝမ်းသာပါတယ်!',
-    backToMenuPrompt: '💚 ဒီနေ့ ဘာလုပ်ချင်ပါသလဲ?',
+    backToMenuGreeting: 'မင်္ဂလာပါ {userName}!',
+    backToMenuPrompt: '💚 ပြန်လာတာ ဝမ်းသာပါတယ်၊ ဒီနေ့ ဘာလုပ်ချင်ပါသလဲ?',
     chooseOption: 'စတင်ရန် အောက်က option တစ်ခုရွေးပါ။'
   },
   

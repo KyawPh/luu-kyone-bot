@@ -403,6 +403,7 @@ const handleBackToMenu = async (ctx) => {
   const menuMessage = [
     formatMessage(messages.shared.backToMenuGreeting, { userName }),
     messages.shared.backToMenuPrompt,
+    '',
     messages.shared.chooseOption
   ].join('\n');
   
@@ -509,6 +510,7 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
       const returningMessage = [
         formatMessage(messages.shared.backToMenuGreeting, { userName }),
         messages.shared.backToMenuPrompt,
+        '',
         messages.shared.chooseOption
       ].join('\n');
       

@@ -365,6 +365,7 @@ favorScene.action(['cancel', 'cancel_favor'], async (ctx) => {
   const menuMessage = [
     formatMessage(messages.shared.backToMenuGreeting, { userName }),
     messages.shared.backToMenuPrompt,
+    '',
     messages.shared.chooseOption
   ].join('\n');
   
