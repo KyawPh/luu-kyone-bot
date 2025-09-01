@@ -60,7 +60,7 @@ const handleHelp = async (ctx, isCallback = false) => {
     await ctx.answerCbQuery();
     const { Markup } = require('telegraf');
     const keyboard = Markup.inlineKeyboard([
-      [Markup.button.callback(messages.buttons.common.backToMenu, 'back_to_menu')]
+      [Markup.button.callback(messages.buttons.actions.backToMenu, 'back_to_menu')]
     ]);
     await ctx.editMessageText(helpMessage, { 
       parse_mode: 'HTML',
@@ -93,7 +93,7 @@ const handleTravel = async (ctx, isCallback = false, bot = null) => {
       if (!isMember) {
         return ctx.reply(
           messages.errors.notMember + '\n\n' +
-          messages.shared.useStartForLink
+          messages.common.useStartForLink
         );
       }
     }
@@ -110,8 +110,8 @@ const handleTravel = async (ctx, isCallback = false, bot = null) => {
     
     if (!postCheck.canCreate) {
       const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
-        formatMessage(messages.shared.postsUsed, { current: postCheck.current, limit: postCheck.limit }) + '\n\n' +
-        messages.shared.limitResetsNextMonth;
+        formatMessage(messages.common.postsUsed, { current: postCheck.current, limit: postCheck.limit }) + '\n\n' +
+        messages.common.limitResetsNextMonth;
       
       return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
     }
@@ -152,7 +152,7 @@ const handleFavor = async (ctx, isCallback = false, bot = null) => {
       if (!isMember) {
         return ctx.reply(
           messages.errors.notMember + '\n\n' +
-          messages.shared.useStartForLink
+          messages.common.useStartForLink
         );
       }
     }
@@ -169,8 +169,8 @@ const handleFavor = async (ctx, isCallback = false, bot = null) => {
     
     if (!postCheck.canCreate) {
       const limitMessage = formatMessage(messages.errors.limitReached, { limit: postCheck.limit }) + '\n' +
-        formatMessage(messages.shared.postsUsed, { current: postCheck.current, limit: postCheck.limit }) + '\n\n' +
-        messages.shared.limitResetsNextMonth;
+        formatMessage(messages.common.postsUsed, { current: postCheck.current, limit: postCheck.limit }) + '\n\n' +
+        messages.common.limitResetsNextMonth;
       
       return isCallback ? ctx.editMessageText(limitMessage) : ctx.reply(limitMessage);
     }
@@ -217,32 +217,32 @@ const handleProfile = async (ctx, isCallback = false) => {
     logEvent.userViewedProfile(userId);
     
     const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
-    const memberType = user.isPremium ? messages.userTypes.premium : messages.userTypes.free;
-    const username = user.username ? `@${user.username}` : messages.userTypes.notSet;
+    const memberType = user.isPremium ? messages.labels.userTypes.premium : messages.labels.userTypes.free;
+    const username = user.username ? `@${user.username}` : messages.labels.userTypes.notSet;
     const rating = user.rating > 0 ? 
-      formatMessage(messages.commands.profile.ratingStars, {
+      formatMessage(messages.profile.ratingStars, {
         stars: '⭐'.repeat(Math.round(user.rating)),
         rating: user.rating
-      }) : messages.commands.profile.noRating;
+      }) : messages.profile.noRating;
     const memberSince = new Date(user.joinedAt.toDate ? user.joinedAt.toDate() : user.joinedAt).toLocaleDateString();
     
     const profileMessage = [
-      messages.commands.profile.title,
+      messages.profile.title,
       '',
-      formatMessage(messages.commands.profile.info, {
+      formatMessage(messages.profile.info, {
         userName: user.userName,
         username: username,
         memberType: memberType
       }),
       '',
-      formatMessage(messages.commands.profile.statistics, {
+      formatMessage(messages.profile.statistics, {
         current: postCount,
         limit: limit,
         completed: user.completedFavors || 0,
         rating: rating
       }),
       '',
-      formatMessage(messages.commands.profile.memberSince, { date: memberSince })
+      formatMessage(messages.profile.memberSince, { date: memberSince })
     ].join('\n');
     
     if (isCallback) {
@@ -250,7 +250,7 @@ const handleProfile = async (ctx, isCallback = false) => {
       // Add back to menu button
       const { Markup } = require('telegraf');
       const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback(messages.buttons.common.backToMenu, 'back_to_menu')]
+        [Markup.button.callback(messages.buttons.actions.backToMenu, 'back_to_menu')]
       ]);
       await ctx.editMessageText(profileMessage, { 
         parse_mode: 'HTML',
@@ -329,37 +329,37 @@ const handleBrowse = async (ctx, isCallback = false) => {
     });
     
     if (activeTravelPlans.length === 0 && activeFavorRequests.length === 0) {
-      const noPostsMessage = messages.errors.noActivePost;
+      const noPostsMessage = messages.common.noActivePosts;
       return isCallback ? ctx.editMessageText(noPostsMessage) : ctx.reply(noPostsMessage);
     }
     
     logEvent.postsViewed(ctx.from?.id?.toString() || 'unknown', 'browse', activeTravelPlans.length + activeFavorRequests.length);
     
-    let message = messages.commands.browse.title + '\n\n';
+    let message = messages.browse.title + '\n\n';
     
     if (activeTravelPlans.length > 0) {
-      message += messages.commands.browse.travelPlans + '\n';
+      message += messages.browse.travelPlans + '\n';
       activeTravelPlans.slice(0, 10).forEach(doc => {
         const plan = doc.data();
         const fromCity = plan.fromCity || 'Unknown';
         const toCity = plan.toCity || 'Unknown';
-        const date = plan.departureDate ? new Date(plan.departureDate.toDate()).toLocaleDateString() : messages.shared.dateTBD;
+        const date = plan.departureDate ? new Date(plan.departureDate.toDate()).toLocaleDateString() : messages.common.dateTBD;
         message += `• ${fromCity} → ${toCity} (${date})\n`;
       });
       message += '\n';
     }
     
     if (activeFavorRequests.length > 0) {
-      message += messages.commands.browse.favorRequests + '\n';
+      message += messages.browse.favorRequests + '\n';
       activeFavorRequests.slice(0, 10).forEach(doc => {
         const request = doc.data();
         const fromCity = request.fromCity || 'Unknown';
         const toCity = request.toCity || 'Unknown';
         // Handle both old single category and new multiple categories
-        let categoryDisplay = messages.shared.various;
+        let categoryDisplay = messages.common.various;
         if (request.categories && Array.isArray(request.categories)) {
           categoryDisplay = request.categories.length > 1 
-            ? formatMessage(messages.shared.itemsCount, { count: request.categories.length }) 
+            ? formatMessage(messages.common.itemsCount, { count: request.categories.length }) 
             : request.categories[0];
         } else if (request.category) {
           categoryDisplay = request.category;
@@ -368,14 +368,14 @@ const handleBrowse = async (ctx, isCallback = false) => {
       });
     }
     
-    message += '\n' + messages.commands.browse.footer;
+    message += '\n' + messages.browse.footer;
     
     if (isCallback) {
       await ctx.answerCbQuery();
       // Add back to menu button
       const { Markup } = require('telegraf');
       const keyboard = Markup.inlineKeyboard([
-        [Markup.button.callback(messages.buttons.common.backToMenu, 'back_to_menu')]
+        [Markup.button.callback(messages.buttons.actions.backToMenu, 'back_to_menu')]
       ]);
       await ctx.editMessageText(message, { 
         parse_mode: 'HTML',
@@ -401,10 +401,10 @@ const handleBackToMenu = async (ctx) => {
   
   // Simple format as requested
   const menuMessage = [
-    formatMessage(messages.shared.backToMenuGreeting, { userName }),
-    messages.shared.backToMenuPrompt,
+    formatMessage(messages.menu.greeting, { userName }),
+    messages.menu.welcome,
     '',
-    messages.shared.chooseOption
+    messages.menu.instruction
   ].join('\n');
   
   await ctx.editMessageText(menuMessage, {
@@ -435,18 +435,18 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
       if (!isMember && canCheckMembership) {
         const joinKeyboard = {
           inline_keyboard: [
-            [{ text: messages.buttons.membership.joinChannel, url: messages.channels.communityUrl }],
+            [{ text: messages.buttons.membership.joinChannel, url: messages.urls.community }],
             [{ text: messages.buttons.membership.checkJoined, callback_data: 'check_membership' }]
           ]
         };
         
         return ctx.reply(
           `👋 Welcome ${userName}!\n\n` +
-          messages.commands.start.notMember.description + '\n\n' +
-          messages.commands.start.notMember.steps.title + '\n' +
-          messages.commands.start.notMember.steps.step1 + '\n' +
-          messages.commands.start.notMember.steps.step2 + '\n' +
-          messages.commands.start.notMember.steps.step3,
+          messages.start.notMember.description + '\n\n' +
+          messages.start.notMember.instructions.title + '\n' +
+          messages.start.notMember.instructions.step1 + '\n' +
+          messages.start.notMember.instructions.step2 + '\n' +
+          messages.start.notMember.instructions.step3,
           {
             parse_mode: 'HTML',
             reply_markup: joinKeyboard
@@ -477,14 +477,14 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
       
       // New user welcome message with menu
       const welcomeMessage = [
-        formatMessage(messages.commands.start.newUser.greeting, { userName }),
-        messages.commands.start.newUser.intro,
-        messages.commands.start.newUser.benefits.title,
-        messages.commands.start.newUser.benefits.travel,
-        messages.commands.start.newUser.benefits.favor,
-        messages.commands.start.newUser.benefits.connect,
+        formatMessage(messages.start.newUser.greeting, { userName }),
+        messages.start.newUser.intro,
+        messages.start.newUser.benefits.title,
+        messages.start.newUser.benefits.travel,
+        messages.start.newUser.benefits.favor,
+        messages.start.newUser.benefits.connect,
         '',
-        messages.common.howSpreadKindness
+        messages.common.howToSpreadKindness
       ].join('\n');
       
       if (isCallback) {
@@ -508,10 +508,10 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
       
       // Simple format for returning users as requested
       const returningMessage = [
-        formatMessage(messages.shared.backToMenuGreeting, { userName }),
-        messages.shared.backToMenuPrompt,
+        formatMessage(messages.menu.greeting, { userName }),
+        messages.menu.welcome,
         '',
-        messages.shared.chooseOption
+        messages.menu.instruction
       ].join('\n');
       
       if (isCallback) {

@@ -39,7 +39,7 @@ const routeKeyboard = () => {
       Markup.button.callback('🇹🇭 BKK → 🇸🇬 SG', 'route_BKK_SG')
     ],
     // Cancel button
-    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
+    [Markup.button.callback(messages.buttons.actions.cancel, 'cancel')]
   ];
   
   return Markup.inlineKeyboard(buttons);
@@ -62,7 +62,7 @@ const categoryKeyboard = () => {
     buttons.push(row);
   }
   
-  buttons.push([Markup.button.callback(messages.buttons.common.cancel, 'cancel')]);
+  buttons.push([Markup.button.callback(messages.buttons.actions.cancel, 'cancel')]);
   return Markup.inlineKeyboard(buttons);
 };
 
@@ -71,15 +71,15 @@ const urgencyKeyboard = () => {
   const buttons = Object.entries(URGENCY_LEVELS).map(([key, value]) => 
     [Markup.button.callback(`${value.emoji} ${value.label}`, `urgency_${key}`)]
   );
-  buttons.push([Markup.button.callback(messages.buttons.common.cancel, 'cancel')]);
+  buttons.push([Markup.button.callback(messages.buttons.actions.cancel, 'cancel')]);
   return Markup.inlineKeyboard(buttons);
 };
 
 // Back/Cancel keyboard
 const backKeyboard = () => {
   return Markup.inlineKeyboard([
-    [Markup.button.callback(messages.buttons.common.back, 'back')],
-    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
+    [Markup.button.callback(messages.buttons.actions.back, 'back')],
+    [Markup.button.callback(messages.buttons.actions.cancel, 'cancel')]
   ]);
 };
 
@@ -91,7 +91,7 @@ const dateKeyboard = () => {
       Markup.button.callback(messages.buttons.date.tomorrow, 'date_tomorrow')
     ],
     [Markup.button.callback(messages.buttons.date.custom, 'date_custom')],
-    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
+    [Markup.button.callback(messages.buttons.actions.cancel, 'cancel')]
   ]);
 };
 
@@ -110,7 +110,7 @@ const weightKeyboard = () => {
       Markup.button.callback(messages.buttons.weight.more10, 'weight_more'),
       Markup.button.callback(messages.buttons.weight.custom, 'weight_custom')
     ],
-    [Markup.button.callback(messages.buttons.common.cancel, 'cancel')]
+    [Markup.button.callback(messages.buttons.actions.cancel, 'cancel')]
   ]);
 };
 

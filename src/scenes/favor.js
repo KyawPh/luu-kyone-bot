@@ -30,7 +30,7 @@ favorScene.enter(async (ctx) => {
   logEvent.sceneEntered(userId, 'favorScene');
   
   const message = messages.scenes.favor.title + '\n\n' +
-    messages.scenes.favor.steps.selectRoute;
+    messages.scenes.favor.prompts.selectRoute;
   
   // If we have a message to edit (from menu), edit it. Otherwise, send a new message
   if (ctx.scene.state.messageToEdit) {
@@ -68,7 +68,7 @@ favorScene.action(/^route_(.+)_(.+)$/, async (ctx) => {
   await ctx.editMessageText(
     messages.scenes.favor.title + '\n\n' +
     `${messages.fieldLabels.route}: ${formatRoute(fromCity, toCity)}\n\n` +
-    messages.scenes.favor.steps.urgency,
+    messages.scenes.favor.prompts.selectUrgency,
     { 
       parse_mode: 'HTML',
       ...urgencyKeyboard()
@@ -125,7 +125,7 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
     messages.scenes.favor.title + '\n\n' +
     `${messages.fieldLabels.route}: ${fromCityName} → ${toCityName}\n` +
     `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n\n` +
-    messages.scenes.favor.categorySelection.title + '\n' +
+    messages.scenes.favor.categorySelection + '\n' +
     selectedCats + '\n\n' +
     messages.common.categoryPrompt,
     { 
@@ -134,8 +134,8 @@ favorScene.action(/^cat_(.+)$/, async (ctx) => {
         inline_keyboard: [
           ...categoryRows,
           [
-            { text: messages.buttons.common.confirmCategories, callback_data: 'confirm_categories' },
-            { text: messages.buttons.common.cancel, callback_data: 'cancel' }
+            { text: messages.buttons.scenes.confirmCategories, callback_data: 'confirm_categories' },
+            { text: messages.buttons.actions.cancel, callback_data: 'cancel' }
           ]
         ]
       }
@@ -166,7 +166,7 @@ favorScene.action('confirm_categories', async (ctx) => {
     `${messages.fieldLabels.route}: ${fromCityName} → ${toCityName}\n` +
     `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n` +
     `${messages.fieldLabels.categories}: ${selectedCats}\n\n` +
-    messages.scenes.favor.steps.weight,
+    messages.scenes.favor.prompts.selectWeight,
     { 
       parse_mode: 'HTML',
       ...weightKeyboard()
@@ -192,7 +192,7 @@ favorScene.action(/^urgency_(.+)$/, async (ctx) => {
     messages.scenes.favor.title + '\n\n' +
     `${messages.fieldLabels.route}: ${fromCityName} → ${toCityName}\n` +
     `${messages.fieldLabels.urgency}: ${urgency.emoji} ${urgency.label}\n\n` +
-    messages.scenes.favor.steps.categories,
+    messages.scenes.favor.prompts.selectCategories,
     { 
       parse_mode: 'HTML',
       ...categoryKeyboard()
@@ -326,7 +326,7 @@ async function postFavorRequest(ctx) {
     
     // Success message
     await ctx.editMessageText(
-      messages.scenes.favor.confirmation.title + '\n\n' +
+      messages.scenes.favor.success + '\n\n' +
       formatMessage(messages.common.referenceId, { postId }),
       { parse_mode: 'HTML' }
     );
@@ -347,7 +347,7 @@ async function postFavorRequest(ctx) {
       state: ctx.scene.state 
     });
     logEvent.firebaseError('create_favor_request', error);
-    ctx.reply(messages.common.errorPosting);
+    ctx.reply(messages.errors.postingFailed);
     logEvent.sceneLeft(userId, 'favorScene', 'error');
     ctx.scene.leave();
   }
@@ -363,10 +363,10 @@ favorScene.action(['cancel', 'cancel_favor'], async (ctx) => {
   
   // Return to main menu directly
   const menuMessage = [
-    formatMessage(messages.shared.backToMenuGreeting, { userName }),
-    messages.shared.backToMenuPrompt,
+    formatMessage(messages.menu.greeting, { userName }),
+    messages.menu.welcome,
     '',
-    messages.shared.chooseOption
+    messages.menu.instruction
   ].join('\n');
   
   await ctx.editMessageText(menuMessage, {

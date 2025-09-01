@@ -31,7 +31,7 @@ travelScene.enter(async (ctx) => {
   logEvent.sceneEntered(userId, 'travelScene');
   
   const message = messages.scenes.travel.title + '\n\n' +
-    messages.scenes.travel.steps.selectRoute;
+    messages.scenes.travel.prompts.selectRoute;
   
   // If we have a message to edit (from menu), edit it. Otherwise, send a new message
   if (ctx.scene.state.messageToEdit) {
@@ -69,7 +69,7 @@ travelScene.action(/^route_(.+)_(.+)$/, async (ctx) => {
   await ctx.editMessageText(
     messages.scenes.travel.title + '\n\n' +
     `${messages.fieldLabels.route}: ${formatRoute(fromCity, toCity)}\n\n` +
-    messages.scenes.travel.steps.departure,
+    messages.scenes.travel.prompts.selectDate,
     { 
       parse_mode: 'HTML',
       ...dateKeyboard()
@@ -100,7 +100,7 @@ travelScene.action('date_custom', async (ctx) => {
   await ctx.editMessageText(
     messages.scenes.travel.title + '\n\n' +
     `${messages.fieldLabels.route}: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n\n` +
-    messages.scenes.travel.steps.departureCustom,
+    messages.scenes.travel.prompts.enterCustomDate,
     { parse_mode: 'HTML' }
   );
 });
@@ -111,7 +111,7 @@ async function promptWeight(ctx, useReply = false) {
   const message = messages.scenes.travel.title + '\n\n' +
     `${messages.fieldLabels.route}: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
     `${messages.fieldLabels.departure}: ${formatDate(ctx.scene.state.departureDate)}\n\n` +
-    messages.scenes.travel.steps.weight;
+    messages.scenes.travel.prompts.selectWeight;
   
   const options = { 
     parse_mode: 'HTML',
@@ -191,7 +191,7 @@ async function promptCategories(ctx, useReply = false) {
     `${messages.fieldLabels.route}: ${formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity)}\n` +
     `${messages.fieldLabels.departure}: ${formatDate(ctx.scene.state.departureDate)}\n` +
     `${messages.fieldLabels.availableSpace}: ${ctx.scene.state.availableWeight}\n\n` +
-    messages.scenes.travel.steps.categories;
+    messages.scenes.travel.prompts.selectCategories;
   
   const options = { 
     parse_mode: 'HTML',
@@ -242,7 +242,7 @@ travelScene.action(/^cat_(.+)$/, async (ctx) => {
   
   await ctx.editMessageText(
     messages.scenes.travel.title + '\n\n' +
-    messages.scenes.travel.categorySelection.title + '\n' +
+    messages.scenes.travel.categorySelection + '\n' +
     selectedCats + '\n\n' +
     messages.common.categoryPrompt,
     { 
@@ -251,8 +251,8 @@ travelScene.action(/^cat_(.+)$/, async (ctx) => {
         inline_keyboard: [
           ...categoryRows,
           [
-            { text: messages.buttons.common.confirmPost, callback_data: 'confirm_post' },
-            { text: messages.buttons.common.cancel, callback_data: 'cancel' }
+            { text: messages.buttons.scenes.confirmPost, callback_data: 'confirm_post' },
+            { text: messages.buttons.actions.cancel, callback_data: 'cancel' }
           ]
         ]
       }
@@ -346,7 +346,7 @@ async function handleConfirmPost(ctx, useReply = false) {
     
     // Success message
     await ctx.editMessageText(
-      messages.scenes.travel.confirmation.title + '\n\n' +
+      messages.scenes.travel.success + '\n\n' +
       formatMessage(messages.common.referenceId, { postId }),
       { parse_mode: 'HTML' }
     );
@@ -367,7 +367,7 @@ async function handleConfirmPost(ctx, useReply = false) {
       state: ctx.scene.state 
     });
     logEvent.firebaseError('create_travel_plan', error);
-    ctx.reply(messages.common.errorPosting);
+    ctx.reply(messages.errors.postingFailed);
     logEvent.sceneLeft(userId, 'travelScene', 'error');
     ctx.scene.leave();
   }
@@ -383,10 +383,10 @@ travelScene.action('cancel', async (ctx) => {
   
   // Return to main menu directly
   const menuMessage = [
-    formatMessage(messages.shared.backToMenuGreeting, { userName }),
-    messages.shared.backToMenuPrompt,
+    formatMessage(messages.menu.greeting, { userName }),
+    messages.menu.welcome,
     '',
-    messages.shared.chooseOption
+    messages.menu.instruction
   ].join('\n');
   
   await ctx.editMessageText(menuMessage, {
