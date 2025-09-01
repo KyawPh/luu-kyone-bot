@@ -435,7 +435,7 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
         const joinKeyboard = {
           inline_keyboard: [
             [{ text: '📢 Community Channel သို့ဝင်ရောက်ရန်', url: 'https://t.me/LuuKyone_Community' }],
-            [{ text: '✅ ဝင်ရောက်ပြီးပါပြီ', callback_data: 'check_membership' }]
+            [{ text: '✅ ဝင်ပြီးပါပြီ', callback_data: 'check_membership' }]
           ]
         };
         
