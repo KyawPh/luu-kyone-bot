@@ -412,6 +412,138 @@ const handleBackToMenu = async (ctx) => {
   });
 };
 
+/**
+ * Unified start handler for both command and callback
+ * @param {Context} ctx - Telegraf context
+ * @param {boolean} isCallback - Whether this is from a callback
+ * @param {Object} bot - Bot instance for membership checking
+ * @param {boolean} afterJoining - Whether user just joined the channel
+ */
+const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = false) => {
+  const userId = ctx.from.id.toString();
+  const userName = ctx.from.first_name;
+  
+  try {
+    // Only check membership for command, not for callback (already checked)
+    if (!isCallback && !afterJoining && bot) {
+      const membershipStatus = await checkChannelMembership(bot, userId, config.telegram.channelId);
+      const isMember = membershipStatus === true;
+      const canCheckMembership = membershipStatus !== null;
+      
+      // If not a member, show join channel prompt (keep this different)
+      if (!isMember && canCheckMembership) {
+        const joinKeyboard = {
+          inline_keyboard: [
+            [{ text: '📢 Community Channel သို့ဝင်ရောက်ရန်', url: 'https://t.me/LuuKyone_Community' }],
+            [{ text: '✅ ဝင်ရောက်ပြီးပါပြီ', callback_data: 'check_membership' }]
+          ]
+        };
+        
+        return ctx.reply(
+          `👋 Welcome ${userName}!\n\n` +
+          messages.commands.start.notMember.description + '\n\n' +
+          messages.commands.start.notMember.steps.title + '\n' +
+          messages.commands.start.notMember.steps.step1 + '\n' +
+          messages.commands.start.notMember.steps.step2 + '\n' +
+          messages.commands.start.notMember.steps.step3,
+          {
+            parse_mode: 'HTML',
+            reply_markup: joinKeyboard
+          }
+        );
+      }
+    }
+    
+    // Check if user exists
+    const userDoc = await collections.users.doc(userId).get();
+    
+    if (!userDoc.exists) {
+      // Create new user
+      await collections.users.doc(userId).set({
+        userId: userId,
+        userName: userName,
+        username: ctx.from.username || null,
+        joinedAt: new Date(),
+        lastActive: new Date(),
+        isPremium: false,
+        completedFavors: 0,
+        rating: 0,
+        language: 'en',
+        isChannelMember: true
+      });
+      
+      logEvent.userJoined(userId, userName);
+      
+      // New user welcome message with menu
+      const welcomeMessage = [
+        formatMessage(messages.commands.start.newUser.greeting, { userName }),
+        messages.commands.start.newUser.intro,
+        messages.commands.start.newUser.benefits.title,
+        messages.commands.start.newUser.benefits.travel,
+        messages.commands.start.newUser.benefits.favor,
+        messages.commands.start.newUser.benefits.connect,
+        '',
+        messages.common.howSpreadKindness
+      ].join('\n');
+      
+      if (isCallback) {
+        await ctx.answerCbQuery();
+        await ctx.editMessageText(welcomeMessage, {
+          parse_mode: 'HTML',
+          ...mainMenu()
+        });
+      } else {
+        await ctx.reply(welcomeMessage, {
+          parse_mode: 'HTML',
+          ...mainMenu()
+        });
+      }
+    } else {
+      // Update existing user
+      await collections.users.doc(userId).update({
+        lastActive: new Date(),
+        isChannelMember: true
+      });
+      
+      // Get user stats
+      const user = userDoc.data();
+      const { getMonthlyPostCount } = require('../utils/helpers');
+      const postCount = await getMonthlyPostCount(userId, collections);
+      const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
+      
+      // Returning user message with menu
+      const returningMessage = [
+        formatMessage(messages.commands.start.returningUser.greeting, { userName }),
+        formatMessage(messages.commands.start.returningUser.postsMonth, { current: postCount, limit }),
+        user.completedFavors > 0 ? 
+          formatMessage(messages.commands.start.returningUser.completedFavors, { count: user.completedFavors }) :
+          messages.commands.start.returningUser.firstAct,
+        '',
+        messages.common.howSpreadKindness
+      ].join('\n');
+      
+      if (isCallback) {
+        await ctx.answerCbQuery();
+        await ctx.editMessageText(returningMessage, {
+          parse_mode: 'HTML',
+          ...mainMenu()
+        });
+      } else {
+        await ctx.reply(returningMessage, {
+          parse_mode: 'HTML',
+          ...mainMenu()
+        });
+      }
+    }
+    
+    logEvent.userStarted(userId, userName);
+  } catch (error) {
+    logEvent.commandError('start', error, userId);
+    logger.error('Start handler error', { error: error.message, userId });
+    ctx.reply(messages.errors.generic);
+  }
+};
+
 module.exports = {
   generateHelpMessage,
   handleHelp,
@@ -420,5 +552,6 @@ module.exports = {
   handleProfile,
   handleSettings,
   handleBrowse,
-  handleBackToMenu
+  handleBackToMenu,
+  handleStart
 };

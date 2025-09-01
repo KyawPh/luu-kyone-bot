@@ -9,9 +9,7 @@ const { config } = require('../config');
 const setupCallbacks = (bot) => {
   // Check membership callback
   bot.action('check_membership', async (ctx) => {
-    await ctx.answerCbQuery();
     const userId = ctx.from.id.toString();
-    const userName = ctx.from.first_name;
     
     try {
       // Re-check if user has joined the channel
@@ -19,65 +17,17 @@ const setupCallbacks = (bot) => {
       logEvent.membershipChecked(userId, isMember);
       
       if (!isMember) {
-        // Still not a member
-        return ctx.reply(
-          messages.errors.notMember + '\n\n' +
-          messages.callbacks.pleaseJoinFirst
-        );
+        // Still not a member - show alert
+        await ctx.answerCbQuery(messages.callbacks.pleaseJoinFirst, { show_alert: true });
+        return;
       }
       
-      // User has joined! Check if they exist in database
-      const userDoc = await collections.users.doc(userId).get();
-      
-      if (!userDoc.exists) {
-        // Create new user
-        await collections.users.doc(userId).set({
-          userId: userId,
-          userName: userName,
-          username: ctx.from.username || null,
-          joinedAt: new Date(),
-          lastActive: new Date(),
-          isPremium: false,
-          completedFavors: 0,
-          rating: 0,
-          language: 'en',
-          isChannelMember: true
-        });
-        
-        // Send welcome message
-        await ctx.editMessageText(
-          messages.commands.start.newUser.title + '\n\n' +
-          formatMessage(messages.commands.start.newUser.greetingShort, { userName }) + '\n\n' +
-          messages.commands.start.newUser.intro + '\n\n' +
-          messages.commands.start.newUser.benefits.title + '\n' +
-          messages.commands.start.newUser.benefits.travel + '\n' +
-          messages.commands.start.newUser.benefits.favor + '\n' +
-          messages.commands.start.newUser.benefits.connect + '\n\n' +
-          messages.commands.start.newUser.start,
-          { parse_mode: 'HTML' }
-        );
-      } else {
-        // Update existing user
-        await collections.users.doc(userId).update({
-          lastActive: new Date(),
-          isChannelMember: true
-        });
-        
-        await ctx.editMessageText(
-          messages.commands.start.returningUser.title + '\n\n' +
-          formatMessage(messages.commands.start.returningUser.greetingShort, { userName }) + '\n\n' +
-          messages.commands.start.returningUser.prompt + '\n\n' +
-          messages.commands.start.returningUser.motto,
-          { parse_mode: 'HTML' }
-        );
-      }
-      
-      // Show main menu after a short delay
-      setTimeout(() => {
-        ctx.reply(messages.common.howSpreadKindness, mainMenu());
-      }, 500);
+      // User has joined! Use shared handler to show appropriate welcome
+      const { handleStart } = require('./sharedHandlers');
+      await handleStart(ctx, true, bot, true);
       
     } catch (error) {
+      await ctx.answerCbQuery();
       logger.error('Check membership error', { error: error.message });
       ctx.reply(messages.errors.generic + ' Please try /start again.');
     }
