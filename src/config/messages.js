@@ -41,8 +41,8 @@ const messages = {
       custom: '✏️ အခြားအလေးချိန်'
     },
     membership: {
-      joinChannel: '📢 Community ချန်နယ်ဝင်ရန်',
-      checkJoined: '✅ ဝင်ပြီးပြီ'
+      joinChannel: '📢 Community Channel သို့ဝင်ရောက်ရန်',
+      checkJoined: '✅ ဝင်ပြီးပါပြီ'
     }
   },
 
@@ -496,6 +496,11 @@ const messages = {
     productionWebhookRequired: 'Production requires webhook mode. Set RAILWAY_PUBLIC_DOMAIN in Railway.',
     webhookUrlChanged: 'Webhook URL changed, updating...',
     webhookAlreadyConfigured: 'Webhook already configured correctly, skipping update'
+  },
+  
+  // Channel URLs
+  channels: {
+    communityUrl: 'https://t.me/LuuKyone_Community'
   }
 };
 
