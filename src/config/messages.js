@@ -4,33 +4,33 @@
 const messages = {
   // Note: Cities, Categories, and Urgency data are defined in constants.js
   // This file only contains display messages and button labels
-  
+
   // Button Labels (KEEP IN MYANMAR)
   buttons: {
     mainMenu: {
-      travel: '✈️ ခရီးစဥ်',
-      favor: '📦 ပါဆယ်',
-      browse: '📋 ကြည့်ရှုရန်',
-      profile: '👤 ပရိုဖိုင်',
+      travel: '✈️ ခရီးစဉ်',
+      favor: '📦 အကူအညီ',
+      browse: '📋 ပို့စ်များကြည့်ရန်',
+      profile: '👤 အချက်လက်',
       help: '📚 အကူအညီ',
       settings: '⚙️ ဆက်တင်'
     },
     common: {
-      cancel: '❌ မလုပ်တော့ပါ',
+      cancel: '❌ ပယ်ဖျက်မည်',
       back: '⬅️ နောက်သို့',
-      backToMenu: '🏠 မူလစာမျက်နှာ',
-      skip: '⏭️ ကျော်သွားရန်',
+      backToMenu: '🏠 မူလမီနူး',
+      skip: '⏭️ ကျော်မည်',
       confirm: '✅ အတည်ပြုမည်',
       confirmCategories: '✅ အတည်ပြုမည်',
       confirmPost: '✅ အတည်ပြုမည်',
-      yes: '✅ ဟုတ်ကဲ့',
+      yes: '✅ ဟုတ်သည်',
       no: '❌ မဟုတ်ပါ',
       contact: '💬 ဆက်သွယ်ရန်'
     },
     date: {
       today: '📅 ဒီနေ့',
       tomorrow: '📅 မနက်ဖြန်',
-      custom: '📅 ရက်စွဲ ရွေးရန်'
+      custom: '📅 ရက်စွဲရွေးရန်'
     },
     weight: {
       less1: '< ၁ ကီလို',
@@ -38,370 +38,366 @@ const messages = {
       kg3to5: '၃-၅ ကီလို',
       kg5to10: '၅-၁၀ ကီလို',
       more10: '> ၁၀ ကီလို',
-      custom: '✏️ Custom'
+      custom: '✏️ အခြားအလေးချိန်'
     },
     membership: {
-      joinChannel: '📢 Community Channel သို့ ဝင်ရန်',
-      checkJoined: '✅ ဝင်ပြီးပါပြီ'
+      joinChannel: '📢 Community ချန်နယ်ဝင်ရန်',
+      checkJoined: '✅ ဝင်ပြီးပြီ'
     }
   },
 
   // Scene Messages (MYANMAR)
   scenes: {
     travel: {
-      title: '✈️ <b>ခရီးစဉ်ကို မျှဝေပါ</b>',
+      title: '✈️ <b>ခရီးစဉ်မျှဝေရန်</b>',
       steps: {
-        selectRoute: 'သင်သွားမယ့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ',
-        departure: 'Step 2: ထွက်ခွာမယ့် ရက်စွဲကို ရွေးချယ်ပါ',
-        departureCustom: 'Step 2: ထွက်ခွာမယ့် ရက်စွဲကို ပြသထားသော ပုံစံအတိုင်း ဖြည့်ပေးပါ\nDD/MM/YYYY:',
-        categories: 'Step 3: သယ်ယူရန် အဆင်ပြေသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ။ တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။',
-        weight: 'Step 4: သယ်ယူနိုင်သော အလေးချိန်ကို ရွေးချယ်ပါ',
-        weightCustom: 'Step 4: သယ်ယူနိုင်သော အလေးချိန်ကို kg ဖြင့်ထည့်ပါ  (e.g., "20" or "20 kg"):'
+        selectRoute: 'သွားမည့်လမ်းကြောင်းရွေးပါ',
+        departure: 'ထွက်ခွာမည့်ရက်ရွေးပါ',
+        departureCustom: 'ထွက်ခွာမည့်ရက် ရိုက်ထည့်ပါ (DD/MM/YYYY):',
+        categories: 'သယ်ဆောင်နိုင်သည့် ပစ္စည်းအမျိုးအစားရွေးပါ',
+        weight: 'သယ်ဆောင်နိုင်သည့် အလေးချိန်ရွေးပါ',
+        weightCustom: 'အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ (ဥပမာ - "၂၀"):'
       },
       categorySelection: {
-        title: 'ရွေးချယ်ထားသော ပစ္စည်းအမျိုးအစားများ - ',
-        prompt: 'တစ်ခုထပ်ပို၍ ရွေးချယ်ပါ (သို့) အတည်ပြု၍ ရှေ့ဆက်ပါ'
+        title: 'ရွေးထားသောအမျိုးအစားများ - ',
+        prompt: 'ထပ်ရွေးရန် (သို့) အတည်ပြုရန်'
       },
       confirmation: {
-        title: '✅ <b>ခရီးစဉ်ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
-        reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your post)</i>'
+        title: '✅ <b>ခရီးစဉ်တင်ပြီးပါပြီ</b>',
+        reference: '📌 <b>Reference ID:</b> {postId}'
       },
-      cancelled: '❌ ခရီးစဉ်ကို မပြုလုပ်တော့ပါ။',
-      whatToDo: 'လုပ်ဆောင်လိုသည်ကို ရွေးချယ်ပါ?',
-      errorPosting: '❌ An error occurred while posting. Please try again.'
+      cancelled: '❌ ခရီးစဉ်တင်ခြင်း ပယ်ဖျက်ပြီ',
+      whatToDo: 'ဘာလုပ်ချင်ပါသလဲ?',
+      errorPosting: '❌ တင်ရန်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။'
     },
-    
+
     favor: {
-      title: '📦 <b>ပစ္စည်းပို့ရန် တောင်းဆိုပါ</b>',
+      title: '📦 <b>အကူအညီတောင်းရန်</b>',
       steps: {
-        selectRoute: 'ပစ္စည်းပို့မည့် ခရီးစဉ်လမ်းကြောင်းကို ရွေးချယ်ပါ',
-        urgency: 'Step 2: ပို့လိုသော အချိန် အပိုင်းအခြား တစ်ခုကို ရွေးချယ်ပါ',
-        categories: 'Step 3: ပို့ဆောင်လိုသော ပစ္စည်းအမျိုးအစားကို ရွေးချယ်ပါ။ တစ်ခုထပ်ပို၍ ရွေးချယ်နိုင်ပါသည်။',
-        weight: 'Step 4: ပစ္စည်း အလေးချိန်ကို ရွေးချယ်ပါ',
-        weightCustom: 'Step 4: ပစ္စည်း အလေးချိန်ကို kg ဖြင့်ထည့်ပါ (e.g., "20" or "20 kg"):'
+        selectRoute: 'ပို့ဆောင်လိုသော လမ်းကြောင်းရွေးပါ',
+        urgency: 'ပို့ဆောင်လိုသော အချိန်ရွေးပါ',
+        categories: 'ပို့ဆောင်လိုသော ပစ္စည်းအမျိုးအစားရွေးပါ',
+        weight: 'ပစ္စည်းအလေးချိန်ရွေးပါ',
+        weightCustom: 'အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ (ဥပမာ - "၂၀"):'
       },
       categorySelection: {
-        title: 'ရွေးချယ်ထားသော ပစ္စည်းအမျိုးအစားများ -',
-        prompt: 'တစ်ခုထပ်ပို၍ ရွေးချယ်ပါ (သို့) အတည်ပြု၍ ရှေ့ဆက်ပါ'
+        title: 'ရွေးထားသောအမျိုးအစားများ -',
+        prompt: 'ထပ်ရွေးရန် (သို့) အတည်ပြုရန်'
       },
       confirmation: {
-        title: '✅ <b>ပစ္စည်းပို့ရန် ပြုလုပ်မှု အောင်မြင်ပါသည်။</b>',
-        reference: '📌 <b>Reference:</b> {postId}\n<i>(Share this ID if someone asks about your request)</i>'
+        title: '✅ <b>တောင်းဆိုချက်တင်ပြီးပါပြီ</b>',
+        reference: '📌 <b>Reference ID:</b> {postId}'
       },
-      cancelled: '❌ ပစ္စည်းပို့ရန်တောင်းဆိုမှုကို မပြုလုပ်တော့ပါ။',
-      whatToDo: 'လုပ်ဆောင်လိုသည်ကို ရွေးချယ်ပါ?',
-      errorPosting: '❌ An error occurred while posting. Please try again.'
+      cancelled: '❌ တောင်းဆိုချက်တင်ခြင်း ပယ်ဖျက်ပြီ',
+      whatToDo: 'ဘာလုပ်ချင်ပါသလဲ?',
+      errorPosting: '❌ တင်ရန်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။'
     }
   },
 
-// Common Messages (ENGLISH)
+  // Common Messages
   common: {
-    operationCancelled: '❌ Operation cancelled.',
-    whatToDo: 'What would you like to do?',
-    howSpreadKindness: 'How can we spread kindness today?',
-    startBotFirst: 'Please start the bot first with /start',
-    startBotFirstAlert: '❌ Please start the bot first: @luukyonebot',
-    ownPostsOnly: '❌ You can only manage your own posts.',
-    failedToSend: '❌ Failed to send: {error}',
-    botAdminRequired: '⚠️ Make sure bot is admin in channel!'
+    operationCancelled: '❌ လုပ်ဆောင်ချက်ပယ်ဖျက်ပြီ',
+    whatToDo: 'ဘာလုပ်ချင်ပါသလဲ?',
+    howSpreadKindness: 'ဒီနေ့ ကြင်နာမှုဖြန့်ဖြူးမည်လား?',
+    startBotFirst: '/start ဖြင့် စတင်ပါ',
+    startBotFirstAlert: '❌ @luukyonebot ကို အရင်စတင်ပါ',
+    ownPostsOnly: '❌ ကိုယ့်ပို့စ်ကိုသာ စီမံနိုင်သည်',
+    failedToSend: '❌ ပို့မရ - {error}',
+    botAdminRequired: '⚠️ ဗော့ကို ချန်နယ်စီမံခွင့်ပေးပါ'
   },
 
-  // Admin Messages (ENGLISH)
+  // Admin Messages
   admin: {
-    adminOnly: '❌ This command is for admins only.',
-    runningCleanup: '🧹 Running cleanup job...',
-    cleanupCompleted: '✅ Cleanup completed! Check logs for details.',
-    cleanupFailed: '❌ Cleanup failed: {error}',
-    errorAccessingMenu: '❌ Error accessing test menu.'
+    adminOnly: '❌ Admin များသာ အသုံးပြုနိုင်သည်',
+    runningCleanup: '🧹 ရှင်းလင်းနေသည်...',
+    cleanupCompleted: '✅ ရှင်းလင်းပြီးပြီ',
+    cleanupFailed: '❌ ရှင်းလင်းမရ - {error}',
+    errorAccessingMenu: '❌ မီနူးဝင်ရောက်မရ'
   },
 
-  // Test Command Messages (ENGLISH)
+  // Test Command Messages
   test: {
-    welcomeMessageSent: '✅ Test welcome message sent to channel!',
-    dailyQuoteSent: '✅ Daily quote sent to channel!',
-    summaryTitle: '📊 <b>Test Daily Summary</b>\n\nSelect which summary to test:',
-    milestoneMessageSent: '✅ Test milestone message sent to channel!',
-    gratitudePostSent: '✅ Test gratitude post sent to channel!',
-    safetyReminderSent: '✅ Test safety reminder sent to channel!',
-    routeHighlightSent: '✅ Test route highlight sent to channel!',
-    sendingWelcome: 'Sending test welcome message...',
-    sendingQuote: 'Sending daily quote...',
-    sendingMilestone: 'Sending milestone celebration...',
-    sendingGratitude: 'Sending gratitude post...',
-    sendingSafety: 'Sending safety reminder...',
-    sendingHighlight: 'Sending route highlight...'
+    welcomeMessageSent: '✅ ကြိုဆိုစာတမ်း စမ်းပို့ပြီး',
+    dailyQuoteSent: '✅ နေ့စဉ်စကားစု စမ်းပို့ပြီး',
+    summaryTitle: '📊 <b>နေ့စဉ်အကျဉ်းချုပ် စမ်းသပ်မှု</b>',
+    milestoneMessageSent: '✅ ခရီးရောက်စာတမ်း စမ်းပို့ပြီး',
+    gratitudePostSent: '✅ ကျေးဇူးတင်စာတမ်း စမ်းပို့ပြီး',
+    safetyReminderSent: '✅ ဘေးကင်းရေး အသိပေးချက် စမ်းပို့ပြီး',
+    routeHighlightSent: '✅ လမ်းကြောင်း အထူးအကြောင်း စမ်းပို့ပြီး',
+    sendingWelcome: 'ကြိုဆိုစာတမ်း ပို့နေသည်...',
+    sendingQuote: 'နေ့စဉ်စကားစု ပို့နေသည်...',
+    sendingMilestone: 'ခရီးရောက်ခြင်း ပို့နေသည်...',
+    sendingGratitude: 'ကျေးဇူးတင်စာတမ်း ပို့နေသည်...',
+    sendingSafety: 'ဘေးကင်းရေး အသိပေးချက် ပို့နေသည်...',
+    sendingHighlight: 'လမ်းကြောင်း အထူးအကြောင်း ပို့နေသည်...'
   },
 
-  // System Messages (ENGLISH)
+  // System Messages
   system: {
-    channelMembershipRequired: '📢 First, you need to join @LuuKyone_Community',
-    checkMembership: 'Checking channel membership...',
-    savingPost: 'Saving your post...',
-    postingToChannel: 'Posting to community channel...'
+    channelMembershipRequired: '📢 @LuuKyone_Community သို့ အရင်ဝင်ပါ',
+    checkMembership: 'အဖွဲ့ဝင်အခြေအနေ စစ်ဆေးနေသည်...',
+    savingPost: 'ပို့စ်သိမ်းဆည်းနေသည်...',
+    postingToChannel: 'ချန်နယ်သို့ တင်နေသည်...'
   },
 
-  // Validation Messages (ENGLISH)
+  // Validation Messages
   validation: {
-    selectCategories: '❌ Please select at least one category.',
-    enterWeightNumber: '❌ Please enter weight as a number in kg (e.g., "20" or "20 kg")',
-    invalidDate: '❌ Invalid date format or date is in the past.\nPlease enter in format DD/MM/YYYY:',
-    invalidWeight: '❌ Invalid weight format. Please enter as a number (e.g., "20" or "20 kg")'
+    selectCategories: '❌ အမျိုးအစား အနည်းဆုံးတစ်ခုရွေးပါ',
+    enterWeightNumber: '❌ အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ',
+    invalidDate: '❌ ရက်စွဲမှားယွင်းနေပါသည်',
+    invalidWeight: '❌ အလေးချိန်မှားယွင်းနေပါသည်'
   },
 
-  // Error Messages (ENGLISH)
+  // Error Messages
   errors: {
-    generic: '❌ An error occurred. Please try again.',
-    notMember: '❌ Please join the community channel first.',
-    limitReached: '❌ You\'ve reached this month\'s post limit ({limit} posts).',
-    invalidDate: '❌ Invalid date format or date is in the past.\nPlease enter in format DD/MM/YYYY:',
-    invalidWeight: '❌ Invalid weight format. Please enter as a number (e.g., "20" or "20 kg")',
-    enterWeightNumber: '❌ Please enter weight as a number in kg (e.g., "20" or "20 kg")',
-    noActivePost: '📭 No active posts at the moment.',
-    categoryRequired: '❌ Please select at least one category.',
-    postNotFound: '❌ Post not found.',
-    cannotContactSelf: '❌ You cannot contact yourself!',
-    alreadyContacted: '❌ You\'ve already been introduced for this post. Free tier allows one-time introduction only.',
-    channelPostFailed: '⚠️ <b>Note:</b> Your post was saved but couldn\'t be posted to the channel.\n\nPlease ensure the bot is added as admin to @LuuKyone_Community channel.',
-    chatNotFound: '❌ Chat not found. User might have blocked or deleted the bot.'
+    generic: '❌ အမှားတစ်ခုဖြစ်နေသည်',
+    notMember: '❌ Community ချန်နယ်သို့ အရင်ဝင်ပါ',
+    limitReached: '❌ လစဉ်အကန့်အသတ်ပြည့်သွားပြီ ({limit} posts)',
+    invalidDate: '❌ ရက်စွဲမှားယွင်းနေပါသည်',
+    invalidWeight: '❌ အလေးချိန်မှားယွင်းနေပါသည်',
+    enterWeightNumber: '❌ အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ',
+    noActivePost: '📭 လက်ရှိတွင် တက်ကြွသောပို့စ်မရှိပါ',
+    categoryRequired: '❌ အမျိုးအစား အနည်းဆုံးတစ်ခုရွေးပါ',
+    postNotFound: '❌ ပို့စ်မတွေ့ရှိပါ',
+    cannotContactSelf: '❌ ကိုယ့်ကိုယ်ကို ဆက်သွယ်၍မရပါ',
+    alreadyContacted: '❌ ဤပို့စ်အတွက် ဆက်သွယ်ပြီးသားဖြစ်သည်',
+    channelPostFailed: '⚠️ ပို့စ်သိမ်းထားပါသည်။ ချန်နယ်တွင် ဗော့ကို Admin အဖြစ်ထည့်ပေးပါ',
+    chatNotFound: '❌ ဆက်သွယ်၍မရပါ'
   },
 
-  // Help Messages (ENGLISH)
+  // Help Messages
   help: {
-    title: '📚 <b>How to Use Luu Kyone Bot</b>',
+    title: '📚 <b>Luu Kyone အသုံးပြုနည်း</b>',
     intro: {
-      title: '<b>What is Luu Kyone?</b>',
-      description: 'Connects kind travelers with people needing personal favors.\nBuilt on trust and community kindness.\nNot a commercial delivery service.'
+      title: '<b>Luu Kyone ဆိုတာဘာလဲ?</b>',
+      description: 'ကြင်နာသောခရီးသွားများနှင့် အကူအညီလိုအပ်သူများကို ချိတ်ဆက်ပေးသည်'
     },
     travelers: {
-      title: '<b>For Travelers:</b>',
-      step1: '1. Use /travel to share your travel plan',
-      step2: '2. Specify your route and date',
-      step3: '3. Select categories you can help with',
-      step4: '4. Get connected with people needing favors'
+      title: '<b>ခရီးသွားများအတွက်-</b>',
+      step1: '၁။ /travel ဖြင့် ခရီးစဉ်မျှဝေပါ',
+      step2: '၂။ လမ်းကြောင်းနှင့် ရက်စွဲသတ်မှတ်ပါ',
+      step3: '၃။ ကူညီနိုင်သည့် အမျိုးအစားရွေးပါ',
+      step4: '၄။ အကူအညီလိုအပ်သူများနှင့် ချိတ်ဆက်ပါ'
     },
     requesters: {
-      title: '<b>For Requesters:</b>',
-      step1: '1. Use /favor to request help',
-      step2: '2. Specify pickup and delivery locations',
-      step3: '3. Select category and urgency',
-      step4: '4. Wait for travelers to contact you'
+      title: '<b>တောင်းဆိုသူများအတွက်-</b>',
+      step1: '၁။ /favor ဖြင့် အကူအညီတောင်းပါ',
+      step2: '၂။ လမ်းကြောင်းသတ်မှတ်ပါ',
+      step3: '၃။ အမျိုးအစားနှင့် အရေးတကြီးအဆင့်ရွေးပါ',
+      step4: '၄။ ခရီးသွားများ ဆက်သွယ်လာသည်ကို စောင့်ပါ'
     },
     commands: {
-      title: '<b>Commands:</b>',
-      start: '/start - Start the bot',
-      travel: '/travel - Share travel plan',
-      favor: '/favor - Request a favor',
-      myposts: '/myposts - Manage your posts',
-      settings: '/settings - Notification preferences',
-      help: '/help - Show this help message',
-      cancel: '/cancel - Cancel current action'
+      title: '<b>Commands-</b>',
+      start: '/start - ဗော့စတင်ရန်',
+      travel: '/travel - ခရီးစဉ်မျှဝေရန်',
+      favor: '/favor - အကူအညီတောင်းရန်',
+      myposts: '/myposts - ကိုယ့်ပို့စ်များ',
+      settings: '/settings - အသိပေးချက်များ',
+      help: '/help - အကူအညီ',
+      cancel: '/cancel - လက်ရှိလုပ်ဆောင်ချက်ပယ်ဖျက်ရန်'
     },
     limits: {
-      title: '<b>Limits (Free Tier):</b>',
-      posts: '• 10 posts per month',
-      introduction: '• One-time introduction only',
-      trust: '• Community trust-based'
+      title: '<b>အကန့်အသတ်များ-</b>',
+      posts: '• တစ်လလျှင် ပို့စ် ၁၀ ခု',
+      introduction: '• တစ်ကြိမ်တည်း မိတ်ဆက်ခွင့်',
+      trust: '• ယုံကြည်မှုအပေါ်အခြေခံ'
     },
     safety: {
-      title: '<b>Safety Tips:</b>',
-      meet: '✅ Meet in public places only',
-      verify: '✅ Verify items before accepting',
-      photos: '✅ Take photos of handover',
-      prohibited: '✅ No prohibited items',
-      instincts: '✅ Trust your instincts'
+      title: '<b>ဘေးကင်းရေး-</b>',
+      meet: '✅ အများသုံးနေရာတွင်သာ တွေ့ဆုံပါ',
+      verify: '✅ ပစ္စည်းများ အတည်ပြုပါ',
+      photos: '✅ လက်လွှဲပြောင်းခြင်း ဓာတ်ပုံရိုက်ပါ',
+      prohibited: '✅ တားမြစ်ပစ္စည်းများ မပါဝင်ပါစေ',
+      instincts: '✅ အတွင်းစိတ်ကို ယုံကြည်ပါ'
     },
-    support: '<b>Support:</b> @LuuKyone_Community'
+    support: '<b>အကူအညီ-</b> @LuuKyone_Community'
   },
 
-  // Command Messages for /start, /help, /stats, /channelinfo
+  // Command Messages
   commands: {
     start: {
       notMember: {
-        title: '📢 <b>Join Our Community First</b>',
-        description: 'To use Luu Kyone Bot, you need to join our community channel first.',
+        title: '📢 <b>Community ချန်နယ်သို့ အရင်ဝင်ပါ</b>',
+        description: 'Luu Kyone ကိုအသုံးပြုရန် Community ချန်နယ်သို့ဝင်ရန် လိုအပ်ပါသည်',
         steps: {
-          title: '<b>How to join:</b>',
-          step1: '1️⃣ Go to @LuuKyone_Community',
-          step2: '2️⃣ Click "Join"',
-          step3: '3️⃣ Come back here and click "I\'ve Joined"'
+          title: '<b>ဝင်နည်း-</b>',
+          step1: '1️⃣ @LuuKyone_Community သို့သွားပါ',
+          step2: '2️⃣ "Join" နှိပ်ပါ',
+          step3: '3️⃣ ဤနေရာသို့ပြန်လာပြီး "ဝင်ပြီးပြီ" နှိပ်ပါ'
         },
-        button: 'Open channel and join!'
+        button: 'ချန်နယ်ဖွင့်ရန်!'
       },
       newUser: {
-        // For /start command
-        greeting: '💚 <b>Welcome to Our Kindness Community!</b>\n\nHi {userName}! You\'ve just joined something special.',
-        intro: '<b>Luu Kyone</b> (လူကြုံ) connects kind hearts across cities. We\'re neighbors helping neighbors with personal favors - not a delivery service.',
-        howItWorks: '<b>How it works:</b>\n✈️ <b>Traveling?</b> Your empty luggage space can bring joy\n🤝 <b>Need a favor?</b> Your neighbor might be traveling home',
-        routes: '<b>Our routes:</b> 🇸🇬 Singapore ↔ 🇹🇭 Bangkok ↔ 🇲🇲 Yangon',
-        motto: '<i>"Small acts, when multiplied by millions of people,\ncan transform the world"</i>',
-        ready: 'Ready to spread kindness? Let\'s start! 🙏',
-        // For check_membership callback (additional fields)
-        title: '💚 <b>Welcome to Our Kindness Community!</b>',
-        greetingShort: 'Hi {userName}! You\'ve just joined something special.',
+        greeting: '💚 <b>ကြိုဆိုပါသည်!</b>\n\n{userName} မင်္ဂလာပါ!',
+        intro: '<b>Luu Kyone</b> သည် ခရီးသွားများနှင့် အကူအညီလိုအပ်သူများကို ချိတ်ဆက်ပေးသော platform တစ်ခုဖြစ်ပါသည်',
+        howItWorks: '<b>အလုပ်လုပ်ပုံ-</b>\n✈️ <b>ခရီးထွက်မည်လား?</b> လက်ဆွဲအိတ်ထဲက နေရာလွတ်လေးကို အသုံးချပါ\n🤝 <b>အကူအညီလိုအပ်လား?</b>',
+        routes: '<b>ခရီးစဉ်များ-</b> 🇸🇬 Singapore ↔ 🇹🇭 Bangkok ↔ 🇲🇲 Yangon',
+        motto: '<i>"လူသန်းပေါင်းများစွာ၏ ကြင်နာမှုသည် ကမ္ဘာကြီးကို ပြောင်းလဲစေနိုင်သည်"</i>',
+        ready: 'ကြင်နာမှုဖြန့်ဖြူးရန် အဆင်သင့်ဖြစ်ပြီလား?',
+        title: '💚 <b>ကြိုဆိုပါသည်!</b>',
+        greetingShort: '{userName} မင်္ဂလာပါ!',
         benefits: {
-          title: '<b>What you can do:</b>',
-          travel: '✈️ <b>Traveling?</b> - Turn empty luggage space into someone\'s happiness',
-          favor: '📦 <b>Need help?</b> - Kind travelers are ready to assist',
-          connect: '🤝 <b>Connect</b> - Arrange thank-you gifts directly'
+          title: '<b>သင်ဘာလုပ်နိုင်မလဲ-</b>',
+          travel: '✈️ <b>ခရီးထွက်မည်လား?</b> - နေရာလွတ်လေးကို အသုံးချပါ',
+          favor: '📦 <b>အကူအညီလိုအပ်လား?</b> - ကြင်နာသောခရီးသွားများ ရှိပါသည်',
+          connect: '🤝 <b>ချိတ်ဆက်ပါ</b> - တိုက်ရိုက်စီစဉ်ပါ'
         },
-        start: '🚀 Ready to get started!'
+        start: '🚀 စတင်ရန်'
       },
       returningUser: {
-        // For /start command
-        greeting: '{userName} ကို ပြန်လည် ကြိုဆိုပါတယ်🤝✨',
-        motto: '<i>"Every act of kindness creates a ripple"</i>',
-        impact: '<b>Your impact so far:</b>',
-        postsMonth: '📊 Favors this month: {current}/{limit}',
-        completedFavors: '💚 Acts of kindness: {count}',
-        makingDifference: '⭐ You\'re making a difference!',
-        firstAct: '🌱 Your first act of kindness awaits!',
-        ready: 'Someone might need your help today. Let\'s see! 🙏',
-        // For check_membership callback (additional fields)
-        title: '✅ <b>Welcome back to the kindness network!</b>',
-        greetingShort: '{userName}, great to see you again! 🤗',
-        prompt: 'Our community is growing stronger every day.\nReady to share or receive kindness?'
+        greeting: '{userName} ပြန်လာတာ ဝမ်းသာပါတယ်🤝',
+        motto: '<i>"ကြင်နာမှုတိုင်းသည် ရေလှိုင်းတစ်ခုကို ဖန်တီးပေးသည်"</i>',
+        impact: '<b>သင့်ရဲ့အကျိုးသက်ရောက်မှု-</b>',
+        postsMonth: '📊 ဒီလအတွင်း အကူအညီများ- {current}/{limit}',
+        completedFavors: '💚 ကြင်နာမှုများ- {count}',
+        makingDifference: '⭐ သင်ဟာ ကွာခြားမှုတစ်ခုကို ဖန်တီးနေပါတယ်!',
+        firstAct: '🌱 သင့်ရဲ့ ပထမဆုံး ကြင်နာမှုအတွက် စောင့်မျှော်နေပါတယ်!',
+        ready: 'ဒီနေ့ တစ်စုံတစ်ယောက်က သင့်အကူအည့်ကို လိုအပ်နေလိမ့်မယ်',
+        title: '✅ <b>ပြန်လည်ကြိုဆိုပါသည်!</b>',
+        greetingShort: '{userName}၊ ပြန်တွေ့ရတာ ဝမ်းသာပါတယ်! 🤗',
+        prompt: 'ကျွန်ုပ်တို့၏ အသိုင်းအဝိုင်း ကြီးထွားလာနေသည်'
       }
     },
     stats: {
-      title: '📊 <b>Luu Kyone Statistics</b>',
-      community: '<b>👥 Community:</b>\n• Total Members: {members}\n• Channel: @LuuKyone_Community',
-      activePosts: '<b>📋 Active Posts:</b>\n• Travel Plans: {travels}\n• Favor Requests: {favors}\n• Total Active: {total}',
-      thisMonth: '<b>📅 This Month:</b>\n• New Travel Plans: {travels}\n• New Favor Requests: {favors}\n• Total Posted: {total}',
-      allTime: '<b>✅ All Time Success:</b>\n• Completed Travels: {travels}\n• Completed Favors: {favors}\n• Total Helped: {total}',
-      impact: '<b>🌟 Impact:</b>\n• {lives} lives touched\n• 3 countries connected\n• ∞ kindness spread',
-      footer: 'Join the movement: @luukyonebot'
+      title: '📊 <b>Luu Kyone စာရင်းအင်းများ</b>',
+      community: '<b>👥 Community-</b>\n• အဖွဲ့ဝင်စုစုပေါင်း- {members}',
+      activePosts: '<b>📋 တက်ကြွသောပို့စ်များ-</b>\n• ခရီးစဉ်များ- {travels}\n• တောင်းဆိုချက်များ- {favors}',
+      thisMonth: '<b>📅 ဒီလ-</b>\n• ခရီးစဉ်အသစ်- {travels}\n• တောင်းဆိုချက်အသစ်- {favors}',
+      allTime: '<b>✅ စုစုပေါင်းအောင်မြင်မှုများ-</b>\n• ပြီးစီးခရီးစဉ်- {travels}\n• ပြီးစီးအကူအညီ- {favors}',
+      impact: '<b>🌟 အကျိုးသက်ရောက်မှု-</b>\n• {lives} ဘဝများ ထိတွေ့ခံစားရ\n• နိုင်ငံ ၃ နိုင်ငံ ချိတ်ဆက်',
+      footer: '@luukyonebot'
     },
     channelInfo: {
-      title: '📢 <b>Channel & Bot Relationship</b>',
-      howTheyWork: '<b>How they work together:</b>\n• Bot (@luukyonebot) - Where you create posts\n• Channel (@LuuKyone_Community) - Where posts are displayed',
-      userJourney: '<b>User Journey:</b>\n1️⃣ Open the bot to create a post\n2️⃣ Post appears in the channel\n3️⃣ Community members comment to connect\n4️⃣ Bot notifies you of comments\n5️⃣ You connect directly to arrange',
-      whySystem: '<b>Why this system?</b>\n• Channel = Public visibility\n• Bot = Private control\n• Comments = Transparent connections',
-      tips: '<b>Tips:</b>\n• Check channel for active posts\n• Use bot to create your posts\n• Comment on posts to help\n• Keep notifications on for alerts',
-      footer: 'Channel: @LuuKyone_Community\nBot: @luukyonebot'
+      title: '📢 <b>ချန်နယ်နှင့် ဗော့</b>',
+      howTheyWork: '<b>အတူတကွ အလုပ်လုပ်ပုံ-</b>\n• ဗော့ - ပို့စ်များဖန်တီးရန်\n• ချန်နယ် - ပို့စ်များပြသရန်',
+      userJourney: '<b>အသုံးပြုနည်း-</b>\n1️⃣ ဗော့ဖြင့် ပို့စ်ဖန်တီးပါ\n2️⃣ ပို့စ်သည် ချန်နယ်တွင်ပေါ်လာမည်\n3️⃣ Community မှ မှတ်ချက်ပေးကြမည်\n4️⃣ ဗော့က အသိပေးမည်\n5️⃣ တိုက်ရိုက်ချိတ်ဆက်ပါ',
+      whySystem: '<b>စနစ်၏အကျိုးကျေးဇူး-</b>\n• ချန်နယ် = အများမြင်နိုင်\n• ဗော့ = ကိုယ်ပိုင်ထိန်းချုပ်မှု\n• မှတ်ချက်များ = ပွင့်လင်းမြင်သာမှု',
+      tips: '<b>အကြံပြုချက်များ-</b>\n• တက်ကြွသောပို့စ်များအတွက် ချန်နယ်စစ်ပါ\n• ပို့စ်ဖန်တီးရန် ဗော့သုံးပါ\n• အကူအညီပေးရန် မှတ်ချက်ပေးပါ',
+      footer: 'ချန်နယ်- @LuuKyone_Community\nဗော့- @luukyonebot'
     },
     profile: {
-      title: '👤 <b>Your Profile</b>',
-      info: 'Name: {userName}\nUsername: {username}\nMember Type: {memberType}',
-      statistics: '<b>📊 Statistics:</b>\nPosts this month: {current}/{limit}\nCompleted favors: {completed}\n{rating}',
-      memberSince: 'Member since: {date}',
-      noRating: 'No ratings yet',
-      ratingStars: 'Rating: {stars} ({rating}/5)'
+      title: '👤 <b>သင့်ရဲ့ Profile</b>',
+      info: 'အမည်- {userName}\nUsername- {username}\nအဖွဲ့ဝင်အမျိုးအစား- {memberType}',
+      statistics: '<b>📊 စာရင်းအင်းများ-</b>\nဒီလပို့စ်များ- {current}/{limit}\nပြီးစီးအကူအညီ- {completed}\n{rating}',
+      memberSince: 'ဝင်ရောက်သည့်ရက်- {date}',
+      noRating: 'အဆင့်သတ်မှတ်ချက် မရှိသေးပါ',
+      ratingStars: 'အဆင့်သတ်မှတ်ချက်- {stars} ({rating}/5)'
     },
     browse: {
-      title: '📋 <b>Recent Active Posts</b>',
-      travelPlans: '<b>✈️ Travel Plans:</b>',
-      favorRequests: '<b>📦 Favor Requests:</b>',
-      footer: '<i>Visit our channel @LuuKyone_Community for details</i>'
+      title: '📋 <b>လတ်တလော ပို့စ်များ</b>',
+      travelPlans: '<b>✈️ ခရီးစဉ်များ-</b>',
+      favorRequests: '<b>📦 တောင်းဆိုချက်များ-</b>',
+      footer: '@LuuKyone_Community'
     },
     postLimit: {
-      reached: '❌ You\'ve reached your monthly limit of {limit} posts.\nPosts used: {current}/{limit}\n\nYour limit will reset next month.'
+      reached: '❌ လစဉ်အကန့်အသတ်ပြည့်သွားပြီ\nအသုံးပြုပြီး- {current}/{limit}'
     }
   },
 
-  // Settings Messages (ENGLISH)
+  // Settings Messages
   settings: {
-    title: '⚙️ <b>Settings</b>',
-    preferences: 'Manage your preferences:',
+    title: '⚙️ <b>ဆက်တင်များ</b>',
+    preferences: 'ဦးစားပေးချက်များ-',
     notifications: {
-      connection: '🔔 Connection alerts: Always on (core feature)',
-      daily: '📊 Daily Summary: {status}'
+      connection: '🔔 ချိတ်ဆက်မှု အသိပေးချက်များ- ဖွင့်ထား',
+      daily: '📊 နေ့စဉ်အကျဉ်းချုပ်- {status}'
     },
-    tip: '💡 <i>Connection notifications are always enabled to ensure you never miss someone who wants to help!</i>',
-    confirmOn: '✅ You will now receive daily summaries at 9am and 6pm',
-    confirmOff: '📵 Daily summaries disabled'
+    tip: '💡 ချိတ်ဆက်မှုအသိပေးချက်များကို အမြဲဖွင့်ထားပါ',
+    confirmOn: '✅ နေ့စဉ်အကျဉ်းချုပ်များ ဖွင့်ထားပြီ',
+    confirmOff: '📵 နေ့စဉ်အကျဉ်းချုပ်များ ပိတ်ထားပြီ'
   },
 
-  // Channel Messages (ENGLISH)
+  // Channel Messages
   channel: {
     travelPost: {
-      header: '✈️ <b>KIND TRAVELER - CAN HELP</b>',
-      route: '📍 Route: {route}',
-      date: '📅 Date: {date}',
-      weight: '📦 Space: {weight}',
-      categories: '✅ Accepts: {categories}'
+      header: '✈️ <b>ကြင်နာသောခရီးသွား - ကူညီနိုင်သည်</b>',
+      route: '📍 ခရီးစဉ်- {route}',
+      date: '📅 ရက်စွဲ- {date}',
+      weight: '📦 နေရာလွတ်- {weight}',
+      categories: '✅ လက်ခံမည်- {categories}'
     },
     favorPost: {
-      header: '💝 <b>KINDNESS NEEDED</b>',
-      route: '📍 Route: {route}',
-      urgency: '⏰ Urgency: {urgency}',
-      categories: '📦 Category: {categories}',
-      weight: '⚖️ Weight: {weight}'
+      header: '💝 <b>ကြင်နာမှု လိုအပ်နေသည်</b>',
+      route: '📍 ခရီးစဉ်- {route}',
+      urgency: '⏰ အရေးတကြီးအဆင့်- {urgency}',
+      categories: '📦 အမျိုးအစား- {categories}',
+      weight: '⚖️ အလေးချိန်- {weight}'
     },
-    completed: 'This post has been completed. Thank you for spreading kindness! 💚',
-    cancelled: 'This post has been cancelled.',
-    expired: 'This post has expired.',
+    completed: 'ဤပို့စ်ပြီးဆုံးပြီ။ ကျေးဇူးတင်ပါသည်! 💚',
+    cancelled: 'ဤပို့စ်ပယ်ဖျက်ပြီ',
+    expired: 'ဤပို့စ်သက်တမ်းကုန်သွားပြီ',
     dailySummary: {
       morning: {
-        title: '☀️ <b>Morning Summary</b>',
-        subtitle: 'Share kindness today',
-        travelCount: '✈️ {count} travel plans:',
-        favorCount: '📦 {count} favor requests:',
-        noActive: '📭 No active posts at the moment.',
-        footer: 'Share: @luukyonebot\n#MorningSummary #Kindness'
+        title: '☀️ <b>နံနက်ခင်း အကျဉ်းချုပ်</b>',
+        subtitle: 'ဒီနေ့ ကြင်နာမှုမျှဝေပါ',
+        travelCount: '✈️ ခရီးစဉ် {count} ခု-',
+        favorCount: '📦 တောင်းဆိုချက် {count} ခု-',
+        noActive: '📭 လက်ရှိတွင် ပို့စ်မရှိပါ',
+        footer: '@luukyonebot'
       },
       evening: {
-        title: '🌙 <b>Evening Summary</b>',
-        subtitle: 'Check how you can help',
-        travelCount: '✈️ {count} travel plans:',
-        favorCount: '📦 {count} favor requests:',
-        noActive: '📭 No active posts at the moment.',
-        footer: 'Connect: @luukyonebot\n#EveningSummary #LuuKyone'
+        title: '🌙 <b>ညနေခင်း အကျဉ်းချုပ်</b>',
+        subtitle: 'သင်ဘယ်လိုကူညီနိုင်မလဲ စစ်ဆေးကြည့်ပါ',
+        travelCount: '✈️ ခရီးစဉ် {count} ခု-',
+        favorCount: '📦 တောင်းဆိုချက် {count} ခု-',
+        noActive: '📭 လက်ရှိတွင် ပို့စ်မရှိပါ',
+        footer: '@luukyonebot'
       }
     }
   },
 
-  // Contact Messages (ENGLISH)
+  // Contact Messages
   contact: {
     receivedInfo: {
-      title: '✅ <b>Contact Information Received!</b>',
-      postType: 'You requested contact for this {postType}:',
-      route: '<b>Route:</b> {route}',
-      date: '<b>Date:</b> {date}',
-      contactPerson: '<b>Please contact:</b>',
-      tip: '<i>💡 Tip: Start by introducing yourself and mentioning the post ID #{postId}</i>',
-      oneTime: '<i>⚠️ Note: This is a one-time introduction. Save this contact for future reference.</i>'
+      title: '✅ <b>ဆက်သွယ်ရန်အချက်အလက် ရပြီ</b>',
+      postType: 'ဤ {postType} အတွက် ဆက်သွယ်ရန် တောင်းဆိုထားပါသည်-',
+      route: '<b>ခရီးစဉ်-</b> {route}',
+      date: '<b>ရက်စွဲ-</b> {date}',
+      contactPerson: '<b>ဆက်သွယ်ရန်-</b>',
+      tip: '💡 မိမိကိုယ်ကို မိတ်ဆက်ခြင်းဖြင့် စတင်ပါ',
+      oneTime: '⚠️ တစ်ကြိမ်တည်း မိတ်ဆက်ခွင့်သာရှိသည်'
     },
     newMatch: {
-      title: '🔔 <b>New Match for Your Post!</b>',
-      someone: 'Someone {action}:',
-      route: '<b>Route:</b> {route}',
-      postId: '<b>Post ID:</b> #{postId}',
-      interested: '<b>Interested person:</b>',
-      willContact: 'They will contact you soon to discuss details.',
-      tip: '<i>💡 If they don\'t reach out, you can message them first!</i>'
+      title: '🔔 <b>သင့်ပို့စ်အတွက် အသစ်တွေ့ရှိမှု!</b>',
+      someone: 'တစ်စုံတစ်ယောက်က {action}-',
+      route: '<b>ခရီးစဉ်-</b> {route}',
+      postId: '<b>ပို့စ် ID-</b> #{postId}',
+      interested: '<b>စိတ်ဝင်စားသူ-</b>',
+      willContact: 'အသေးစိတ်ဆွေးနွေးရန် ဆက်သွယ်မည်',
+      tip: '💡 မဆက်သွယ်ပါက သင်ကိုယ်တိုင် စတင်နိုင်သည်'
     }
   },
 
-  // My Posts Messages (ENGLISH)
+  // My Posts Messages
   myposts: {
-    title: '📋 <b>Your Active Posts</b>',
-    empty: 'You don\'t have any active posts.',
-    selectPost: 'Select a post to manage:',
+    title: '📋 <b>သင့်ရဲ့ ပို့စ်များ</b>',
+    empty: 'လောလောဆယ် တင်ထားသော ပို့စ်များ မရှိပါ',
+    selectPost: 'စီမံရန် ပို့စ်ရွေးပါ-',
     managePost: {
-      title: '📝 <b>Manage Post</b>',
-      type: '<b>Type:</b> {type}',
-      route: '<b>Route:</b> {route}',
-      date: '<b>Date:</b> {date}',
-      urgency: '<b>Urgency:</b> {urgency}',
-      status: '<b>Status:</b> {status}',
-      postId: '<b>Post ID:</b> {postId}',
-      createdAt: '<b>Created:</b> {date}',
-      expiresAt: '<b>Expires:</b> {date}',
-      selectAction: 'Select an action:'
+      title: '📝 <b>ပို့စ်စီမံခန့်ခွဲမှု</b>',
+      type: '<b>အမျိုးအစား-</b> {type}',
+      route: '<b>ခရီးစဉ်-</b> {route}',
+      date: '<b>ရက်စွဲ-</b> {date}',
+      urgency: '<b>အရေးတကြီးအဆင့်-</b> {urgency}',
+      status: '<b>အခြေအနေ-</b> {status}',
+      postId: '<b>ပို့စ် ID-</b> {postId}',
+      createdAt: '<b>ဖန်တီးသည့်ရက်-</b> {date}',
+      expiresAt: '<b>သက်တမ်းကုန်ရက်-</b> {date}',
+      selectAction: 'လုပ်ဆောင်ချက်ရွေးပါ-'
     },
     confirmComplete: {
-      title: '✅ <b>Confirm Completion</b>',
-      message: 'Mark this post as completed?\nThis action cannot be undone.'
+      title: '✅ <b>ပြီးဆုံးကြောင်း အတည်ပြုခြင်း</b>',
+      message: 'ဤပို့စ်ကို ပြီးဆုံးပြီဟု မှတ်သားမည်လား?'
     },
     confirmCancel: {
-      title: '❌ <b>Confirm Cancellation</b>',
-      message: 'Cancel this post?\nThis action cannot be undone.'
+      title: '❌ <b>ပယ်ဖျက်ခြင်း အတည်ပြုခြင်း</b>',
+      message: 'ဤပို့စ်ကို ပယ်ဖျက်မည်လား?'
     },
-    completed: '✅ Post marked as completed. Thank you for spreading kindness! 💚',
-    cancelled: '❌ Post has been cancelled.',
-    backToList: '🔙 Back to posts list',
-    markComplete: '✅ Mark Complete',
-    cancelPost: '❌ Cancel Post'
+    completed: '✅ ပို့စ်ပြီးဆုံးပြီ။ ကျေးဇူးတင်ပါသည်! 💚',
+    cancelled: '❌ ပို့စ်ပယ်ဖျက်ပြီ',
+    backToList: '🔙 ပို့စ်စာရင်းသို့ ပြန်သွားရန်',
+    markComplete: '✅ ပြီးဆုံးပြီဟု မှတ်သားရန်',
+    cancelPost: '❌ ပို့စ်ပယ်ဖျက်ရန်'
   },
 
   // Status Labels (ENGLISH)
@@ -418,41 +414,41 @@ const messages = {
     favor: 'Favor Request'
   },
 
-  // Comment Notifications (ENGLISH - Simple & Short)
+  // Comment Notifications
   notifications: {
     comment: {
-      single: '💬 @{username} commented on your {postType} post #{postId}',
-      multiple: '💬 {count} new comments on #{postId}\n\n{usernames}'
+      single: '💬 @{username} က သင့်ရဲ့ {postType} ပို့စ် #{postId} ကို မှတ်ချက်ပေးထားသည်',
+      multiple: '💬 #{postId} တွင် မှတ်ချက်အသစ် {count} ခု'
     }
   },
-  
+
   // Callback Processing Messages
   callbacks: {
-    processing: 'Processing your request...',
-    generatingStats: 'Generating stats...',
-    weeklyStatsSent: '✅ Weekly stats sent to channel!',
-    morningSummarySent: '✅ Morning summary sent to channel!',
-    eveningSummarySent: '✅ Evening summary sent to channel!',
-    pleaseJoinFirst: 'Please join @LuuKyone_Community first, then click "I\'ve Joined" again.',
-    thisOptionRemoved: 'This option has been removed',
-    connectionAlertsAlwaysOn: 'Connection alerts are always enabled'
+    processing: 'လုပ်ဆောင်နေသည်...',
+    generatingStats: 'စာရင်းအင်းထုတ်နေသည်...',
+    weeklyStatsSent: '✅ သီတင်းပတ်စာရင်းအင်းများ ပို့ပြီး',
+    morningSummarySent: '✅ နံနက်ခင်းအကျဉ်းချုပ် ပို့ပြီး',
+    eveningSummarySent: '✅ ညနေခင်းအကျဉ်းချုပ် ပို့ပြီး',
+    pleaseJoinFirst: '@LuuKyone_Community သို့ အရင်ဝင်ပါ',
+    thisOptionRemoved: 'ဤရွေးချယ်ခွင့် ဖယ်ရှားပြီ',
+    connectionAlertsAlwaysOn: 'ချိတ်ဆက်မှုအသိပေးချက်များ အမြဲဖွင့်ထား'
   },
   
   // Shared Handler Messages
   shared: {
-    useStartForLink: 'Use /start to get the join link.',
-    limitResetsNextMonth: 'Your limit will reset next month.',
-    chooseOptionBelow: 'Choose an option below to get started.'
+    useStartForLink: '/start ဖြင့် လင့်ခ်ရယူပါ',
+    limitResetsNextMonth: 'လာမည့်လတွင် အကန့်အသတ် ပြန်စမည်',
+    chooseOptionBelow: 'စတင်ရန် အောက်ပါရွေးချယ်ခွင့်များထဲမှ တစ်ခုရွေးပါ'
   },
-  
+
   // Channel Welcome Messages
   channelWelcome: [
-    '💚 Welcome to our kindness family!\n\n"Your journey of a thousand acts of kindness begins with a single favor."\n\nReady to help? Start here: @luukyonebot',
-    '🤝 Another kind soul joins us!\n\n"Together we\'re building bridges of kindness across cities."\n\nShare your journey: @luukyonebot',
-    '✨ Welcome, neighbor!\n\n"Every new member makes our community stronger and kinder."\n\nBegin spreading joy: @luukyonebot',
-    '🌟 So happy you\'re here!\n\n"In a world where you can be anything, you chose to be kind."\n\nStart your kindness story: @luukyonebot'
+    '💚 Luu Kyone Community မှ ကြိုဆိုပါသည်\n\nကျေးဇူးပြု၍ ကျွန်ုပ်တို့၏ community guidelines များကို ဖတ်ရှုပါ။\nကြင်နာမှုဖြင့် အတူတကွ ကူညီကြပါစို့။',
+    '🤝 ကျေးဇူးတင်ပါသည် Community သို့ ဝင်ရောက်တာကို\n\nသင့်ရဲ့ ပထမဆုံး ကြင်နာမှုလုပ်ဆောင်ချက်ကို စတင်ရန် @luukyonebot ကို သုံးပါ',
+    '✨ ကျေးဇူးတင်ပါသည် ကျွန်ုပ်တို့၏ kindness network တွင် ပါဝင်တာကို\n\nစိတ်ချလက်ချ ကူညီမှုများ ပြုလုပ်နိုင်ပါသည်',
+    '🌟 Luu Kyone Community သို့ ကြိုဆိုပါသည်\n\nယုံကြည်မှုနှင့် လေးစားမှုဖြင့် အတူတကွ အလုပ်လုပ်ကြပါမည်'
   ],
-  
+
   // Channel Motivational Quotes
   channelQuotes: {
     milestone: {
@@ -462,14 +458,14 @@ const messages = {
     },
     gratitude: '"Alone we can do so little;\ntogether we can do so much."'
   },
-  
+
   // Safety Reminders
   safetyReminders: {
-    general: 'Your safety = Our priority!',
-    documentation: 'Document everything, stay protected!',
+    general: 'သင်၏ဘေးကင်းလုံခြုံမှုသည် ကျနော်တို့အတွက် ပထမဦးစားပေးဖြစ်သည်',
+    documentation: 'လုပ်ဆောင်ချက်အားလုံးကို မှတ်တမ်းတင်ထားပါ',
     trust: 'If something feels wrong, it probably is!'
   },
-  
+
   // Bot System Messages
   system: {
     techNeedsKindness: '"Even technology needs kindness sometimes!"',
