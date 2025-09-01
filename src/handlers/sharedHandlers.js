@@ -399,11 +399,11 @@ const handleBackToMenu = async (ctx) => {
   await ctx.answerCbQuery();
   const userName = ctx.from.first_name;
   
-  // Create a welcoming message for returning to menu
+  // Simple format as requested
   const menuMessage = [
     formatMessage(messages.shared.backToMenuGreeting, { userName }),
     messages.shared.backToMenuPrompt,
-    messages.shared.chooseOptionBelow
+    messages.shared.chooseOption
   ].join('\n');
   
   await ctx.editMessageText(menuMessage, {
@@ -505,21 +505,11 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
         isChannelMember: true
       });
       
-      // Get user stats
-      const user = userDoc.data();
-      const { getMonthlyPostCount } = require('../utils/helpers');
-      const postCount = await getMonthlyPostCount(userId, collections);
-      const limit = user.isPremium ? LIMITS.premium.postsPerMonth : LIMITS.free.postsPerMonth;
-      
-      // Returning user message with menu
+      // Simple format for returning users as requested
       const returningMessage = [
-        formatMessage(messages.commands.start.returningUser.greeting, { userName }),
-        formatMessage(messages.commands.start.returningUser.postsMonth, { current: postCount, limit }),
-        user.completedFavors > 0 ? 
-          formatMessage(messages.commands.start.returningUser.completedFavors, { count: user.completedFavors }) :
-          messages.commands.start.returningUser.firstAct,
-        '',
-        messages.common.howSpreadKindness
+        formatMessage(messages.shared.backToMenuGreeting, { userName }),
+        messages.shared.backToMenuPrompt,
+        messages.shared.chooseOption
       ].join('\n');
       
       if (isCallback) {
