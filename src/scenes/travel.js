@@ -174,7 +174,7 @@ travelScene.on('text', async (ctx) => {
     const date = parseDate(text);
     
     if (!date) {
-      return ctx.reply(messages.validation.invalidDate);
+      return ctx.reply(messages.errors.invalidDate);
     }
     
     ctx.scene.state.departureDate = date;
@@ -265,7 +265,7 @@ travelScene.action('confirm_post', async (ctx) => {
   await ctx.answerCbQuery();
   
   if (!validateCategories(ctx.scene.state.categories)) {
-    return ctx.reply(messages.validation.selectCategories);
+    return ctx.reply(messages.errors.categoryRequired);
   }
   
   await promptWeight(ctx);

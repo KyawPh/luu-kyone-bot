@@ -130,7 +130,7 @@ const handleTravel = async (ctx, isCallback = false, bot = null) => {
     logEvent.commandError(errorContext, error, userId);
     logger.error(`${errorContext} error`, { error: error.message, userId });
     
-    const errorMessage = messages.common.genericError;
+    const errorMessage = messages.errors.generic;
     return isCallback ? ctx.editMessageText(errorMessage) : ctx.reply(errorMessage);
   }
 };
@@ -189,7 +189,7 @@ const handleFavor = async (ctx, isCallback = false, bot = null) => {
     logEvent.commandError(errorContext, error, userId);
     logger.error(`${errorContext} error`, { error: error.message, userId });
     
-    const errorMessage = messages.common.genericError;
+    const errorMessage = messages.errors.generic;
     return isCallback ? ctx.editMessageText(errorMessage) : ctx.reply(errorMessage);
   }
 };
@@ -263,7 +263,7 @@ const handleProfile = async (ctx, isCallback = false) => {
     const errorContext = isCallback ? 'profile callback' : 'profile command';
     logEvent.commandError(errorContext, error, userId);
     logger.error(`${errorContext} error`, { error: error.message, userId });
-    ctx.reply(messages.common.genericError);
+    ctx.reply(messages.errors.generic);
   }
 };
 
@@ -289,7 +289,7 @@ const handleSettings = async (ctx, isCallback = false) => {
     }
   } catch (error) {
     logger.error('Settings error', { error: error.message, userId });
-    ctx.reply(messages.common.genericError);
+    ctx.reply(messages.errors.generic);
   }
 };
 
@@ -387,7 +387,7 @@ const handleBrowse = async (ctx, isCallback = false) => {
   } catch (error) {
     logEvent.commandError('browse', error, ctx.from?.id?.toString() || 'unknown');
     logger.error('Browse error', { error: error.message });
-    ctx.reply(messages.common.genericError);
+    ctx.reply(messages.errors.generic);
   }
 };
 

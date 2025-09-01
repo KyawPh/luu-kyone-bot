@@ -148,7 +148,7 @@ favorScene.action('confirm_categories', async (ctx) => {
   await ctx.answerCbQuery();
   
   if (!validateCategories(ctx.scene.state.categories)) {
-    return ctx.reply(messages.validation.selectCategories);
+    return ctx.reply(messages.errors.categoryRequired);
   }
   
   const fromCityName = Object.values(CITIES).find(c => c.code === ctx.scene.state.fromCity)?.name;
@@ -233,7 +233,7 @@ favorScene.on('text', async (ctx) => {
     const validatedWeight = validateWeight(text);
     
     if (!validatedWeight) {
-      return ctx.reply(messages.validation.enterWeightNumber);
+      return ctx.reply(messages.errors.enterWeightNumber);
     }
     
     ctx.scene.state.requestedWeight = validatedWeight;

@@ -5,15 +5,6 @@ const messages = {
   // Note: Cities, Categories, and Urgency data are defined in constants.js
   // This file only contains display messages and button labels
   
-  // Weight Options
-  weightOptions: {
-    less1: '< 1 kg',
-    kg1to3: '1-3 kg', 
-    kg3to5: '3-5 kg',
-    kg5to10: '5-10 kg',
-    more10: '> 10 kg'
-  },
-  
   // Button Labels (KEEP IN MYANMAR)
   buttons: {
     mainMenu: {
@@ -103,45 +94,8 @@ const messages = {
     }
   },
 
-  // Welcome Messages (ENGLISH)
-  welcome: {
-    newUser: {
-      title: '💚 <b>Welcome to Our Kindness Community!</b>',
-      greeting: 'Hi {userName}! You\'ve just joined something special.',
-      intro: 'Luu Kyone (လူကြုံ) connects Myanmar travelers worldwide. We\'re neighbors helping neighbors with personal favors - not a delivery service.',
-      benefits: {
-        title: '<b>What you can do:</b>',
-        travel: '✈️ <b>Traveling?</b> - Turn empty luggage space into someone\'s happiness',
-        favor: '📦 <b>Need help?</b> - Kind travelers are ready to assist',
-        connect: '🤝 <b>Connect</b> - Arrange thank-you gifts directly'
-      },
-      start: '🚀 Ready to get started!',
-      joinChannel: '📢 First, you need to join @LuuKyone_Community'
-    },
-    
-    returningUser: {
-      title: '✅ <b>Welcome back to the kindness network!</b>',
-      greeting: '{userName}, great to see you again! 🤗',
-      prompt: 'Our community is growing stronger every day.\nReady to share or receive kindness?',
-      motto: '💚 <i>"Every act of kindness creates a ripple"</i>'
-    },
-    
-    notMember: {
-      title: '📢 <b>Join Our Community First</b>',
-      description: 'To use Luu Kyone Bot, you need to join our community channel first.',
-      steps: {
-        title: '<b>How to join:</b>',
-        step1: '1️⃣ Go to @LuuKyone_Community',
-        step2: '2️⃣ Click "Join"',
-        step3: '3️⃣ Come back here and click "I\'ve Joined"'
-      },
-      button: 'Open channel and join!'
-    }
-  },
-
-  // Common Messages (ENGLISH)
+// Common Messages (ENGLISH)
   common: {
-    genericError: '❌ An error occurred. Please try again.',
     operationCancelled: '❌ Operation cancelled.',
     whatToDo: 'What would you like to do?',
     howSpreadKindness: 'How can we spread kindness today?',
@@ -201,7 +155,8 @@ const messages = {
     limitReached: '❌ You\'ve reached this month\'s post limit ({limit} posts).',
     invalidDate: '❌ Invalid date format or date is in the past.\nPlease enter in format DD/MM/YYYY:',
     invalidWeight: '❌ Invalid weight format. Please enter as a number (e.g., "20" or "20 kg")',
-    noActivePost: '📭 No active posts at the moment. Check back later!',
+    enterWeightNumber: '❌ Please enter weight as a number in kg (e.g., "20" or "20 kg")',
+    noActivePost: '📭 No active posts at the moment.',
     categoryRequired: '❌ Please select at least one category.',
     postNotFound: '❌ Post not found.',
     cannotContactSelf: '❌ You cannot contact yourself!',
@@ -261,15 +216,38 @@ const messages = {
   // Command Messages for /start, /help, /stats, /channelinfo
   commands: {
     start: {
+      notMember: {
+        title: '📢 <b>Join Our Community First</b>',
+        description: 'To use Luu Kyone Bot, you need to join our community channel first.',
+        steps: {
+          title: '<b>How to join:</b>',
+          step1: '1️⃣ Go to @LuuKyone_Community',
+          step2: '2️⃣ Click "Join"',
+          step3: '3️⃣ Come back here and click "I\'ve Joined"'
+        },
+        button: 'Open channel and join!'
+      },
       newUser: {
+        // For /start command
         greeting: '💚 <b>Welcome to Our Kindness Community!</b>\n\nHi {userName}! You\'ve just joined something special.',
         intro: '<b>Luu Kyone</b> (လူကြုံ) connects kind hearts across cities. We\'re neighbors helping neighbors with personal favors - not a delivery service.',
         howItWorks: '<b>How it works:</b>\n✈️ <b>Traveling?</b> Your empty luggage space can bring joy\n🤝 <b>Need a favor?</b> Your neighbor might be traveling home',
         routes: '<b>Our routes:</b> 🇸🇬 Singapore ↔ 🇹🇭 Bangkok ↔ 🇲🇲 Yangon',
         motto: '<i>"Small acts, when multiplied by millions of people,\ncan transform the world"</i>',
-        ready: 'Ready to spread kindness? Let\'s start! 🙏'
+        ready: 'Ready to spread kindness? Let\'s start! 🙏',
+        // For check_membership callback (additional fields)
+        title: '💚 <b>Welcome to Our Kindness Community!</b>',
+        greetingShort: 'Hi {userName}! You\'ve just joined something special.',
+        benefits: {
+          title: '<b>What you can do:</b>',
+          travel: '✈️ <b>Traveling?</b> - Turn empty luggage space into someone\'s happiness',
+          favor: '📦 <b>Need help?</b> - Kind travelers are ready to assist',
+          connect: '🤝 <b>Connect</b> - Arrange thank-you gifts directly'
+        },
+        start: '🚀 Ready to get started!'
       },
       returningUser: {
+        // For /start command
         greeting: '{userName} ကို ပြန်လည် ကြိုဆိုပါတယ်🤝✨',
         motto: '<i>"Every act of kindness creates a ripple"</i>',
         impact: '<b>Your impact so far:</b>',
@@ -277,7 +255,11 @@ const messages = {
         completedFavors: '💚 Acts of kindness: {count}',
         makingDifference: '⭐ You\'re making a difference!',
         firstAct: '🌱 Your first act of kindness awaits!',
-        ready: 'Someone might need your help today. Let\'s see! 🙏'
+        ready: 'Someone might need your help today. Let\'s see! 🙏',
+        // For check_membership callback (additional fields)
+        title: '✅ <b>Welcome back to the kindness network!</b>',
+        greetingShort: '{userName}, great to see you again! 🤗',
+        prompt: 'Our community is growing stronger every day.\nReady to share or receive kindness?'
       }
     },
     stats: {
@@ -354,7 +336,7 @@ const messages = {
         subtitle: 'Share kindness today',
         travelCount: '✈️ {count} travel plans:',
         favorCount: '📦 {count} favor requests:',
-        noActive: 'No active posts at the moment.',
+        noActive: '📭 No active posts at the moment.',
         footer: 'Share: @luukyonebot\n#MorningSummary #Kindness'
       },
       evening: {
@@ -362,7 +344,7 @@ const messages = {
         subtitle: 'Check how you can help',
         travelCount: '✈️ {count} travel plans:',
         favorCount: '📦 {count} favor requests:',
-        noActive: 'No active posts at the moment.',
+        noActive: '📭 No active posts at the moment.',
         footer: 'Connect: @luukyonebot\n#EveningSummary #LuuKyone'
       }
     }

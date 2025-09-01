@@ -29,11 +29,11 @@ const setupCommands = (bot) => {
         
         return ctx.reply(
           `👋 Welcome ${userName}!\n\n` +
-          messages.welcome.notMember.description + '\n\n' +
-          messages.welcome.notMember.steps.title + '\n' +
-          messages.welcome.notMember.steps.step1 + '\n' +
-          messages.welcome.notMember.steps.step2 + '\n' +
-          messages.welcome.notMember.steps.step3,
+          messages.commands.start.notMember.description + '\n\n' +
+          messages.commands.start.notMember.steps.title + '\n' +
+          messages.commands.start.notMember.steps.step1 + '\n' +
+          messages.commands.start.notMember.steps.step2 + '\n' +
+          messages.commands.start.notMember.steps.step3,
           {
             parse_mode: 'HTML',
             reply_markup: joinKeyboard
@@ -113,7 +113,7 @@ const setupCommands = (bot) => {
       logEvent.userStarted(userId, userName);
     } catch (error) {
       logEvent.commandError('start', error, userId);
-      ctx.reply(messages.common.genericError);
+      ctx.reply(messages.errors.generic);
     }
   });
   

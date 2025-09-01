@@ -55,7 +55,7 @@ settingsScene.enter(async (ctx) => {
     }
   } catch (error) {
     logger.error('Error entering settings scene', { error: error.message, userId });
-    await ctx.reply(messages.common.genericError);
+    await ctx.reply(messages.errors.generic);
     ctx.scene.leave();
   }
 });
@@ -128,7 +128,7 @@ settingsScene.action('toggle_daily_summary', async (ctx) => {
     
   } catch (error) {
     logger.error('Error toggling daily summary', { error: error.message, userId });
-    await ctx.answerCbQuery(messages.common.genericError);
+    await ctx.answerCbQuery(messages.errors.generic);
   }
 });
 

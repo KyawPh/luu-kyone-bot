@@ -59,7 +59,7 @@ const validateSceneInput = (ctx, text) => {
     if (!weight) {
       return {
         isValid: false,
-        error: messages.validation.enterWeightNumber
+        error: messages.errors.enterWeightNumber
       };
     }
     return {
@@ -74,7 +74,7 @@ const validateSceneInput = (ctx, text) => {
     if (!date) {
       return {
         isValid: false,
-        error: messages.validation.invalidDate
+        error: messages.errors.invalidDate
       };
     }
     return {
@@ -105,7 +105,7 @@ const validatePostData = (postData, postType) => {
   }
   
   if (!validateCategories(postData.categories)) {
-    errors.push(messages.validation.selectCategories);
+    errors.push(messages.errors.categoryRequired);
   }
   
   // Travel-specific validations

@@ -46,14 +46,14 @@ const setupCallbacks = (bot) => {
         
         // Send welcome message
         await ctx.editMessageText(
-          messages.welcome.newUser.title + '\n\n' +
-          formatMessage(messages.welcome.newUser.greeting, { userName }) + '\n\n' +
-          messages.welcome.newUser.intro + '\n\n' +
-          messages.welcome.newUser.benefits.title + '\n' +
-          messages.welcome.newUser.benefits.travel + '\n' +
-          messages.welcome.newUser.benefits.favor + '\n' +
-          messages.welcome.newUser.benefits.connect + '\n\n' +
-          messages.welcome.newUser.start,
+          messages.commands.start.newUser.title + '\n\n' +
+          formatMessage(messages.commands.start.newUser.greetingShort, { userName }) + '\n\n' +
+          messages.commands.start.newUser.intro + '\n\n' +
+          messages.commands.start.newUser.benefits.title + '\n' +
+          messages.commands.start.newUser.benefits.travel + '\n' +
+          messages.commands.start.newUser.benefits.favor + '\n' +
+          messages.commands.start.newUser.benefits.connect + '\n\n' +
+          messages.commands.start.newUser.start,
           { parse_mode: 'HTML' }
         );
       } else {
@@ -64,10 +64,10 @@ const setupCallbacks = (bot) => {
         });
         
         await ctx.editMessageText(
-          messages.welcome.returningUser.title + '\n\n' +
-          formatMessage(messages.welcome.returningUser.greeting, { userName }) + '\n\n' +
-          messages.welcome.returningUser.prompt + '\n\n' +
-          messages.welcome.returningUser.motto,
+          messages.commands.start.returningUser.title + '\n\n' +
+          formatMessage(messages.commands.start.returningUser.greetingShort, { userName }) + '\n\n' +
+          messages.commands.start.returningUser.prompt + '\n\n' +
+          messages.commands.start.returningUser.motto,
           { parse_mode: 'HTML' }
         );
       }
@@ -79,7 +79,7 @@ const setupCallbacks = (bot) => {
       
     } catch (error) {
       logger.error('Check membership error', { error: error.message });
-      ctx.reply(messages.common.genericError + ' Please try /start again.');
+      ctx.reply(messages.errors.generic + ' Please try /start again.');
     }
   });
   
@@ -217,7 +217,7 @@ const setupCallbacks = (bot) => {
       
     } catch (error) {
       logger.error('Contact callback error', { error: error.message });
-      await ctx.answerCbQuery(messages.common.genericError, { show_alert: true });
+      await ctx.answerCbQuery(messages.errors.generic, { show_alert: true });
     }
   });
   

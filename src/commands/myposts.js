@@ -128,7 +128,7 @@ async function handleMyPosts(ctx) {
       error: error.message,
       userId: ctx.from?.id
     });
-    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
+    await ctx.reply(messages.errors.generic, { parse_mode: 'HTML' });
   }
 }
 
@@ -209,7 +209,7 @@ async function handleManagePost(ctx, type, postId) {
       type,
       userId: ctx.from?.id
     });
-    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
+    await ctx.reply(messages.errors.generic, { parse_mode: 'HTML' });
   }
 }
 
@@ -397,7 +397,7 @@ async function confirmCompletePost(ctx, type, postId) {
       postId,
       type
     });
-    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
+    await ctx.reply(messages.errors.generic, { parse_mode: 'HTML' });
   }
 }
 
@@ -515,7 +515,7 @@ async function confirmCancelPost(ctx, type, postId) {
       postId,
       type
     });
-    await ctx.reply(messages.common.genericError, { parse_mode: 'HTML' });
+    await ctx.reply(messages.errors.generic, { parse_mode: 'HTML' });
   }
 }
 
