@@ -10,7 +10,7 @@ const messages = {
   // Main Menu Messages
   menu: {
     greeting: '👋 မင်္ဂလာပါ {userName}!',
-    welcome: '💚 ဒီနေ့ ဘာလုပ်ချင်ပါသလဲ?',
+    welcome: '💚 ကျွန်ုပ်တို့ရဲ့ Luu Kyone မှ ပြန်လည်ကြိုဆိုပါတယ်',
     instruction: 'စတင်ရန် အောက်က option တစ်ခုရွေးပါ။'
   },
 
@@ -369,6 +369,14 @@ const messages = {
         categories: '📦 အမျိုးအစား- {categories}',
         weight: '⚖️ အလေးချိန်- {weight}'
       }
+    },
+    
+    // New member announcement
+    newMemberAnnouncement: {
+      title: '🎉 <b>{userName} ကြိုဆိုပါတယ်!</b>',
+      joined: 'အဖွဲ့ဝင် စုစုပေါင်း <b>{totalUsers}</b> ယောက်ရှိလာပါပြီ 💚',
+      startJourney: '@luukyonebot',
+      hashtags: '#NewMember #LuuKyone'
     },
 
     // Post status updates

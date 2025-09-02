@@ -481,16 +481,15 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
         const usersSnapshot = await collections.users.get();
         const totalUsers = usersSnapshot.size;
         
-        // Prepare username display
-        const usernameDisplay = ctx.from.username ? `@${ctx.from.username}` : userName;
-        
-        // Send welcome notification to channel
-        const channelWelcomeMsg = `🎉 <b>Welcome to our newest member!</b>\n\n` +
-          `${userName} just joined the Luu Kyone family! 💚\n\n` +
-          `We now have <b>${totalUsers}</b> kind souls helping each other across borders.\n\n` +
-          `Every new member makes our kindness network stronger! 🤝\n\n` +
-          `Start your journey: @luukyonebot\n\n` +
-          `#NewMember #Welcome #LuuKyoneFamily`;
+        // Build channel welcome message using messages config
+        const channelWelcomeMsg = [
+          formatMessage(messages.channel.newMemberAnnouncement.title, { userName }),
+          formatMessage(messages.channel.newMemberAnnouncement.joined, { totalUsers }),
+          '',
+          messages.channel.newMemberAnnouncement.startJourney,
+          '',
+          messages.channel.newMemberAnnouncement.hashtags
+        ].join('\n');
         
         if (bot) {
           await bot.telegram.sendMessage(
