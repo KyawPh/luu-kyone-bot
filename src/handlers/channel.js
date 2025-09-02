@@ -4,6 +4,76 @@ const { config } = require('../config');
 const { messages, formatMessage } = require('../config/messages');
 
 const setupChannelHandlers = (bot) => {
+  // Debug: Log ALL update types to see what we're receiving
+  bot.on('message', async (ctx) => {
+    const chatId = ctx.chat?.id?.toString();
+    if (chatId === config.telegram.discussionGroupId || chatId === config.telegram.channelId) {
+      logger.info('🔍 DEBUG: Message event in our group/channel', {
+        chatId: chatId,
+        chatType: ctx.chat.type,
+        messageId: ctx.message?.message_id,
+        hasReplyTo: !!ctx.message?.reply_to_message,
+        replyToId: ctx.message?.reply_to_message?.message_id,
+        fromUser: ctx.from?.username,
+        text: ctx.message?.text?.substring(0, 50)
+      });
+      
+      // If this is a reply in the discussion group, handle it as a comment
+      if (chatId === config.telegram.discussionGroupId && ctx.message?.reply_to_message) {
+        logger.info('💬 Comment detected via message event!', {
+          originalMessageId: ctx.message.reply_to_message.message_id,
+          commenter: ctx.from?.username
+        });
+        
+        // Try to find the post by the original message ID
+        const originalMessageId = ctx.message.reply_to_message.message_id;
+        const [travelPosts, favorPosts] = await Promise.all([
+          collections.travelPlans
+            .where('channelMessageId', '==', originalMessageId)
+            .limit(1)
+            .get(),
+          collections.favorRequests
+            .where('channelMessageId', '==', originalMessageId)
+            .limit(1)
+            .get()
+        ]);
+        
+        logger.info('📊 Post search results', {
+          travelFound: !travelPosts.empty,
+          favorFound: !favorPosts.empty
+        });
+        
+        let post = null;
+        let postType = null;
+        
+        if (!travelPosts.empty) {
+          post = travelPosts.docs[0].data();
+          postType = 'travel';
+        } else if (!favorPosts.empty) {
+          post = favorPosts.docs[0].data();
+          postType = 'favor';
+        }
+        
+        if (post && ctx.from?.username) {
+          // Don't notify if commenter is the post owner
+          if (ctx.from.id.toString() !== post.userId) {
+            const message = `💬 @${ctx.from.username} commented on your ${postType} post #${post.postId}`;
+            
+            try {
+              await bot.telegram.sendMessage(post.userId, message);
+              logger.info('✅ Comment notification sent via message handler', {
+                postId: post.postId,
+                ownerId: post.userId
+              });
+            } catch (error) {
+              logger.error('Failed to send notification', { error: error.message });
+            }
+          }
+        }
+      }
+    }
+  });
+  
   // Handle new members joining the channel
   bot.on('chat_member', async (ctx) => {
     try {
