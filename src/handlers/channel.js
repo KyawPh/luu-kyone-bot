@@ -20,13 +20,20 @@ const setupChannelHandlers = (bot) => {
       
       // If this is a reply in the discussion group, handle it as a comment
       if (chatId === config.telegram.discussionGroupId && ctx.message?.reply_to_message) {
+        const replyToMessage = ctx.message.reply_to_message;
+        
+        // Log full reply structure to understand the mapping
         logger.info('💬 Comment detected via message event!', {
-          originalMessageId: ctx.message.reply_to_message.message_id,
-          commenter: ctx.from?.username
+          discussionMessageId: replyToMessage.message_id,
+          forwardFromChatId: replyToMessage.forward_from_chat?.id,
+          forwardFromMessageId: replyToMessage.forward_from_message_id,
+          commenter: ctx.from?.username,
+          isAutomaticForward: replyToMessage.is_automatic_forward,
+          senderChat: replyToMessage.sender_chat?.id
         });
         
-        // Try to find the post by the original message ID
-        const originalMessageId = ctx.message.reply_to_message.message_id;
+        // The original channel message ID is in forward_from_message_id
+        const originalMessageId = replyToMessage.forward_from_message_id || replyToMessage.message_id;
         const [travelPosts, favorPosts] = await Promise.all([
           collections.travelPlans
             .where('channelMessageId', '==', originalMessageId)
@@ -54,21 +61,34 @@ const setupChannelHandlers = (bot) => {
           postType = 'favor';
         }
         
-        if (post && ctx.from?.username) {
-          // Don't notify if commenter is the post owner
-          if (ctx.from.id.toString() !== post.userId) {
-            const message = `💬 @${ctx.from.username} commented on your ${postType} post #${post.postId}`;
+        if (post) {
+          // Handle anonymous comments (when GroupAnonymousBot is the sender)
+          const isAnonymous = ctx.from?.username === 'GroupAnonymousBot';
+          const commenterDisplay = isAnonymous ? 
+            'Someone (anonymous)' : 
+            (ctx.from?.username ? `@${ctx.from.username}` : ctx.from?.first_name || 'Someone');
+          
+          // Don't notify if commenter is the post owner (unless anonymous)
+          if (isAnonymous || ctx.from.id.toString() !== post.userId) {
+            const message = `💬 ${commenterDisplay} commented on your ${postType} post #${post.postId}`;
             
             try {
               await bot.telegram.sendMessage(post.userId, message);
               logger.info('✅ Comment notification sent via message handler', {
                 postId: post.postId,
-                ownerId: post.userId
+                ownerId: post.userId,
+                isAnonymous: isAnonymous
               });
             } catch (error) {
               logger.error('Failed to send notification', { error: error.message });
             }
           }
+        } else {
+          logger.warn('⚠️ Post not found for message ID', {
+            searchedId: originalMessageId,
+            forwardId: replyToMessage.forward_from_message_id,
+            discussionId: replyToMessage.message_id
+          });
         }
       }
     }
