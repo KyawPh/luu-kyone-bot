@@ -110,6 +110,26 @@ const generatePostId = (type = 'T') => {
   return `${type}-${randomNum}${timestamp}`;
 };
 
+// Generate direct link to a channel post
+const getChannelPostLink = (channelId, messageId) => {
+  if (!channelId || !messageId) return null;
+  
+  // Handle both numeric and @username formats
+  let linkChannelId;
+  if (channelId.startsWith('@')) {
+    // Public channel with username - use public link format
+    return `https://t.me/${channelId.substring(1)}/${messageId}`;
+  } else if (channelId.startsWith('-100')) {
+    // Private channel - remove -100 prefix for link
+    linkChannelId = channelId.substring(4);
+    return `https://t.me/c/${linkChannelId}/${messageId}`;
+  } else {
+    // Fallback
+    linkChannelId = channelId.replace('-', '');
+    return `https://t.me/c/${linkChannelId}/${messageId}`;
+  }
+};
+
 // Escape HTML for Telegram
 const escapeHtml = (text) => {
   if (!text) return '';
@@ -299,6 +319,7 @@ module.exports = {
   canCreatePost,
   formatRoute,
   generatePostId,
+  getChannelPostLink,
   escapeHtml,
   formatPostForChannel,
   userWantsDailySummary,

@@ -2,6 +2,7 @@ const { collections, admin } = require('../config/firebase');
 const { logger, logEvent } = require('../utils/logger');
 const { config } = require('../config');
 const { messages, formatMessage } = require('../config/messages');
+const { getChannelPostLink } = require('../utils/helpers');
 
 const setupChannelHandlers = (bot) => {
   // Debug: Log ALL update types to see what we're receiving
@@ -70,14 +71,28 @@ const setupChannelHandlers = (bot) => {
           
           // Don't notify if commenter is the post owner (unless anonymous)
           if (isAnonymous || ctx.from.id.toString() !== post.userId) {
-            const message = `💬 ${commenterDisplay} commented on your ${postType} post #${post.postId}`;
+            // Remove dash from postId for display
+            const postIdDisplay = post.postId.replace('-', '');
+            
+            // Generate link to the channel post
+            const postLink = getChannelPostLink(post.channelChatId || config.telegram.channelId, post.channelMessageId);
+            
+            // Build notification message with link
+            let message = `💬 ${commenterDisplay} commented on your ${postType} post #${postIdDisplay}`;
+            if (postLink) {
+              message += `\n\n👉 <a href="${postLink}">View post</a>`;
+            }
             
             try {
-              await bot.telegram.sendMessage(post.userId, message);
+              await bot.telegram.sendMessage(post.userId, message, { 
+                parse_mode: 'HTML',
+                disable_web_page_preview: true 
+              });
               logger.info('✅ Comment notification sent via message handler', {
                 postId: post.postId,
                 ownerId: post.userId,
-                isAnonymous: isAnonymous
+                isAnonymous: isAnonymous,
+                hasLink: !!postLink
               });
             } catch (error) {
               logger.error('Failed to send notification', { error: error.message });
