@@ -374,7 +374,7 @@ const messages = {
     // New member announcement
     newMemberAnnouncement: {
       title: '🎉 <b>{userName} ကြိုဆိုပါတယ်!</b>',
-      joined: 'အဖွဲ့ဝင် စုစုပေါင်း <b>{totalUsers}</b> ယောက်ရှိလာပါပြီ 💚',
+      welcome: 'Luu Kyone မိသားစုသို့ ကြိုဆိုပါတယ် 💚',
       startJourney: '@luukyonebot',
       hashtags: '#NewMember #LuuKyone'
     },

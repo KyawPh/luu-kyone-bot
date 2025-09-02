@@ -477,14 +477,10 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
       
       // Send notification to channel about new user
       try {
-        // Get total user count
-        const usersSnapshot = await collections.users.get();
-        const totalUsers = usersSnapshot.size;
-        
         // Build channel welcome message using messages config
         const channelWelcomeMsg = [
           formatMessage(messages.channel.newMemberAnnouncement.title, { userName }),
-          formatMessage(messages.channel.newMemberAnnouncement.joined, { totalUsers }),
+          messages.channel.newMemberAnnouncement.welcome,
           '',
           messages.channel.newMemberAnnouncement.startJourney,
           '',
