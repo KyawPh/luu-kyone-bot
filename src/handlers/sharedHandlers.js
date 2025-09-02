@@ -475,6 +475,40 @@ const handleStart = async (ctx, isCallback = false, bot = null, afterJoining = f
       
       logEvent.userJoined(userId, userName);
       
+      // Send notification to channel about new user
+      try {
+        // Get total user count
+        const usersSnapshot = await collections.users.get();
+        const totalUsers = usersSnapshot.size;
+        
+        // Prepare username display
+        const usernameDisplay = ctx.from.username ? `@${ctx.from.username}` : userName;
+        
+        // Send welcome notification to channel
+        const channelWelcomeMsg = `🎉 <b>Welcome to our newest member!</b>\n\n` +
+          `${userName} just joined the Luu Kyone family! 💚\n\n` +
+          `We now have <b>${totalUsers}</b> kind souls helping each other across borders.\n\n` +
+          `Every new member makes our kindness network stronger! 🤝\n\n` +
+          `Start your journey: @luukyonebot\n\n` +
+          `#NewMember #Welcome #LuuKyoneFamily`;
+        
+        if (bot) {
+          await bot.telegram.sendMessage(
+            config.telegram.channelId,
+            channelWelcomeMsg,
+            { parse_mode: 'HTML' }
+          );
+          logEvent.channelMessageSent('new_user_welcome');
+        }
+      } catch (error) {
+        // Don't fail the user registration if channel notification fails
+        logger.debug('Could not send new user notification to channel', { 
+          error: error.message,
+          userId,
+          userName 
+        });
+      }
+      
       // New user welcome message with menu
       const welcomeMessage = [
         formatMessage(messages.start.newUser.greeting, { userName }),

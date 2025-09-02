@@ -384,13 +384,17 @@ const messages = {
         title: '☀️ <b>နံနက်ခင်း အကျဉ်းချုပ်</b>',
         subtitle: 'ဒီနေ့ ဘယ်လိုကူညီနိုင်မလဲ?',
         travelCount: '✈️ ခရီးစဉ် {count} ခု-',
-        favorCount: '📦 တောင်းဆိုချက် {count} ခု-'
+        favorCount: '📦 တောင်းဆိုချက် {count} ခု-',
+        noActive: 'လက်ရှိတွင် တက်ကြွသော ပို့စ်များ မရှိပါ',
+        footer: '@luukyonebot'
       },
       evening: {
         title: '🌙 <b>ညနေခင်း အကျဉ်းချုပ်</b>',
         subtitle: 'ဒီနေ့ ဘယ်လိုကူညီနိုင်မလဲ?',
         travelCount: '✈️ ခရီးစဉ် {count} ခု-',
-        favorCount: '📦 တောင်းဆိုချက် {count} ခု-'
+        favorCount: '📦 တောင်းဆိုချက် {count} ခု-',
+        noActive: 'လက်ရှိတွင် တက်ကြွသော ပို့စ်များ မရှိပါ',
+        footer: '@luukyonebot'
       },
       footer: '@luukyonebot'
     },
