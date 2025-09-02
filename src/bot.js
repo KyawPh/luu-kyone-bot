@@ -83,7 +83,7 @@ const launch = async () => {
             logger.info(messages.system.webhookAlreadyConfigured);
           }
         } catch (error) {
-          logger.warn('Could not check webhook info, will set webhook', { error: error.message });
+          // Could not check webhook info, will set webhook
           webhookNeedsUpdate = true;
         }
         
@@ -111,15 +111,6 @@ const launch = async () => {
         
         logger.info(`✅ Bot launched in webhook mode on ${webhookUrl}`);
         
-        // Log channel configuration
-        logger.info('📢 Channel configuration', {
-          channelId: config.telegram.channelId,
-          discussionGroupId: config.telegram.discussionGroupId || 'Not configured',
-          channelUrl: `https://t.me/${config.telegram.channelId.replace('@', '')}`,
-          environment: config.environment,
-          adminIds: config.telegram.adminIds
-        });
-        
         // Warn if discussion group not configured in production
         if (!config.telegram.discussionGroupId) {
           logger.warn('⚠️ WARNING: Discussion group ID not configured!');
@@ -132,9 +123,8 @@ const launch = async () => {
       // Clear any existing webhook for development
       try {
         await bot.telegram.deleteWebhook({ drop_pending_updates: true });
-        logger.info('Cleared webhook for development polling mode');
       } catch (error) {
-        logger.warn('Could not clear webhook', { error: error.message });
+        // Ignore webhook clear errors in development
       }
       
       const botInfo = await bot.telegram.getMe();
@@ -146,15 +136,6 @@ const launch = async () => {
       
       logEvent.botStarted('development', { username: botInfo.username });
       logger.info(`✅ Bot launched in polling mode for development`);
-      
-      // Log channel configuration
-      logger.info('📢 Channel configuration', {
-        channelId: config.telegram.channelId,
-        discussionGroupId: config.telegram.discussionGroupId || 'Not configured',
-        channelUrl: `https://t.me/${config.telegram.channelId.replace('@', '')}`,
-        environment: config.environment,
-        adminIds: config.telegram.adminIds
-      });
       
       // Warn if discussion group not configured
       if (!config.telegram.discussionGroupId) {

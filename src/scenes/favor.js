@@ -279,14 +279,6 @@ async function postFavorRequest(ctx) {
     const route = formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity);
     const firstCategoryName = CATEGORIES.find(c => c.id === ctx.scene.state.categories[0])?.name;
     logEvent.favorRequestCreated(userId, route, firstCategoryName);
-    logger.info('Favor request created successfully', {
-      postId,
-      userId,
-      route,
-      categories: ctx.scene.state.categories.length,
-      urgency: ctx.scene.state.urgency,
-      weight: ctx.scene.state.requestedWeight
-    });
     
     // Format message for channel
     const channelMessage = formatPostForChannel(favorRequest, 'favor');
@@ -309,10 +301,6 @@ async function postFavorRequest(ctx) {
       });
       
       logEvent.channelMessageSent('favor_request');
-      logger.info('Favor request posted to channel', {
-        postId,
-        channelMessageId: channelMsg.message_id
-      });
     } catch (error) {
       logger.error('Failed to post favor request to channel', { 
         error: error.message, 

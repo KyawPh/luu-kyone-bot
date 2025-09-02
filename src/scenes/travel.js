@@ -301,13 +301,6 @@ async function handleConfirmPost(ctx, useReply = false) {
     // Log the travel plan creation
     const route = formatRoute(ctx.scene.state.fromCity, ctx.scene.state.toCity);
     logEvent.travelPlanCreated(userId, route, ctx.scene.state.departureDate);
-    logger.info('Travel plan created successfully', {
-      postId,
-      userId,
-      route,
-      categories: ctx.scene.state.categories.length,
-      weight: ctx.scene.state.availableWeight
-    });
     
     // Format message for channel
     const channelMessage = formatPostForChannel(travelPlan, 'travel');
@@ -329,10 +322,6 @@ async function handleConfirmPost(ctx, useReply = false) {
       });
       
       logEvent.channelMessageSent('travel_plan');
-      logger.info('Travel plan posted to channel', {
-        postId,
-        channelMessageId: channelMsg.message_id
-      });
     } catch (error) {
       logger.error('Failed to post travel plan to channel', { 
         error: error.message, 

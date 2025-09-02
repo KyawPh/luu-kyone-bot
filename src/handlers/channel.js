@@ -5,51 +5,28 @@ const { messages, formatMessage } = require('../config/messages');
 const { getChannelPostLink } = require('../utils/helpers');
 
 const setupChannelHandlers = (bot) => {
-  // Debug: Log ALL update types to see what we're receiving
+  // Handle comments in the discussion group
   bot.on('message', async (ctx) => {
     const chatId = ctx.chat?.id?.toString();
-    if (chatId === config.telegram.discussionGroupId || chatId === config.telegram.channelId) {
-      logger.info('🔍 DEBUG: Message event in our group/channel', {
-        chatId: chatId,
-        chatType: ctx.chat.type,
-        messageId: ctx.message?.message_id,
-        hasReplyTo: !!ctx.message?.reply_to_message,
-        replyToId: ctx.message?.reply_to_message?.message_id,
-        fromUser: ctx.from?.username,
-        text: ctx.message?.text?.substring(0, 50)
-      });
+    
+    // Only process messages from our discussion group that are replies
+    if (chatId === config.telegram.discussionGroupId && ctx.message?.reply_to_message) {
+      const replyToMessage = ctx.message.reply_to_message;
       
-      // If this is a reply in the discussion group, handle it as a comment
-      if (chatId === config.telegram.discussionGroupId && ctx.message?.reply_to_message) {
-        const replyToMessage = ctx.message.reply_to_message;
-        
-        // Log full reply structure to understand the mapping
-        logger.info('💬 Comment detected via message event!', {
-          discussionMessageId: replyToMessage.message_id,
-          forwardFromChatId: replyToMessage.forward_from_chat?.id,
-          forwardFromMessageId: replyToMessage.forward_from_message_id,
-          commenter: ctx.from?.username,
-          isAutomaticForward: replyToMessage.is_automatic_forward,
-          senderChat: replyToMessage.sender_chat?.id
-        });
-        
-        // The original channel message ID is in forward_from_message_id
-        const originalMessageId = replyToMessage.forward_from_message_id || replyToMessage.message_id;
-        const [travelPosts, favorPosts] = await Promise.all([
-          collections.travelPlans
-            .where('channelMessageId', '==', originalMessageId)
-            .limit(1)
-            .get(),
-          collections.favorRequests
-            .where('channelMessageId', '==', originalMessageId)
-            .limit(1)
-            .get()
-        ]);
-        
-        logger.info('📊 Post search results', {
-          travelFound: !travelPosts.empty,
-          favorFound: !favorPosts.empty
-        });
+      // The original channel message ID is in forward_from_message_id
+      const originalMessageId = replyToMessage.forward_from_message_id || replyToMessage.message_id;
+      
+      // Search for the post in both collections
+      const [travelPosts, favorPosts] = await Promise.all([
+        collections.travelPlans
+          .where('channelMessageId', '==', originalMessageId)
+          .limit(1)
+          .get(),
+        collections.favorRequests
+          .where('channelMessageId', '==', originalMessageId)
+          .limit(1)
+          .get()
+      ]);
         
         let post = null;
         let postType = null;
@@ -80,7 +57,7 @@ const setupChannelHandlers = (bot) => {
             // Build notification message with link
             let message = `💬 ${commenterDisplay} commented on your ${postType} post #${postIdDisplay}`;
             if (postLink) {
-              message += `\n\n👉 <a href="${postLink}">View post</a>`;
+              message += ` 👉 <a href="${postLink}">View post</a>`;
             }
             
             try {
@@ -88,23 +65,20 @@ const setupChannelHandlers = (bot) => {
                 parse_mode: 'HTML',
                 disable_web_page_preview: true 
               });
-              logger.info('✅ Comment notification sent via message handler', {
+              
+              logger.info('Comment notification sent', {
                 postId: post.postId,
-                ownerId: post.userId,
-                isAnonymous: isAnonymous,
-                hasLink: !!postLink
+                commenter: isAnonymous ? 'anonymous' : ctx.from?.username
               });
             } catch (error) {
-              logger.error('Failed to send notification', { error: error.message });
+              logger.error('Failed to send comment notification', { 
+                error: error.message,
+                postId: post.postId 
+              });
             }
           }
-        } else {
-          logger.warn('⚠️ Post not found for message ID', {
-            searchedId: originalMessageId,
-            forwardId: replyToMessage.forward_from_message_id,
-            discussionId: replyToMessage.message_id
-          });
         }
+        // Post not found - might be an old message or different channel, skip silently
       }
     }
   });
@@ -181,69 +155,20 @@ const setupChannelHandlers = (bot) => {
     }
   });
 
-  // Handle messages/comments in the channel
+  // Handle messages/comments in the channel (kept for legacy channel comments if needed)
   bot.on('channel_post', async (ctx) => {
     try {
       const chatId = ctx.chat.id.toString();
-      const isOurChannel = chatId === config.telegram.channelId;
-      const isOurDiscussionGroup = config.telegram.discussionGroupId && 
-                                   chatId === config.telegram.discussionGroupId;
       
-      // Log ALL channel_post events for debugging
-      logger.info('📨 Channel post event received', {
-        chatId: chatId,
-        chatType: ctx.chat.type,
-        chatTitle: ctx.chat.title,
-        messageId: ctx.channelPost?.message_id,
-        hasReply: !!ctx.channelPost?.reply_to_message,
-        hasFrom: !!ctx.channelPost?.from,
-        isOurChannel: isOurChannel,
-        isOurDiscussionGroup: isOurDiscussionGroup,
-        configuredChannelId: config.telegram.channelId,
-        configuredDiscussionId: config.telegram.discussionGroupId
-      });
-      
-      // Check if this is our channel OR our discussion group
-      if (!isOurChannel && !isOurDiscussionGroup) {
-        logger.warn('🚫 Ignoring - not our channel or discussion group', {
-          receivedId: chatId,
-          expectedChannelId: config.telegram.channelId,
-          expectedDiscussionId: config.telegram.discussionGroupId
-        });
-        return;
-      }
-      
-      // Log which source accepted the event
-      if (isOurDiscussionGroup) {
-        logger.info('✅ Event from discussion group accepted');
-      } else if (isOurChannel) {
-        logger.info('✅ Event from channel accepted');
-      }
-      
-      // Check if this is a comment (reply to a message)
-      if (ctx.channelPost.reply_to_message) {
+      // Only process if it's from our channel and is a reply
+      if (chatId === config.telegram.channelId && ctx.channelPost.reply_to_message) {
         const originalMessageId = ctx.channelPost.reply_to_message.message_id;
         const commenter = ctx.channelPost.from;
         
-        logger.info('💬 Comment detected!', {
-          originalMessageId,
-          commenterUsername: commenter?.username,
-          commenterId: commenter?.id,
-          commenterName: commenter?.first_name
-        });
-        
         // Skip if no username (can't contact them)
         if (!commenter || !commenter.username) {
-          logger.warn('Skipping - commenter has no username', {
-            commenterId: commenter?.id,
-            commenterName: commenter?.first_name
-          });
           return;
         }
-        
-        logger.info('🔍 Searching for post in database', {
-          originalMessageId
-        });
         
         // Find the post by channel message ID
         const [travelPosts, favorPosts] = await Promise.all([
@@ -257,13 +182,6 @@ const setupChannelHandlers = (bot) => {
             .get()
         ]);
         
-        logger.info('📊 Database query results', {
-          travelPostsFound: !travelPosts.empty,
-          favorPostsFound: !favorPosts.empty,
-          travelCount: travelPosts.size,
-          favorCount: favorPosts.size
-        });
-        
         let post = null;
         let postType = null;
         
@@ -275,55 +193,36 @@ const setupChannelHandlers = (bot) => {
           postType = 'favor';
         }
         
-        if (post) {
-          logger.info('✅ Post found!', {
-            postId: post.postId,
-            postType,
-            postOwnerId: post.userId,
-            postOwnerName: post.userName
-          });
+        if (post && commenter.id && commenter.id.toString() !== post.userId) {
+          // Remove dash from postId for display
+          const postIdDisplay = post.postId.replace('-', '');
           
-          // Don't notify if commenter is the post owner
-          if (commenter.id && commenter.id.toString() === post.userId) {
-            logger.info('Skipping - commenter is the post owner');
-            return;
+          // Generate link to the channel post
+          const postLink = getChannelPostLink(post.channelChatId || config.telegram.channelId, post.channelMessageId);
+          
+          // Build notification message with link
+          let message = `💬 @${commenter.username} commented on your ${postType} post #${postIdDisplay}`;
+          if (postLink) {
+            message += ` 👉 <a href="${postLink}">View post</a>`;
           }
-          
-          // Send simple notification to post owner
-          const message = `💬 @${commenter.username} commented on your ${postType} post #${post.postId}`;
           
           try {
-            await bot.telegram.sendMessage(post.userId, message);
+            await bot.telegram.sendMessage(post.userId, message, { 
+              parse_mode: 'HTML',
+              disable_web_page_preview: true 
+            });
             
-            // Log the comment notification
             logger.info('Comment notification sent', {
               postId: post.postId,
-              postType,
-              commenter: commenter.username,
-              ownerId: post.userId
+              commenter: commenter.username
             });
           } catch (error) {
-            // User might have blocked the bot
-            logger.debug('Could not send notification to user', { 
-              userId: post.userId, 
-              error: error.message 
-            });
+            // User might have blocked the bot - fail silently
           }
-        } else {
-          logger.warn('⚠️ No post found for this message ID', {
-            originalMessageId,
-            commenter: commenter?.username
-          });
         }
-      } else {
-        logger.debug('Not a reply - regular channel message');
       }
-      
     } catch (error) {
-      logger.error('Channel post error', { 
-        error: error.message,
-        stack: error.stack 
-      });
+      logger.error('Channel post error', { error: error.message });
     }
   });
 
