@@ -6,11 +6,11 @@ const messages = {
   // ==================================================
   // 1. CORE MESSAGES (Most frequently used)
   // ==================================================
-  
+
   // Main Menu Messages
   menu: {
-    greeting: 'မင်္ဂလာပါ {userName}!',
-    welcome: '💚 ပြန်လာတာ ဝမ်းသာပါတယ်၊ ဒီနေ့ ဘာလုပ်ချင်ပါသလဲ?',
+    greeting: '👋 မင်္ဂလာပါ {userName}!',
+    welcome: '💚 ဒီနေ့ ဘာလုပ်ချင်ပါသလဲ?',
     instruction: 'စတင်ရန် အောက်က option တစ်ခုရွေးပါ။'
   },
 
@@ -18,27 +18,27 @@ const messages = {
   common: {
     // Basic prompts
     whatToDo: 'ဘာလုပ်ချင်ပါသလဲ?',
-    howToSpreadKindness: 'ဒီနေ့ ကြင်နာမှုဖြန့်ဖြူးမည်လား?',
+    howToSpreadKindness: 'ဒီနေ့ ဘာကူညီလိုက်မလဲ?',
     startBotFirst: '/start ဖြင့် စတင်ပါ',
-    
+
     // Operation messages
     operationCancelled: '❌ လုပ်ဆောင်ချက်ပယ်ဖျက်ပြီ',
     processing: 'လုပ်ဆောင်နေသည်...',
-    
+
     // Post-related
     postCreatedSuccessfully: '✅ <b>ပို့စ်တင်ပြီးပါပြီ</b>',
     referenceId: '📌 <b>Reference ID:</b> {postId}',
     noActivePosts: '📭 လက်ရှိတွင် ပို့စ်မရှိပါ',
-    
+
     // Input prompts
     weightCustomPrompt: 'အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ (ဥပမာ - "၂၀"):',
     categoryPrompt: 'ထပ်ရွေးရန် (သို့) အတည်ပြုရန်',
-    
+
     // Utility messages
     useStartForLink: '/start ဖြင့် လင့်ခ်ရယူပါ',
     limitResetsNextMonth: 'လာမည့်လတွင် အကန့်အသတ် ပြန်စမည်',
     postsUsed: 'သုံးပြီးသား ပို့စ်များ: {current}/{limit}',
-    
+
     // Display helpers
     dateTBD: 'ရက်စွဲ သတ်မှတ်ရန် ကျန်ရှိ',
     itemsCount: '{count} မျိုး',
@@ -49,15 +49,15 @@ const messages = {
   system: {
     checkingMembership: 'အဖွဲ့ဝင်အခြေအနေ စစ်ဆေးနေသည်...',
     savingPost: 'ပို့စ်သိမ်းဆည်းနေသည်...',
-    postingToChannel: 'ချန်နယ်သို့ တင်နေသည်...',
+    postingToChannel: 'Channel သို့ တင်နေသည်...',
     channelMembershipRequired: '📢 @LuuKyone_Community သို့ အရင်ဝင်ပါ',
-    botAdminRequired: '⚠️ ဗော့ကို ချန်နယ်စီမံခွင့်ပေးပါ'
+    botAdminRequired: '⚠️ Bot ကို Channel စီမံခွင့်ပေးပါ'
   },
 
   // ==================================================
   // 2. UI COMPONENTS
   // ==================================================
-  
+
   // Button Labels (KEEP IN MYANMAR)
   buttons: {
     // Main menu buttons
@@ -69,7 +69,7 @@ const messages = {
       help: '📚 အကူအညီ',
       settings: '⚙️ ဆက်တင်'
     },
-    
+
     // Common action buttons
     actions: {
       cancel: '❌ ပယ်ဖျက်မည်',
@@ -81,20 +81,20 @@ const messages = {
       no: '❌ မဟုတ်ပါ',
       contact: '💬 ဆက်သွယ်ရန်'
     },
-    
+
     // Scene-specific buttons
     scenes: {
       confirmCategories: '✅ အတည်ပြုမည်',
       confirmPost: '✅ အတည်ပြုမည်'
     },
-    
+
     // Date selection buttons
     date: {
       today: '📅 ဒီနေ့',
       tomorrow: '📅 မနက်ဖြန်',
       custom: '📅 ရက်စွဲရွေးရန်'
     },
-    
+
     // Weight selection buttons
     weight: {
       less1: '< ၁ ကီလို',
@@ -104,13 +104,13 @@ const messages = {
       more10: '> ၁၀ ကီလို',
       custom: '✏️ အခြားအလေးချိန်'
     },
-    
+
     // Membership buttons
     membership: {
       joinChannel: '📢 Community Channel သို့ဝင်ရောက်ရန်',
       checkJoined: '✅ ဝင်ပြီးပါပြီ'
     },
-    
+
     // Post management buttons
     postManagement: {
       markComplete: '✅ ပြီးဆုံးပြီဟု မှတ်သားရန်',
@@ -153,13 +153,13 @@ const messages = {
   // ==================================================
   // 3. FEATURE MESSAGES (By command/feature)
   // ==================================================
-  
+
   // Start Command
   start: {
     // Non-member flow
     notMember: {
-      title: '📢 <b>Community ချန်နယ်သို့ အရင်ဝင်ပါ</b>',
-      description: 'Luu Kyone ကိုအသုံးပြုရန် Community ချန်နယ်သို့ဝင်ရန် လိုအပ်ပါသည်',
+      title: '📢 <b>Community Channel သို့ အရင်ဝင်ပါ</b>',
+      description: 'Luu Kyone ကိုအသုံးပြုရန် Community Channel သို့ဝင်ရန် လိုအပ်ပါသည်',
       instructions: {
         title: '<b>ဝင်နည်း-</b>',
         step1: '1️⃣ @LuuKyone_Community သို့သွားပါ',
@@ -167,7 +167,7 @@ const messages = {
         step3: '3️⃣ ဤနေရာသို့ပြန်လာပြီး "ဝင်ပြီးပြီ" နှိပ်ပါ'
       }
     },
-    
+
     // New user welcome
     newUser: {
       greeting: '💚 <b>ကြိုဆိုပါသည်!</b>\n\n{userName} မင်္ဂလာပါ!',
@@ -204,7 +204,7 @@ const messages = {
     },
     commands: {
       title: '<b>Commands-</b>',
-      start: '/start - ဗော့စတင်ရန်',
+      start: '/start - Bot စတင်ရန်',
       travel: '/travel - ခရီးစဉ်မျှဝေရန်',
       favor: '/favor - အကူအညီတောင်းရန်',
       myposts: '/myposts - ကိုယ့်ပို့စ်များ',
@@ -219,12 +219,12 @@ const messages = {
       trust: '• ယုံကြည်မှုအပေါ်အခြေခံ'
     },
     safety: {
-      title: '<b>ဘေးကင်းရေး-</b>',
-      meet: '✅ အများသုံးနေရာတွင်သာ တွေ့ဆုံပါ',
-      verify: '✅ ပစ္စည်းများ အတည်ပြုပါ',
-      photos: '✅ လက်လွှဲပြောင်းခြင်း ဓာတ်ပုံရိုက်ပါ',
-      prohibited: '✅ တားမြစ်ပစ္စည်းများ မပါဝင်ပါစေ',
-      instincts: '✅ အတွင်းစိတ်ကို ယုံကြည်ပါ'
+      title: '<b>⚠️ ဆောင်ရန်/ရှောင်ရန် ⚠️</b>',
+      meet: '📍 လုံခြုံသော အများသုံးနေရာမှာသာ တွေ့ဆုံပါ',
+      verify: '🔍 လက်ခံမယ့် ပစ္စည်းကို သေချာစစ်ဆေးပါ',
+      photos: '📸 လက်လွှဲအပြီး ဓာတ်ပုံရိုက်ထားပါ (အထောက်အထားအတွက်)',
+      prohibited: '🚫 ဥပဒေနဲ့မညီသော ပစ္စည်းများ လုံးဝမသယ်ပါနှင့်',
+      instincts: '💡 စိတ်ထဲမသက်မသာဖြစ်ရင် ချက်ချင်းရပ်ပါ'
     },
     support: '<b>အကူအညီ-</b> @LuuKyone_Community'
   },
@@ -251,7 +251,7 @@ const messages = {
   stats: {
     title: '📊 <b>Luu Kyone စာရင်းအင်းများ</b>',
     community: '<b>👥 Community-</b>\n• အဖွဲ့ဝင်စုစုပေါင်း- {members}',
-    activePosts: '<b>📋 တက်ကြွသောပို့စ်များ-</b>\n• ခရီးစဉ်များ- {travels}\n• တောင်းဆိုချက်များ- {favors}',
+    activePosts: '<b>📋 လတ်တလောပို့စ်များ-</b>\n• ခရီးစဉ်များ- {travels}\n• တောင်းဆိုချက်များ- {favors}',
     thisMonth: '<b>📅 ဒီလ-</b>\n• ခရီးစဉ်အသစ်- {travels}\n• တောင်းဆိုချက်အသစ်- {favors}',
     allTime: '<b>✅ စုစုပေါင်းအောင်မြင်မှုများ-</b>\n• ပြီးစီးခရီးစဉ်- {travels}\n• ပြီးစီးအကူအညီ- {favors}',
     impact: '<b>🌟 အကျိုးသက်ရောက်မှု-</b>\n• {lives} ဘဝများ ထိတွေ့ခံစားရ\n• နိုင်ငံ ၃ နိုင်ငံ ချိတ်ဆက်',
@@ -287,7 +287,7 @@ const messages = {
   // My Posts
   myPosts: {
     title: '📋 <b>သင့်ရဲ့ ပို့စ်များ</b>',
-    empty: 'လောလောဆယ် တင်ထားသော ပို့စ်များ မရှိပါ',
+    empty: 'လတ်တလော တင်ထားသော ပို့စ်များ မရှိပါ',
     selectPost: 'စီမံရန် ပို့စ်ရွေးပါ-',
     management: {
       title: '📝 <b>ပို့စ်စီမံခန့်ခွဲမှု</b>',
@@ -316,7 +316,7 @@ const messages = {
   // ==================================================
   // 4. SCENE MESSAGES (Travel & Favor flows)
   // ==================================================
-  
+
   scenes: {
     // Travel Scene
     travel: {
@@ -332,7 +332,7 @@ const messages = {
       success: '✅ <b>ခရီးစဉ်တင်ပြီးပါပြီ</b>',
       cancelled: '❌ ခရီးစဉ်တင်ခြင်း ပယ်ဖျက်ပြီ'
     },
-    
+
     // Favor Scene
     favor: {
       title: '📦 <b>အကူအညီတောင်းရန်</b>',
@@ -351,7 +351,7 @@ const messages = {
   // ==================================================
   // 5. CHANNEL MESSAGES
   // ==================================================
-  
+
   channel: {
     // Channel post formats
     posts: {
@@ -370,46 +370,46 @@ const messages = {
         weight: '⚖️ အလေးချိန်- {weight}'
       }
     },
-    
+
     // Post status updates
     statusUpdates: {
       completed: 'ဤပို့စ်ပြီးဆုံးပြီ။ ကျေးဇူးတင်ပါသည်! 💚',
       cancelled: 'ဤပို့စ်ပယ်ဖျက်ပြီ',
       expired: 'ဤပို့စ်သက်တမ်းကုန်သွားပြီ'
     },
-    
+
     // Daily summaries
     dailySummary: {
       morning: {
         title: '☀️ <b>နံနက်ခင်း အကျဉ်းချုပ်</b>',
-        subtitle: 'ဒီနေ့ ကြင်နာမှုမျှဝေပါ',
+        subtitle: 'ဒီနေ့ ဘယ်လိုကူညီနိုင်မလဲ?',
         travelCount: '✈️ ခရီးစဉ် {count} ခု-',
         favorCount: '📦 တောင်းဆိုချက် {count} ခု-'
       },
       evening: {
         title: '🌙 <b>ညနေခင်း အကျဉ်းချုပ်</b>',
-        subtitle: 'သင်ဘယ်လိုကူညီနိုင်မလဲ စစ်ဆေးကြည့်ပါ',
+        subtitle: 'ဒီနေ့ ဘယ်လိုကူညီနိုင်မလဲ?',
         travelCount: '✈️ ခရီးစဉ် {count} ခု-',
         favorCount: '📦 တောင်းဆိုချက် {count} ခု-'
       },
       footer: '@luukyonebot'
     },
-    
+
     // Channel info
     info: {
-      title: '📢 <b>ချန်နယ်နှင့် ဗော့</b>',
-      howItWorks: '<b>အတူတကွ အလုပ်လုပ်ပုံ-</b>\n• ဗော့ - ပို့စ်များဖန်တီးရန်\n• ချန်နယ် - ပို့စ်များပြသရန်',
-      userFlow: '<b>အသုံးပြုနည်း-</b>\n1️⃣ ဗော့ဖြင့် ပို့စ်ဖန်တီးပါ\n2️⃣ ပို့စ်သည် ချန်နယ်တွင်ပေါ်လာမည်\n3️⃣ Community မှ မှတ်ချက်ပေးကြမည်\n4️⃣ ဗော့က အသိပေးမည်\n5️⃣ တိုက်ရိုက်ချိတ်ဆက်ပါ',
-      benefits: '<b>စနစ်၏အကျိုးကျေးဇူး-</b>\n• ချန်နယ် = အများမြင်နိုင်\n• ဗော့ = ကိုယ်ပိုင်ထိန်းချုပ်မှု\n• မှတ်ချက်များ = ပွင့်လင်းမြင်သာမှု',
-      tips: '<b>အကြံပြုချက်များ-</b>\n• တက်ကြွသောပို့စ်များအတွက် ချန်နယ်စစ်ပါ\n• ပို့စ်ဖန်တီးရန် ဗော့သုံးပါ\n• အကူအညီပေးရန် မှတ်ချက်ပေးပါ',
-      footer: 'ချန်နယ်- @LuuKyone_Community\nဗော့- @luukyonebot'
+      title: '📢 <b>Channel နှင့် Bot</b>',
+      howItWorks: '<b>အတူတကွ အလုပ်လုပ်ပုံ-</b>\n• Bot - ပို့စ်များဖန်တီးရန်\n• Channel - ပို့စ်များပြသရန်',
+      userFlow: '<b>အသုံးပြုနည်း-</b>\n1️⃣ Bot ဖြင့် ပို့စ်ဖန်တီးပါ\n2️⃣ ပို့စ်သည် Channel တွင်ပေါ်လာမည်\n3️⃣ Community မှ မှတ်ချက်ပေးကြမည်\n4️⃣ Bot က အသိပေးမည်\n5️⃣ တိုက်ရိုက်ချိတ်ဆက်ပါ',
+      benefits: '<b>စနစ်၏အကျိုးကျေးဇူး-</b>\n• Channel = အများမြင်နိုင်\n• Bot = ကိုယ်ပိုင်ထိန်းချုပ်မှု\n• မှတ်ချက်များ = ပွင့်လင်းမြင်သာမှု',
+      tips: '<b>အကြံပြုချက်များ-</b>\n• တက်ကြွသောပို့စ်များအတွက် Channel စစ်ပါ\n• ပို့စ်ဖန်တီးရန် Bot သုံးပါ\n• အကူအညီပေးရန် မှတ်ချက်ပေးပါ',
+      footer: 'Channel - @LuuKyone_Community\nBot - @luukyonebot'
     }
   },
 
   // ==================================================
   // 6. NOTIFICATIONS & CONTACT
   // ==================================================
-  
+
   notifications: {
     // Comment notifications
     comment: {
@@ -429,7 +429,7 @@ const messages = {
       tip: '💡 မိမိကိုယ်ကို မိတ်ဆက်ခြင်းဖြင့် စတင်ပါ',
       oneTime: '⚠️ တစ်ကြိမ်တည်း မိတ်ဆက်ခွင့်သာရှိသည်'
     },
-    
+
     // New match notification
     newMatch: {
       title: '🔔 <b>သင့်ပို့စ်အတွက် အသစ်တွေ့ရှိမှု!</b>',
@@ -445,7 +445,7 @@ const messages = {
   // ==================================================
   // 7. ADMIN & TEST MESSAGES
   // ==================================================
-  
+
   admin: {
     accessDenied: '❌ Admin များသာ အသုံးပြုနိုင်သည်',
     cleanup: {
@@ -490,33 +490,33 @@ const messages = {
   // ==================================================
   // 8. ERROR MESSAGES (Reference section)
   // ==================================================
-  
+
   errors: {
     // General errors
     generic: '❌ အမှားတစ်ခုဖြစ်နေသည်',
-    notMember: '❌ Community ချန်နယ်သို့ အရင်ဝင်ပါ',
+    notMember: '❌ Community Channel သို့ အရင်ဝင်ပါ',
     startBotFirst: '❌ @luukyonebot ကို အရင်စတင်ပါ',
-    
+
     // Post limits
     limitReached: '❌ လစဉ်အကန့်အသတ်ပြည့်သွားပြီ ({limit} posts)',
     ownPostsOnly: '❌ ကိုယ့်ပို့စ်ကိုသာ စီမံနိုင်သည်',
-    
+
     // Input validation
     invalidDate: '❌ ရက်စွဲမှားယွင်းနေပါသည်',
     invalidWeight: '❌ အလေးချိန်မှားယွင်းနေပါသည်',
     enterWeightNumber: '❌ အလေးချိန် kg ဖြင့်ရိုက်ထည့်ပါ',
     categoryRequired: '❌ အမျိုးအစား အနည်းဆုံးတစ်ခုရွေးပါ',
-    
+
     // Post operations
     postNotFound: '❌ ပို့စ်မတွေ့ရှိပါ',
     postingFailed: '❌ တင်ရန်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။',
-    channelPostFailed: '⚠️ ပို့စ်သိမ်းထားပါသည်။ ချန်နယ်တွင် ဗော့ကို Admin အဖြစ်ထည့်ပေးပါ',
-    
+    channelPostFailed: '⚠️ ပို့စ်သိမ်းထားပါသည်။ Channel တွင် Bot ကို Admin အဖြစ်ထည့်ပေးပါ',
+
     // Contact errors
     cannotContactSelf: '❌ ကိုယ့်ကိုယ်ကို ဆက်သွယ်၍မရပါ',
     alreadyContacted: '❌ ဤပို့စ်အတွက် ဆက်သွယ်ပြီးသားဖြစ်သည်',
     chatNotFound: '❌ ဆက်သွယ်၍မရပါ',
-    
+
     // System errors
     failedToSend: '❌ ပို့မရ - {error}'
   },
@@ -524,7 +524,7 @@ const messages = {
   // ==================================================
   // 9. EXTERNAL RESOURCES
   // ==================================================
-  
+
   // URLs
   urls: {
     community: 'https://t.me/LuuKyone_Community'
@@ -532,18 +532,18 @@ const messages = {
 
   // Channel welcome messages (array)
   channelWelcome: [
-    '💚 Luu Kyone Community မှ ကြိုဆိုပါသည်\n\nကျေးဇူးပြု၍ ကျွန်ုပ်တို့၏ community guidelines များကို ဖတ်ရှုပါ။\nကြင်နာမှုဖြင့် အတူတကွ ကူညီကြပါစို့။',
-    '🤝 ကျေးဇူးတင်ပါသည် Community သို့ ဝင်ရောက်တာကို\n\nသင့်ရဲ့ ပထမဆုံး ကြင်နာမှုလုပ်ဆောင်ချက်ကို စတင်ရန် @luukyonebot ကို သုံးပါ',
-    '✨ ကျေးဇူးတင်ပါသည် ကျွန်ုပ်တို့၏ kindness network တွင် ပါဝင်တာကို\n\nစိတ်ချလက်ချ ကူညီမှုများ ပြုလုပ်နိုင်ပါသည်',
-    '🌟 Luu Kyone Community သို့ ကြိုဆိုပါသည်\n\nယုံကြည်မှုနှင့် လေးစားမှုဖြင့် အတူတကွ အလုပ်လုပ်ကြပါမည်'
+    '💚 Luu Kyone မှ ကြိုဆိုပါသည်\n\nအတူတကွ ကူညီမှုများ ဖန်တီးနိုင်ရန် လမ်းညွှန်ချက်များကို ဖတ်ရှုပါ။\nယုံကြည်မှုဖြင့် အတူလက်တွဲကြပါစို့။',
+    '🤝 Community သို့ ရောက်ရှိတာကို ကျေးဇူးတင်ပါသည်\n\nပထမဆုံး ကူညီမှုကို @luukyonebot မှာ စတင်နိုင်ပါပြီ',
+    '✨ ကျွန်ုပ်တို့၏ ကူညီမှုကွန်ရက်တွင် ပါဝင်တာကို ကျေးဇူးတင်ပါသည်\n\nစိတ်ချရသော ကူညီမှုများ ပြုလုပ်နိုင်ပါသည်',
+    '🌟 Luu Kyone Community မှ ကြိုဆိုပါသည်\n\nလေးစားမှုနှင့် ယုံကြည်မှုဖြင့် အတူတကွ ဆောင်ရွက်ကြပါမည်'
   ],
 
   // Motivational quotes
   quotes: {
     milestone: {
-      acts100: '"Together, we\'re not just moving items.\nWe\'re moving hearts."',
-      members500: '"Every new member makes our\nkindness network stronger!"',
-      generic: '"Small acts × {number} = Big impact!"'
+      acts100: '"ကူညီမှု အကြိမ် ၁၀၀ ပြည့်ပါပြီ" - အားလုံးကျေးဇူးတင်ပါတယ်',
+      members500: '"အဖွဲ့ဝင် ၅၀၀ ရှိလာပြီ" - အတူတူဆက်လက်ကူညီကြပါစို့',
+      generic: '"ကူညီမှု {number} ကြိမ်" - ကျေးဇူးတင်ပါတယ်'
     },
     gratitude: '"Alone we can do so little;\ntogether we can do so much."'
   },
