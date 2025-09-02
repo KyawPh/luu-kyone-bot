@@ -110,6 +110,14 @@ const launch = async () => {
         });
         
         logger.info(`✅ Bot launched in webhook mode on ${webhookUrl}`);
+        
+        // Log channel configuration
+        logger.info('📢 Channel configuration', {
+          channelId: config.telegram.channelId,
+          channelUrl: `https://t.me/${config.telegram.channelId.replace('@', '')}`,
+          environment: config.environment,
+          adminIds: config.telegram.adminIds
+        });
       }
     } else {
       // Development polling mode
@@ -130,6 +138,14 @@ const launch = async () => {
       
       logEvent.botStarted('development', { username: botInfo.username });
       logger.info(`✅ Bot launched in polling mode for development`);
+      
+      // Log channel configuration
+      logger.info('📢 Channel configuration', {
+        channelId: config.telegram.channelId,
+        channelUrl: `https://t.me/${config.telegram.channelId.replace('@', '')}`,
+        environment: config.environment,
+        adminIds: config.telegram.adminIds
+      });
     }
     
     // Set bot commands menu

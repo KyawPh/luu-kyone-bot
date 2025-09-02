@@ -10,14 +10,14 @@ const messages = {
   // Main Menu Messages
   menu: {
     greeting: '👋 မင်္ဂလာပါ {userName}!',
-    welcome: '💚 ကျွန်ုပ်တို့ရဲ့ Luu Kyone မှ ပြန်လည်ကြိုဆိုပါတယ်',
-    instruction: 'စတင်ရန် အောက်က option တစ်ခုရွေးပါ။'
+    welcome: '💚 ကျွန်ုပ်တို့ရဲ့ လူကြုံ Bot မှ ပြန်လည်ကြိုဆိုပါတယ်',
+    instruction: 'စတင်ရန် အောက်က option တစ်ခုခုကို ရွေးပါ။'
   },
 
   // Common Messages (Used throughout the bot)
   common: {
     // Basic prompts
-    whatToDo: 'ဘာလုပ်ချင်ပါသလဲ?',
+    whatToDo: 'စတင်ရန် အောက်က option တစ်ခုခုကို ရွေးပါ။',
     howToSpreadKindness: 'ဒီနေ့ ဘာကူညီလိုက်မလဲ?',
     startBotFirst: '/start ဖြင့် စတင်ပါ',
 
@@ -158,7 +158,7 @@ const messages = {
     // Non-member flow
     notMember: {
       title: '📢 <b>Community Channel သို့ အရင်ဝင်ပါ</b>',
-      description: 'Luu Kyone ကိုအသုံးပြုရန် Community Channel သို့ဝင်ရန် လိုအပ်ပါသည်',
+      description: 'လူကြုံ Bot ကိုအသုံးပြုရန် Community Channel သို့ဝင်ရန် လိုအပ်ပါသည်',
       instructions: {
         title: '<b>ဝင်နည်း-</b>',
         step1: '1️⃣ @LuuKyone_Community သို့သွားပါ',
@@ -170,7 +170,7 @@ const messages = {
     // New user welcome
     newUser: {
       greeting: '💚 <b>ကြိုဆိုပါသည်!</b>\n\n{userName} မင်္ဂလာပါ!',
-      intro: '<b>Luu Kyone</b> သည် ခရီးသွားများနှင့် အကူအညီလိုအပ်သူများကို ချိတ်ဆက်ပေးသော platform တစ်ခုဖြစ်ပါသည်',
+      intro: '<b>လူကြုံ</b>သည် ခရီးသွားများနှင့် အကူအညီလိုအပ်သူများကို ချိတ်ဆက်ပေးသော platform တစ်ခုဖြစ်ပါသည်',
       benefits: {
         title: '<b>သင်ဘာလုပ်နိုင်မလဲ-</b>',
         travel: '✈️ <b>ခရီးထွက်မည်လား?</b> - နေရာလွတ်လေးကို အသုံးချပါ',
@@ -182,9 +182,9 @@ const messages = {
 
   // Help Section
   help: {
-    title: '📚 <b>Luu Kyone အသုံးပြုနည်း</b>',
+    title: '📚 <b>လူကြုံ Bot ကို အသုံးပြုနည်း</b>',
     intro: {
-      title: '<b>Luu Kyone ဆိုတာဘာလဲ?</b>',
+      title: '<b>လူကြုံ Bot ဆိုတာဘာလဲ?</b>',
       description: 'ကြင်နာသောခရီးသွားများနှင့် အကူအညီလိုအပ်သူများကို ချိတ်ဆက်ပေးသည်'
     },
     travelers: {
@@ -248,7 +248,7 @@ const messages = {
 
   // Stats
   stats: {
-    title: '📊 <b>Luu Kyone စာရင်းအင်းများ</b>',
+    title: '📊 <b>လူကြုံ စာရင်းအင်းများ</b>',
     community: '<b>👥 Community-</b>\n• အဖွဲ့ဝင်စုစုပေါင်း- {members}',
     activePosts: '<b>📋 လတ်တလောပို့စ်များ-</b>\n• ခရီးစဉ်များ- {travels}\n• တောင်းဆိုချက်များ- {favors}',
     thisMonth: '<b>📅 ဒီလ-</b>\n• ခရီးစဉ်အသစ်- {travels}\n• တောင်းဆိုချက်အသစ်- {favors}',
@@ -269,7 +269,7 @@ const messages = {
     confirmOn: '✅ နေ့စဉ်အကျဉ်းချုပ်များ ဖွင့်ထားပြီ',
     confirmOff: '📵 နေ့စဉ်အကျဉ်းချုပ်များ ပိတ်ထားပြီ',
     about: {
-      title: '📱 <b>Luu Kyone Bot အကြောင်း</b>',
+      title: '📱 <b>လူကြုံ Bot အကြောင်း</b>',
       tagline: '🤝 ကမ္ဘာတစ်ဝှမ်းက မြန်မာခရီးသွားတွေကို ချိတ်ဆက်ပေးတဲ့ platform',
       version: '<b>Version:</b> 1.3.1',
       status: '<b>Status:</b> {status}',
@@ -373,7 +373,7 @@ const messages = {
     // New member announcement
     newMemberAnnouncement: {
       title: '🎉 <b>{userName} ကြိုဆိုပါတယ်!</b>',
-      welcome: 'Luu Kyone မိသားစုသို့ ကြိုဆိုပါတယ် 💚',
+      welcome: 'လူကြုံ မိသားစုမှ ကြိုဆိုပါတယ် 💚',
       startJourney: '@luukyonebot',
       hashtags: '#NewMember #LuuKyone'
     },
@@ -516,10 +516,10 @@ const messages = {
 
   // Channel welcome messages (array)
   channelWelcome: [
-    '💚 Luu Kyone မှ ကြိုဆိုပါသည်\n\nအတူတကွ ကူညီမှုများ ဖန်တီးနိုင်ရန် လမ်းညွှန်ချက်များကို ဖတ်ရှုပါ။\nယုံကြည်မှုဖြင့် အတူလက်တွဲကြပါစို့။',
+    '💚 လူကြုံ Community မှ ကြိုဆိုပါသည်\n\nအတူတကွ ကူညီမှုများ ဖန်တီးနိုင်ရန် လမ်းညွှန်ချက်များကို ဖတ်ရှုပါ။\nယုံကြည်မှုဖြင့် အတူလက်တွဲကြပါစို့။',
     '🤝 Community သို့ ရောက်ရှိတာကို ကျေးဇူးတင်ပါသည်\n\nပထမဆုံး ကူညီမှုကို @luukyonebot မှာ စတင်နိုင်ပါပြီ',
     '✨ ကျွန်ုပ်တို့၏ ကူညီမှုကွန်ရက်တွင် ပါဝင်တာကို ကျေးဇူးတင်ပါသည်\n\nစိတ်ချရသော ကူညီမှုများ ပြုလုပ်နိုင်ပါသည်',
-    '🌟 Luu Kyone Community မှ ကြိုဆိုပါသည်\n\nလေးစားမှုနှင့် ယုံကြည်မှုဖြင့် အတူတကွ ဆောင်ရွက်ကြပါမည်'
+    '🌟 လူကြုံ Community မှ ကြိုဆိုပါသည်\n\nလေးစားမှုနှင့် ယုံကြည်မှုဖြင့် အတူတကွ ဆောင်ရွက်ကြပါမည်'
   ],
 
   // Motivational quotes

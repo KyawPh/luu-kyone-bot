@@ -79,8 +79,23 @@ const setupChannelHandlers = (bot) => {
   // Handle messages/comments in the channel
   bot.on('channel_post', async (ctx) => {
     try {
+      // Log ALL channel_post events for debugging
+      logger.info('📨 Channel post event received', {
+        chatId: ctx.chat.id,
+        chatType: ctx.chat.type,
+        chatTitle: ctx.chat.title,
+        messageId: ctx.channelPost?.message_id,
+        hasReply: !!ctx.channelPost?.reply_to_message,
+        hasFrom: !!ctx.channelPost?.from,
+        configuredChannelId: config.telegram.channelId
+      });
+      
       // Check if this is our channel
       if (ctx.chat.id.toString() !== config.telegram.channelId) {
+        logger.debug('Ignoring - not our configured channel', {
+          receivedId: ctx.chat.id.toString(),
+          expectedId: config.telegram.channelId
+        });
         return;
       }
       
@@ -89,10 +104,25 @@ const setupChannelHandlers = (bot) => {
         const originalMessageId = ctx.channelPost.reply_to_message.message_id;
         const commenter = ctx.channelPost.from;
         
+        logger.info('💬 Comment detected!', {
+          originalMessageId,
+          commenterUsername: commenter?.username,
+          commenterId: commenter?.id,
+          commenterName: commenter?.first_name
+        });
+        
         // Skip if no username (can't contact them)
         if (!commenter || !commenter.username) {
+          logger.warn('Skipping - commenter has no username', {
+            commenterId: commenter?.id,
+            commenterName: commenter?.first_name
+          });
           return;
         }
+        
+        logger.info('🔍 Searching for post in database', {
+          originalMessageId
+        });
         
         // Find the post by channel message ID
         const [travelPosts, favorPosts] = await Promise.all([
@@ -106,6 +136,13 @@ const setupChannelHandlers = (bot) => {
             .get()
         ]);
         
+        logger.info('📊 Database query results', {
+          travelPostsFound: !travelPosts.empty,
+          favorPostsFound: !favorPosts.empty,
+          travelCount: travelPosts.size,
+          favorCount: favorPosts.size
+        });
+        
         let post = null;
         let postType = null;
         
@@ -118,8 +155,16 @@ const setupChannelHandlers = (bot) => {
         }
         
         if (post) {
+          logger.info('✅ Post found!', {
+            postId: post.postId,
+            postType,
+            postOwnerId: post.userId,
+            postOwnerName: post.userName
+          });
+          
           // Don't notify if commenter is the post owner
           if (commenter.id && commenter.id.toString() === post.userId) {
+            logger.info('Skipping - commenter is the post owner');
             return;
           }
           
@@ -143,11 +188,21 @@ const setupChannelHandlers = (bot) => {
               error: error.message 
             });
           }
+        } else {
+          logger.warn('⚠️ No post found for this message ID', {
+            originalMessageId,
+            commenter: commenter?.username
+          });
         }
+      } else {
+        logger.debug('Not a reply - regular channel message');
       }
       
     } catch (error) {
-      logger.error('Channel post error', { error: error.message });
+      logger.error('Channel post error', { 
+        error: error.message,
+        stack: error.stack 
+      });
     }
   });
 

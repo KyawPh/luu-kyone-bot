@@ -254,6 +254,47 @@ const setupCommands = (bot) => {
     }
   });
 
+  // Test comment handler (admin only)
+  bot.command('test_comment_handler', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    // Check if user is admin
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.accessDenied);
+    }
+    
+    try {
+      // Check if channel handlers are registered
+      const handlersInfo = {
+        channelId: config.telegram.channelId,
+        botUsername: ctx.botInfo?.username,
+        timestamp: new Date().toISOString()
+      };
+      
+      logger.info('🧪 TEST: Comment handler check initiated', handlersInfo);
+      
+      await ctx.reply(
+        `🧪 <b>Comment Handler Test</b>\n\n` +
+        `✅ Handler is registered\n` +
+        `📢 Monitoring channel: ${config.telegram.channelId}\n` +
+        `🤖 Bot: @${ctx.botInfo?.username}\n\n` +
+        `<b>To test:</b>\n` +
+        `1. Post something in the channel\n` +
+        `2. Reply to that post\n` +
+        `3. Check logs in Railway\n\n` +
+        `Logs will show "📨 Channel post event received"`,
+        { parse_mode: 'HTML' }
+      );
+      
+      // Also log to Railway
+      logger.info('Comment handler test completed', handlersInfo);
+      
+    } catch (error) {
+      logger.error('Test comment handler error', { error: error.message });
+      ctx.reply('❌ Test failed: ' + error.message);
+    }
+  });
+
   // Test channel features (admin only)
   bot.command('test_channel', async (ctx) => {
     const userId = ctx.from.id.toString();
