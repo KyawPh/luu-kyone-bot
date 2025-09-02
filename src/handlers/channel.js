@@ -77,9 +77,8 @@ const setupChannelHandlers = (bot) => {
               });
             }
           }
-        }
-        // Post not found - might be an old message or different channel, skip silently
       }
+      // Post not found - might be an old message or different channel, skip silently
     }
   });
   
