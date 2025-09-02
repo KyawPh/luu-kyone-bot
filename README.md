@@ -22,7 +22,9 @@ Telegram bot for connecting travelers with people needing personal favors across
 1. Create bot via @BotFather on Telegram
 2. Get your bot token
 3. Create a public channel for free tier (e.g., @LuuKyone_Community)
-4. Add your bot as admin to the channel
+4. Create a discussion group and link it to your channel (Channel Settings → Discussion)
+5. Add your bot as admin to BOTH the channel AND the discussion group
+6. Get the discussion group ID (you can use @userinfobot or forward a message from the group)
 
 ### 4. Environment Configuration
 1. Copy `.env.example` to `.env`
@@ -30,6 +32,7 @@ Telegram bot for connecting travelers with people needing personal favors across
 ```bash
 BOT_TOKEN=your_bot_token_here
 FREE_CHANNEL_ID=@LuuKyone_Community
+FREE_DISCUSSION_GROUP_ID=-100xxxxxxxxxx  # The linked discussion group ID
 PREMIUM_CHANNEL_ID=your_premium_channel_id
 FIREBASE_SERVICE_ACCOUNT_PATH=./firebase-service-account.json
 NODE_ENV=development

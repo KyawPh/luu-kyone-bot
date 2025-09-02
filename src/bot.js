@@ -114,10 +114,18 @@ const launch = async () => {
         // Log channel configuration
         logger.info('📢 Channel configuration', {
           channelId: config.telegram.channelId,
+          discussionGroupId: config.telegram.discussionGroupId || 'Not configured',
           channelUrl: `https://t.me/${config.telegram.channelId.replace('@', '')}`,
           environment: config.environment,
           adminIds: config.telegram.adminIds
         });
+        
+        // Warn if discussion group not configured in production
+        if (!config.telegram.discussionGroupId) {
+          logger.warn('⚠️ WARNING: Discussion group ID not configured!');
+          logger.warn('Comments on channel posts will NOT trigger notifications.');
+          logger.warn('Add FREE_DISCUSSION_GROUP_ID to your environment variables.');
+        }
       }
     } else {
       // Development polling mode
@@ -142,10 +150,18 @@ const launch = async () => {
       // Log channel configuration
       logger.info('📢 Channel configuration', {
         channelId: config.telegram.channelId,
+        discussionGroupId: config.telegram.discussionGroupId || 'Not configured',
         channelUrl: `https://t.me/${config.telegram.channelId.replace('@', '')}`,
         environment: config.environment,
         adminIds: config.telegram.adminIds
       });
+      
+      // Warn if discussion group not configured
+      if (!config.telegram.discussionGroupId) {
+        logger.warn('⚠️ WARNING: Discussion group ID not configured!');
+        logger.warn('Comments on channel posts will NOT trigger notifications.');
+        logger.warn('Add FREE_DISCUSSION_GROUP_ID to your .env file.');
+      }
     }
     
     // Set bot commands menu

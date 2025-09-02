@@ -276,11 +276,16 @@ const setupCommands = (bot) => {
       await ctx.reply(
         `🧪 <b>Comment Handler Test</b>\n\n` +
         `✅ Handler is registered\n` +
-        `📢 Monitoring channel: ${config.telegram.channelId}\n` +
+        `📢 Channel: ${config.telegram.channelId}\n` +
+        `💬 Discussion Group: ${config.telegram.discussionGroupId || '❌ Not configured'}\n` +
         `🤖 Bot: @${ctx.botInfo?.username}\n\n` +
+        `<b>Status:</b>\n` +
+        `${config.telegram.discussionGroupId ? 
+          '✅ Discussion group configured - comments will be detected' : 
+          '⚠️ Discussion group NOT configured - comments won\'t work!'}\n\n` +
         `<b>To test:</b>\n` +
         `1. Post something in the channel\n` +
-        `2. Reply to that post\n` +
+        `2. Reply to that post (comment)\n` +
         `3. Check logs in Railway\n\n` +
         `Logs will show "📨 Channel post event received"`,
         { parse_mode: 'HTML' }

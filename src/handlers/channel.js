@@ -79,24 +79,40 @@ const setupChannelHandlers = (bot) => {
   // Handle messages/comments in the channel
   bot.on('channel_post', async (ctx) => {
     try {
+      const chatId = ctx.chat.id.toString();
+      const isOurChannel = chatId === config.telegram.channelId;
+      const isOurDiscussionGroup = config.telegram.discussionGroupId && 
+                                   chatId === config.telegram.discussionGroupId;
+      
       // Log ALL channel_post events for debugging
       logger.info('📨 Channel post event received', {
-        chatId: ctx.chat.id,
+        chatId: chatId,
         chatType: ctx.chat.type,
         chatTitle: ctx.chat.title,
         messageId: ctx.channelPost?.message_id,
         hasReply: !!ctx.channelPost?.reply_to_message,
         hasFrom: !!ctx.channelPost?.from,
-        configuredChannelId: config.telegram.channelId
+        isOurChannel: isOurChannel,
+        isOurDiscussionGroup: isOurDiscussionGroup,
+        configuredChannelId: config.telegram.channelId,
+        configuredDiscussionId: config.telegram.discussionGroupId
       });
       
-      // Check if this is our channel
-      if (ctx.chat.id.toString() !== config.telegram.channelId) {
-        logger.debug('Ignoring - not our configured channel', {
-          receivedId: ctx.chat.id.toString(),
-          expectedId: config.telegram.channelId
+      // Check if this is our channel OR our discussion group
+      if (!isOurChannel && !isOurDiscussionGroup) {
+        logger.warn('🚫 Ignoring - not our channel or discussion group', {
+          receivedId: chatId,
+          expectedChannelId: config.telegram.channelId,
+          expectedDiscussionId: config.telegram.discussionGroupId
         });
         return;
+      }
+      
+      // Log which source accepted the event
+      if (isOurDiscussionGroup) {
+        logger.info('✅ Event from discussion group accepted');
+      } else if (isOurChannel) {
+        logger.info('✅ Event from channel accepted');
       }
       
       // Check if this is a comment (reply to a message)
