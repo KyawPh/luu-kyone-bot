@@ -81,28 +81,6 @@ async function clearUserData() {
       totalDeleted++;
     });
     
-    // Delete connections where user is requester
-    const connectionsAsRequester = await db.collection('connections')
-      .where('requesterId', '==', userId)
-      .get();
-    
-    console.log(`\n🔗 Found ${connectionsAsRequester.size} connections as requester`);
-    connectionsAsRequester.forEach(doc => {
-      batch.delete(doc.ref);
-      totalDeleted++;
-    });
-    
-    // Delete connections where user is poster
-    const connectionsAsPoster = await db.collection('connections')
-      .where('posterId', '==', userId)
-      .get();
-    
-    console.log(`🔗 Found ${connectionsAsPoster.size} connections as poster`);
-    connectionsAsPoster.forEach(doc => {
-      batch.delete(doc.ref);
-      totalDeleted++;
-    });
-    
     // Commit the batch delete
     if (totalDeleted > 0) {
       await batch.commit();

@@ -22,7 +22,6 @@ const dryRun = args.includes('--dry-run');
 const clearAll = args.includes('--all');
 const clearUsers = args.includes('--users') || clearAll;
 const clearPosts = args.includes('--posts') || clearAll;
-const clearConnections = args.includes('--connections') || clearAll;
 
 // Initialize Firebase Admin
 const serviceAccountPath = process.env.FIREBASE_SERVICE_ACCOUNT_PATH || 
@@ -80,7 +79,7 @@ async function clearTestData() {
     console.log('📝 DRY RUN MODE - No data will be deleted\n');
   }
   
-  if (!clearUsers && !clearPosts && !clearConnections) {
+  if (!clearUsers && !clearPosts) {
     console.log('❌ No collections specified!');
     console.log('\nUsage:');
     console.log('  node scripts/clear-test-data.js [options]');
@@ -88,7 +87,6 @@ async function clearTestData() {
     console.log('  --all         Clear all collections');
     console.log('  --users       Clear users collection');
     console.log('  --posts       Clear travel plans and favor requests');
-    console.log('  --connections Clear connections collection');
     console.log('  --dry-run     Show what would be deleted without deleting');
     process.exit(1);
   }
@@ -107,11 +105,6 @@ async function clearTestData() {
       
       console.log('\n📦 Favor Requests:');
       totalDeleted += await clearCollection('favorRequests');
-    }
-    
-    if (clearConnections) {
-      console.log('\n🔗 Connections:');
-      totalDeleted += await clearCollection('connections');
     }
     
     // Also clear premium collections if they exist

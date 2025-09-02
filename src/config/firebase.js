@@ -80,7 +80,6 @@ const collections = {
   users: db.collection('users'),
   travelPlans: db.collection('travelPlans'),
   favorRequests: db.collection('favorRequests'),
-  connections: db.collection('connections'),
   premiumMembers: db.collection('premiumMembers'),
   premiumPosts: db.collection('premiumPosts')
 };

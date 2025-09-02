@@ -78,8 +78,7 @@ const messages = {
       skip: '⏭️ ကျော်မည်',
       confirm: '✅ အတည်ပြုမည်',
       yes: '✅ ဟုတ်သည်',
-      no: '❌ မဟုတ်ပါ',
-      contact: '💬 ဆက်သွယ်ရန်'
+      no: '❌ မဟုတ်ပါ'
     },
 
     // Scene-specific buttons
@@ -430,29 +429,6 @@ const messages = {
     }
   },
 
-  contact: {
-    // Contact received
-    received: {
-      title: '✅ <b>ဆက်သွယ်ရန်အချက်အလက် ရပြီ</b>',
-      postType: 'ဤ {postType} အတွက် ဆက်သွယ်ရန် တောင်းဆိုထားပါသည်-',
-      route: '<b>ခရီးစဉ်-</b> {route}',
-      date: '<b>ရက်စွဲ-</b> {date}',
-      contactPerson: '<b>ဆက်သွယ်ရန်-</b>',
-      tip: '💡 မိမိကိုယ်ကို မိတ်ဆက်ခြင်းဖြင့် စတင်ပါ',
-      oneTime: '⚠️ တစ်ကြိမ်တည်း မိတ်ဆက်ခွင့်သာရှိသည်'
-    },
-
-    // New match notification
-    newMatch: {
-      title: '🔔 <b>သင့်ပို့စ်အတွက် အသစ်တွေ့ရှိမှု!</b>',
-      someone: 'တစ်စုံတစ်ယောက်က {action}-',
-      route: '<b>ခရီးစဉ်-</b> {route}',
-      postId: '<b>ပို့စ် ID-</b> #{postId}',
-      interested: '<b>စိတ်ဝင်စားသူ-</b>',
-      willContact: 'အသေးစိတ်ဆွေးနွေးရန် ဆက်သွယ်မည်',
-      tip: '💡 မဆက်သွယ်ပါက သင်ကိုယ်တိုင် စတင်နိုင်သည်'
-    }
-  },
 
   // ==================================================
   // 7. ADMIN & TEST MESSAGES
@@ -524,10 +500,6 @@ const messages = {
     postingFailed: '❌ တင်ရန်မအောင်မြင်ပါ။ ထပ်ကြိုးစားပါ။',
     channelPostFailed: '⚠️ ပို့စ်သိမ်းထားပါသည်။ Channel တွင် Bot ကို Admin အဖြစ်ထည့်ပေးပါ',
 
-    // Contact errors
-    cannotContactSelf: '❌ ကိုယ့်ကိုယ်ကို ဆက်သွယ်၍မရပါ',
-    alreadyContacted: '❌ ဤပို့စ်အတွက် ဆက်သွယ်ပြီးသားဖြစ်သည်',
-    chatNotFound: '❌ ဆက်သွယ်၍မရပါ',
 
     // System errors
     failedToSend: '❌ ပို့မရ - {error}'

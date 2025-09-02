@@ -129,10 +129,6 @@ const logEvent = {
   },
   
   // Interaction events
-  contactRequested: (userId, posterId, postId, postType) => {
-    logger.info('Contact requested', { userId, posterId, postId, postType, event: 'CONTACT_REQUESTED' });
-  },
-  
   sceneEntered: (userId, scene) => {
     logger.debug('Scene entered', { userId, scene, event: 'SCENE_ENTERED' });
   },
