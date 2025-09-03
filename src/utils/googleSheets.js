@@ -167,7 +167,7 @@ class GoogleSheetsService {
           const status = row.get('Status');
           return rowDate === todayStr && status === 'approved';
         })
-        .map(row => ({
+        .map((row, index) => ({
           date: row.get('Date'),
           time: row.get('Time'),
           type: row.get('Type'),
@@ -178,7 +178,7 @@ class GoogleSheetsService {
           status: row.get('Status'),
           author: row.get('Author'),
           notes: row.get('Notes'),
-          rowIndex: row.rowIndex,
+          rowIndex: row._rowNumber || (rows.indexOf(row) + 2),
           row: row // Keep reference to update status later
         }));
       
@@ -220,7 +220,7 @@ class GoogleSheetsService {
           }
           return matches;
         })
-        .map(row => ({
+        .map((row, index) => ({
           date: row.get('Date'),
           time: row.get('Time'),
           type: row.get('Type'),
@@ -231,7 +231,7 @@ class GoogleSheetsService {
           status: row.get('Status'),
           author: row.get('Author'),
           notes: row.get('Notes'),
-          rowIndex: row.rowIndex,
+          rowIndex: row._rowNumber || (rows.indexOf(row) + 2),
           row: row // Keep reference for updates
         }));
       
@@ -284,7 +284,7 @@ class GoogleSheetsService {
     try {
       const rows = await this.sheet.getRows();
       
-      const content = rows.map(row => ({
+      const content = rows.map((row, index) => ({
         date: row.get('Date'),
         time: row.get('Time'),
         type: row.get('Type'),
@@ -295,7 +295,7 @@ class GoogleSheetsService {
         status: row.get('Status'),
         author: row.get('Author'),
         notes: row.get('Notes'),
-        rowIndex: row.rowIndex,
+        rowIndex: row._rowNumber || (index + 2), // Row 1 is headers, so first data row is 2
         row: row
       }));
       
@@ -320,7 +320,7 @@ class GoogleSheetsService {
           const status = row.get('Status');
           return status === 'draft' || status === 'approved';
         })
-        .map(row => ({
+        .map((row, index) => ({
           date: row.get('Date'),
           time: row.get('Time'),
           type: row.get('Type'),
@@ -331,7 +331,7 @@ class GoogleSheetsService {
           status: row.get('Status'),
           author: row.get('Author'),
           notes: row.get('Notes'),
-          rowIndex: row.rowIndex,
+          rowIndex: row._rowNumber || (rows.indexOf(row) + 2),
           row: row
         }));
       
@@ -357,8 +357,7 @@ class GoogleSheetsService {
       });
       
       const content = rows
-        .filter(row => rowIndices.includes(row.rowIndex))
-        .map(row => ({
+        .map((row, index) => ({
           date: row.get('Date'),
           time: row.get('Time'),
           type: row.get('Type'),
@@ -369,9 +368,10 @@ class GoogleSheetsService {
           status: row.get('Status'),
           author: row.get('Author'),
           notes: row.get('Notes'),
-          rowIndex: row.rowIndex,
+          rowIndex: row._rowNumber || (index + 2),
           row: row
-        }));
+        }))
+        .filter(item => rowIndices.includes(item.rowIndex));
       
       logger.debug('Content found by rows', { 
         requestedRows: rowIndices,
