@@ -102,12 +102,12 @@ const formatRoute = (fromCity, toCity) => {
   return `${from.emoji} ${from.name} → ${to.emoji} ${to.name}`;
 };
 
-// Generate user-friendly post ID (e.g., T-1234 for travel, F-5678 for favor)
+// Generate user-friendly post ID (e.g., T1234 for travel, F5678 for favor)
 const generatePostId = (type = 'T') => {
   // Generate a 4-digit number
   const randomNum = Math.floor(1000 + Math.random() * 9000);
   const timestamp = Date.now().toString(36).slice(-2).toUpperCase();
-  return `${type}-${randomNum}${timestamp}`;
+  return `${type}${randomNum}${timestamp}`;
 };
 
 // Generate direct link to a channel post
@@ -200,7 +200,7 @@ const formatPostForChannel = (post, postType, status = 'active') => {
     });
     
     // Add post ID hashtag (remove dash for valid hashtag)
-    const postIdTag = post.postId.replace('-', '');
+    const postIdTag = post.postId;
     hashtags.push(`#${postIdTag}`);
     
     // Add month hashtag
@@ -266,7 +266,7 @@ const formatPostForChannel = (post, postType, status = 'active') => {
     });
     
     // Add post ID hashtag (remove dash for valid hashtag)
-    const postIdTag = post.postId.replace('-', '');
+    const postIdTag = post.postId;
     hashtags.push(`#${postIdTag}`);
     
     // Add month hashtag
@@ -277,7 +277,7 @@ const formatPostForChannel = (post, postType, status = 'active') => {
   // Add hashtags for active posts
   if (status === 'active') {
     // Add post ID hashtag for reference
-    const postIdTag = post.postId.replace('-', '');
+    const postIdTag = post.postId;
     hashtags.push(`#${postIdTag}`);
     
     // Add all hashtags at the bottom

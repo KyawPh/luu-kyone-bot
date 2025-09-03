@@ -48,8 +48,8 @@ const setupChannelHandlers = (bot) => {
           
           // Don't notify if commenter is the post owner (unless anonymous)
           if (isAnonymous || ctx.from.id.toString() !== post.userId) {
-            // Remove dash from postId for display
-            const postIdDisplay = post.postId.replace('-', '');
+            // Use postId directly for display
+            const postIdDisplay = post.postId;
             
             // Generate link to the channel post
             const postLink = getChannelPostLink(post.channelChatId || config.telegram.channelId, post.channelMessageId);
@@ -193,8 +193,8 @@ const setupChannelHandlers = (bot) => {
         }
         
         if (post && commenter.id && commenter.id.toString() !== post.userId) {
-          // Remove dash from postId for display
-          const postIdDisplay = post.postId.replace('-', '');
+          // Use postId directly for display
+          const postIdDisplay = post.postId;
           
           // Generate link to the channel post
           const postLink = getChannelPostLink(post.channelChatId || config.telegram.channelId, post.channelMessageId);

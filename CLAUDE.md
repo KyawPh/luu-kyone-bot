@@ -42,7 +42,7 @@ This is a Telegram bot built with Telegraf framework that connects travelers wit
    - Dynamic message formatting with `formatMessage` utility
 
 5. **Handler Structure**:
-   - **commands.js**: Handles bot commands (/start, /travel, /favor, /myposts, /help, /stats, /channelinfo, /settings, /profile, /browse)
+   - **commands.js**: Handles all bot commands including user commands and admin content management
    - **callbacks.js**: Processes inline keyboard button callbacks
    - **channel.js**: Manages channel events, discussion group comments, and member join notifications
    - **sharedHandlers.js**: Common handler logic shared between commands and callbacks
@@ -58,9 +58,16 @@ This is a Telegram bot built with Telegraf framework that connects travelers wit
    - Membership verification through channel subscription
 
 8. **Scheduled Jobs** (`utils/scheduler.js`):
-   - Daily summary notifications
-   - Post expiration checks
-   - Automated cleanup tasks
+   - Morning summary (9:00 AM)
+   - Evening summary (6:00 PM)
+   - Content calendar check (2:00 AM) - loads Google Sheets content
+   - Post expiration cleanup (2:00 AM)
+   
+9. **Google Sheets Integration** (`utils/googleSheets.js`, `utils/contentScheduler.js`):
+   - Content calendar management
+   - Automatic scheduling of approved content
+   - Support for timed posts with images
+   - Template generation for weekly content
 
 ## Important Implementation Details
 
@@ -95,3 +102,6 @@ Optional:
 - `PREMIUM_POSTS_PER_MONTH`: Monthly post limit for premium users (default: 30)
 - `SESSION_TIMEOUT_MINUTES`: Session timeout in minutes (default: 30)
 - `BOT_TIMEZONE`: Bot timezone (default: Asia/Singapore)
+- `GOOGLE_SHEETS_ID`: Google Sheet ID for content calendar
+- `GOOGLE_SERVICE_ACCOUNT_EMAIL`: For Google Sheets (if not using Firebase credentials)
+- `GOOGLE_PRIVATE_KEY`: For Google Sheets (if not using Firebase credentials)

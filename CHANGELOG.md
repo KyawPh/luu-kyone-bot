@@ -2,6 +2,60 @@
 
 All notable changes to the Luu Kyone Bot project will be documented in this file.
 
+## [1.4.0] - 2025-01-03
+[📖 Detailed Release Notes](docs/releases/v1.4.0-notes.md)
+
+### Added
+- **Google Sheets Content Calendar**: Complete integration for scheduled content management
+  - 8 new content management commands for admins
+  - Automatic daily scheduling at 2:00 AM
+  - Support for timed posts with images
+  - Template generation for weekly content
+  - Status tracking (draft/approved/published)
+- **Content Commands**:
+  - `/content_today` - View scheduled content
+  - `/content_browse` - Interactive browser
+  - `/content_post` - Post single row
+  - `/content_date` - Post by date
+  - `/content_batch` - Post multiple rows
+  - `/content_refresh` - Reload schedule
+  - `/content_templates` - Generate templates
+  - `/content_rows` - List all rows
+
+### Changed
+- **Content Management**: Migrated from hardcoded functions to Google Sheets
+- **Command Names**: Renamed `/content_test` to `/content_post` for clarity
+- **Message Structure**: Consolidated duplicate admin messages
+
+### Removed
+- **Hardcoded Content Functions**: Removed `sendDailyQuote()`, `sendGratitudePost()`, `sendSafetyReminder()`, `sendRouteHighlight()`
+- **Test Commands**: Removed `/test_channel` and all related test callbacks
+- **Duplicate Messages**: Cleaned up `accessDenied` and `menuError` duplicates
+
+### Fixed
+- **Row Indexing**: Fixed undefined rowIndex issue with google-spreadsheet library
+- **Date Parsing**: Corrected MM/DD/YYYY date format handling
+- **Message Paths**: Fixed incorrect message references in commands
+
+## [1.3.2] - 2025-01-02
+[📖 Detailed Release Notes](docs/releases/v1.3.2-notes.md)
+
+### Added
+- **Discussion Group Support**: Full support for comment notifications from discussion groups
+- **Enhanced Notifications**: Clickable links to channel posts in comment notifications
+
+### Changed
+- **Welcome Messages**: Simplified from 6 lines to 2 lines, more concise and welcoming
+- **Post IDs**: Display without dashes in notifications (e.g., #T369235)
+
+### Removed
+- **Contact System**: Removed 100+ lines of unused contact button code
+- **Verbose Logging**: Reduced debug logging by 70%
+
+### Fixed
+- **Comment Notifications**: Now working properly with discussion group support
+- **Message ID Mapping**: Proper handling between channel and discussion group messages
+
 ## [1.3.1] - 2025-01-01
 
 ### Added
@@ -31,6 +85,7 @@ All notable changes to the Luu Kyone Bot project will be documented in this file
 - **Maintainability**: Centralized scene-related logic for easier updates
 
 ## [1.3.0] - 2024-12-31
+[📖 Detailed Refactoring Notes](docs/releases/v1.3.0-refactoring.md)
 
 ### Added
 - **Unified Command/Button Handlers**: Created shared handlers for consistent behavior across all interaction methods
@@ -75,7 +130,8 @@ All notable changes to the Luu Kyone Bot project will be documented in this file
 - **Consistent Behavior**: All handlers follow the same patterns and conventions
 - **Performance**: Reduced require() calls by centralizing imports
 
-## [1.2.0] - 2024-12-30
+## [1.2.0] - 2024-08-31
+[📖 Detailed Release Notes](docs/releases/v1.2.0-notes.md)
 
 ### Added
 - **Comment-based Contact System**: Replaced direct contact buttons with channel comments

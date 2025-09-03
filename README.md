@@ -26,7 +26,14 @@ Telegram bot for connecting travelers with people needing personal favors across
 5. Add your bot as admin to BOTH the channel AND the discussion group
 6. Get the discussion group ID (you can use @userinfobot or forward a message from the group)
 
-### 4. Environment Configuration
+### 4. Google Sheets Setup (Optional - for Content Calendar)
+1. Create a Google Sheet for content management
+2. Share the sheet with your Firebase service account email
+3. Enable Google Sheets API in Google Cloud Console
+4. Get your sheet ID from the URL: `https://docs.google.com/spreadsheets/d/SHEET_ID_HERE/edit`
+5. Add to your `.env` file (see below)
+
+### 5. Environment Configuration
 1. Copy `.env.example` to `.env`
 2. Fill in your values:
 ```bash
@@ -38,9 +45,12 @@ FIREBASE_SERVICE_ACCOUNT_PATH=./firebase-service-account.json
 NODE_ENV=development
 ADMIN_IDS=your_telegram_id
 BOT_TIMEZONE=Asia/Yangon
+
+# Optional - Google Sheets Content Calendar
+GOOGLE_SHEETS_ID=your_sheet_id_here
 ```
 
-### 5. Install & Run
+### 6. Install & Run
 ```bash
 # Install dependencies
 npm install
@@ -53,11 +63,28 @@ npm start
 ```
 
 ## Bot Commands
+
+### User Commands
 - `/start` - Start the bot and set up profile
 - `/travel` - Share your travel plan
 - `/favor` - Request a personal favor
 - `/myposts` - Manage your active posts
 - `/help` - Get help and guidelines
+- `/stats` - View community statistics
+- `/channelinfo` - How channel & bot work together
+- `/settings` - Manage notification preferences
+- `/profile` - View your profile
+- `/browse` - Browse active posts
+
+### Admin Commands (Content Management)
+- `/content_today` - View today's scheduled content
+- `/content_browse` - Browse all content interactively
+- `/content_post <row>` - Post specific row from sheet
+- `/content_date MM/DD/YYYY` - Post all content for a date
+- `/content_batch 2,4,6` - Post multiple rows
+- `/content_refresh` - Reload today's schedule
+- `/content_templates` - Generate template content
+- `/content_rows` - List all available rows
 
 ## Project Structure
 ```
@@ -95,6 +122,9 @@ npm start
 - ✅ Single-step route selection
 - ✅ Post management (complete/cancel)
 - ✅ Daily summary notifications (optional)
+- ✅ Google Sheets content calendar integration
+- ✅ Automated content scheduling
+- ✅ Template content generation
 
 ## Phase 2 Features (Premium - Coming Soon)
 - [ ] Premium membership system
