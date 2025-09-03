@@ -1,11 +1,11 @@
 const CITIES = {
-  singapore: {
-    code: 'SG',
-    name: 'Singapore',
-    currency: 'SGD',
-    premiumPrice: 1.3,
-    emoji: '🇸🇬'
-  },
+  // singapore: {
+  //   code: 'SG',
+  //   name: 'Singapore',
+  //   currency: 'SGD',
+  //   premiumPrice: 1.3,
+  //   emoji: '🇸🇬'
+  // },
   bangkok: {
     code: 'BKK',
     name: 'Bangkok',
@@ -28,9 +28,9 @@ const CATEGORIES = [
   { id: 'food', name: 'အစားအစာ', nameEn: 'Food', emoji: '🍜' },
   { id: 'electronics', name: 'လျှပ်စစ်ပစ္စည်း', nameEn: 'Electronics', emoji: '📱' },
   { id: 'clothing', name: 'အ၀တ်အစား', nameEn: 'Clothing', emoji: '👕' },
-  { id: 'books', name: 'စာအုပ်', nameEn: 'Books', emoji: '📚' },
+  // { id: 'books', name: 'စာအုပ်', nameEn: 'Books', emoji: '📚' },
   { id: 'cosmetics', name: 'အလှပြင်ပစ္စည်း', nameEn: 'Cosmetics', emoji: '💄' },
-  { id: 'gifts', name: 'ဆုလက်ဆောင်', nameEn: 'Gifts', emoji: '🎁' },
+  // { id: 'gifts', name: 'ဆုလက်ဆောင်', nameEn: 'Gifts', emoji: '🎁' },
   { id: 'other', name: 'အခြား', nameEn: 'Other', emoji: '📦' }
 ];
 

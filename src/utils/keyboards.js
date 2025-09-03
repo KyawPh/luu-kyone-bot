@@ -23,21 +23,21 @@ const mainMenu = () => {
 // Route selection keyboard - shows all possible routes with bidirectional pairing
 const routeKeyboard = () => {
   const buttons = [
-    // Myanmar ↔ Singapore routes (prioritized)
-    [
-      Markup.button.callback('🇲🇲 YGN → 🇸🇬 SG', 'route_YGN_SG'),
-      Markup.button.callback('🇸🇬 SG → 🇲🇲 YGN', 'route_SG_YGN')
-    ],
+    // // Myanmar ↔ Singapore routes (prioritized)
+    // [
+    //   Markup.button.callback('🇲🇲 YGN → 🇸🇬 SG', 'route_YGN_SG'),
+    //   Markup.button.callback('🇸🇬 SG → 🇲🇲 YGN', 'route_SG_YGN')
+    // ],
     // Myanmar ↔ Bangkok routes
     [
       Markup.button.callback('🇲🇲 YGN → 🇹🇭 BKK', 'route_YGN_BKK'),
       Markup.button.callback('🇹🇭 BKK → 🇲🇲 YGN', 'route_BKK_YGN')
     ],
     // Singapore ↔ Bangkok routes
-    [
-      Markup.button.callback('🇸🇬 SG → 🇹🇭 BKK', 'route_SG_BKK'),
-      Markup.button.callback('🇹🇭 BKK → 🇸🇬 SG', 'route_BKK_SG')
-    ],
+    // [
+    //   Markup.button.callback('🇸🇬 SG → 🇹🇭 BKK', 'route_SG_BKK'),
+    //   Markup.button.callback('🇹🇭 BKK → 🇸🇬 SG', 'route_BKK_SG')
+    // ],
     // Cancel button
     [Markup.button.callback(messages.buttons.actions.cancel, 'cancel')]
   ];
