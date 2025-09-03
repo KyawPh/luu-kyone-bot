@@ -26,13 +26,13 @@ settingsScene.enter(async (ctx) => {
     const keyboard = Markup.inlineKeyboard([
       [
         Markup.button.callback(
-          `${dailySummaryEnabled ? '📊' : '📈'} Daily Summary: ${dailySummaryEnabled ? 'ON' : 'OFF'}`,
+          dailySummaryEnabled ? messages.settings.buttons.dailySummary.on : messages.settings.buttons.dailySummary.off,
           'toggle_daily_summary'
         )
       ],
       [
-        Markup.button.callback('📱 About', 'about'),
-        Markup.button.callback('🔙 Back to Menu', 'back_to_menu')
+        Markup.button.callback(messages.settings.buttons.about, 'about'),
+        Markup.button.callback(messages.settings.buttons.backToMenu, 'back_to_menu')
       ]
     ]);
     
@@ -77,13 +77,13 @@ async function updateSettingsDisplay(ctx) {
     const keyboard = Markup.inlineKeyboard([
       [
         Markup.button.callback(
-          `${dailySummaryEnabled ? '📊' : '📈'} Daily Summary: ${dailySummaryEnabled ? 'ON' : 'OFF'}`,
+          dailySummaryEnabled ? messages.settings.buttons.dailySummary.on : messages.settings.buttons.dailySummary.off,
           'toggle_daily_summary'
         )
       ],
       [
-        Markup.button.callback('📱 About', 'about'),
-        Markup.button.callback('🔙 Back to Menu', 'back_to_menu')
+        Markup.button.callback(messages.settings.buttons.about, 'about'),
+        Markup.button.callback(messages.settings.buttons.backToMenu, 'back_to_menu')
       ]
     ]);
     
@@ -135,26 +135,23 @@ settingsScene.action('toggle_daily_summary', async (ctx) => {
 settingsScene.action('about', async (ctx) => {
   await ctx.answerCbQuery();
   
-  const aboutMessage = '📱 <b>About Luu Kyone Bot</b>\n\n' +
-    '🤝 Connecting Myanmar travelers worldwide\n\n' +
-    '<b>Version:</b> 1.0.0\n' +
-    '<b>Status:</b> Free Tier\n' +
-    '<b>Community:</b> @LuuKyone_Community\n\n' +
-    '<b>Features:</b>\n' +
-    '• Share travel plans\n' +
-    '• Request personal favors\n' +
-    '• Connect with travelers\n' +
-    '• Browse active posts\n\n' +
-    '<b>Notifications:</b>\n' +
-    '🔔 Connection alerts: Always on\n' +
-    '📊 Daily summaries: Optional\n\n' +
-    '<b>Limits:</b>\n' +
-    '• 10 posts per month\n' +
-    '• Posts expire after 30 days\n\n' +
-    '<i>Created with ❤️ for the Myanmar community</i>';
+  const aboutMessage = messages.settings.about.title + '\n\n' +
+    messages.settings.about.subtitle + '\n\n' +
+    messages.settings.about.version + '\n' +
+    messages.settings.about.status + '\n' +
+    messages.settings.about.community + '\n\n' +
+    messages.settings.about.features.title + '\n' +
+    messages.settings.about.features.list.join('\n') + '\n\n' +
+    messages.settings.about.notifications.title + '\n' +
+    messages.settings.about.notifications.connection + '\n' +
+    messages.settings.about.notifications.daily + '\n\n' +
+    messages.settings.about.limits.title + '\n' +
+    messages.settings.about.limits.posts + '\n' +
+    messages.settings.about.limits.expiry + '\n\n' +
+    messages.settings.about.footer;
   
   const keyboard = Markup.inlineKeyboard([
-    [Markup.button.callback('🔙 Back to Settings', 'back_to_settings')]
+    [Markup.button.callback(messages.settings.buttons.backToSettings, 'back_to_settings')]
   ]);
   
   await ctx.editMessageText(aboutMessage, { 

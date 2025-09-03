@@ -261,25 +261,48 @@ const messages = {
   settings: {
     title: '⚙️ <b>ဆက်တင်များ</b>',
     preferences: 'ဦးစားပေးချက်များ-',
-    notifications: {
-      connection: '🔔 ချိတ်ဆက်မှု အသိပေးချက်များ- ဖွင့်ထား',
-      daily: '📊 နေ့စဉ်အကျဉ်းချုပ်- {status}'
-    },
     tip: '💡 ချိတ်ဆက်မှုအသိပေးချက်များကို အမြဲဖွင့်ထားပါ',
     confirmOn: '✅ နေ့စဉ်အကျဉ်းချုပ်များ ဖွင့်ထားပြီ',
     confirmOff: '📵 နေ့စဉ်အကျဉ်းချုပ်များ ပိတ်ထားပြီ',
+    
+    // Button labels
+    buttons: {
+      dailySummary: {
+        on: '📊 Daily Summary: ON',
+        off: '📈 Daily Summary: OFF'
+      },
+      about: '📱 အကြောင်း',
+      backToMenu: '🏠 မူလမီနူး',
+      backToSettings: '🔙 ဆက်တင်သို့'
+    },
+    
+    // About section
     about: {
-      title: '📱 <b>လူကြုံ Bot အကြောင်း</b>',
-      tagline: '🤝 ကမ္ဘာတစ်ဝှမ်းက မြန်မာခရီးသွားတွေကို ချိတ်ဆက်ပေးတဲ့ platform',
-      version: '<b>Version:</b> 1.3.1',
-      status: '<b>Status:</b> {status}',
+      title: '📱 <b>Luu Kyone Bot အကြောင်း</b>',
+      subtitle: '🤝 မြန်မာခရီးသွားများကို ချိတ်ဆက်ပေးသည်',
+      version: '<b>ဗားရှင်း:</b> 1.4.0',
+      status: '<b>အခြေအနေ:</b> အခမဲ့',
       community: '<b>Community:</b> @LuuKyone_Community',
-      features: '<b>အဓိက Features:</b>',
-      featuresList: '• ခရီးစဉ်တွေ မျှဝေနိုင်\n• ကိုယ်ရေးကိုယ်တာ အကူအညီတောင်း\n• ခရီးသွားတွေနဲ့ ချိတ်ဆက်\n• လက်ရှိပို့စ်တွေ ကြည့်ရှု',
-      notifications: '<b>အသိပေးချက်များ:</b>',
-      notificationStatus: '🔔 ချိတ်ဆက်မှုသတင်း: အမြဲဖွင့်\n📊 နေ့စဉ်အကျဉ်းချုပ်: {status}',
-      notificationsOn: 'ဖွင့်ထား (မနက် ၉နာရီ ညနေ ၆နာရီ)',
-      notificationsOff: 'ပိတ်ထား'
+      features: {
+        title: '<b>အင်္ဂါရပ်များ:</b>',
+        list: [
+          '• ခရီးစဉ်မျှဝေရန်',
+          '• အကူအညီတောင်းရန်', 
+          '• ခရီးသွားများနှင့် ချိတ်ဆက်ရန်',
+          '• ပို့စ်များကြည့်ရန်'
+        ]
+      },
+      notifications: {
+        title: '<b>အသိပေးချက်များ:</b>',
+        connection: '🔔 ဆက်သွယ်မှုအသိပေးချက်: အမြဲဖွင့်ထား',
+        daily: '📊 နေ့စဉ်အခြေအနေ - ရွေးချယ်နိုင်'
+      },
+      limits: {
+        title: '<b>ကန့်သတ်ချက်များ:</b>',
+        posts: '• တစ်လလျှင် ၁၀ ပို့စ်',
+        expiry: '• ပို့စ် ၃၀ ရက်အကြာတွင် သက်တမ်းကုန်'
+      },
+      footer: '<i>မြန်မာသူ မြန်မာသားများ အတွက် ❤️ ဖြင့်ပြုလုပ်ထားပါသည်</i>'
     }
   },
 
@@ -476,8 +499,8 @@ const messages = {
     statsSent: '✅ စာရင်းအင်းများ ပို့ပြီး',
     summarySent: '✅ အကျဉ်းချုပ် ပို့ပြီး',
     pleaseJoinFirst: '@LuuKyone_Community သို့ အရင်ဝင်ပါ',
-    optionRemoved: 'ဤရွေးချယ်ခွင့် ဖယ်ရှားပြီ',
-    alertsAlwaysOn: 'ချိတ်ဆက်မှုအသိပေးချက်များ အမြဲဖွင့်ထား'
+    thisOptionRemoved: 'ဤရွေးချယ်ခွင့် ဖယ်ရှားပြီ',
+    connectionAlertsAlwaysOn: 'ချိတ်ဆက်မှုအသိပေးချက်များ အမြဲဖွင့်ထား'
   },
 
   // ==================================================

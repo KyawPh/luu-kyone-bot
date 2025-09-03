@@ -110,10 +110,8 @@ const setupCommands = (bot) => {
       
       let message = '🔔 <b>Testing Notification Settings</b>\n\n';
       message += `<b>Your Current Settings:</b>\n`;
-      message += formatMessage(messages.settings.notifications.connection) + '\n';
-      message += formatMessage(messages.settings.notifications.daily, { 
-        status: wantsSummary ? '📊 ON' : '📈 OFF' 
-      }) + '\n\n';
+      message += '🔔 Connection alerts: Always on\n';
+      message += `📊 Daily summaries: ${wantsSummary ? 'ON' : 'OFF'}\n\n`;
       
       message += '💡 <b>What this means:</b>\n';
       message += '• You will ALWAYS be notified when someone contacts you\n';
