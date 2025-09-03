@@ -243,14 +243,14 @@ const setupCommands = (bot) => {
     }
     
     try {
-      await ctx.reply(messages.admin.runningCleanup);
+      await ctx.reply(messages.admin.cleanup.running);
       const { cleanupExpiredPosts } = require('../utils/scheduler');
       await cleanupExpiredPosts();
-      await ctx.reply(messages.admin.cleanupCompleted);
+      await ctx.reply(messages.admin.cleanup.completed);
       logEvent.customEvent('manual_cleanup', { adminId: userId });
     } catch (error) {
       logger.error('Manual cleanup error', { error: error.message });
-      ctx.reply(formatMessage(messages.admin.cleanupFailed, { error: error.message }));
+      ctx.reply(formatMessage(messages.admin.cleanup.failed, { error: error.message }));
     }
   });
 
@@ -260,7 +260,7 @@ const setupCommands = (bot) => {
     
     // Check if user is admin
     if (!isAdmin(userId, config.telegram.adminIds)) {
-      return ctx.reply(messages.admin.accessDenied);
+      return ctx.reply(messages.admin.adminOnly);
     }
     
     try {

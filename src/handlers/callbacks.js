@@ -88,28 +88,6 @@ const setupCallbacks = (bot) => {
     }
   });
   
-  // Test channel callbacks
-  bot.action('test_welcome', async (ctx) => {
-    await ctx.answerCbQuery(messages.test.sendingWelcome);
-    
-    try {
-      const welcomeMessages = messages.channelWelcome;
-      
-      const randomMessage = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
-      
-      await bot.telegram.sendMessage(
-        config.telegram.channelId,
-        `🧪 TEST WELCOME MESSAGE\n\n${randomMessage}\n\n` +
-        `#WelcomeWednesday #LuuKyoneFamily #KindnessInAction`,
-        { parse_mode: 'HTML' }
-      );
-      
-      await ctx.editMessageText(messages.test.welcomeMessageSent);
-    } catch (error) {
-      logger.error('Test welcome error', { error: error.message });
-      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }) + '\n\n' + messages.common.botAdminRequired);
-    }
-  });
   
   
   
