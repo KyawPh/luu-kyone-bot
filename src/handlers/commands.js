@@ -532,6 +532,44 @@ const setupCommands = (bot) => {
     }
   });
   
+  // Show all available row indices
+  bot.command('content_rows', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      const { googleSheets } = require('../utils/googleSheets');
+      
+      const allContent = await googleSheets.getAllContent();
+      
+      if (allContent.length === 0) {
+        return ctx.reply('📭 No content found in Google Sheets');
+      }
+      
+      let message = '📋 <b>Available Rows in Google Sheets:</b>\n\n';
+      
+      allContent.forEach(content => {
+        const status = content.status || 'draft';
+        const statusEmoji = status === 'published' ? '✅' : 
+                           status === 'approved' ? '🟢' : 
+                           status === 'error' ? '❌' : '📝';
+        
+        message += `Row ${content.rowIndex}: ${statusEmoji} ${content.title || 'Untitled'}\n`;
+        message += `   Date: ${content.date}, Status: ${status}\n\n`;
+      });
+      
+      message += `\n<i>Use /content_test [row_number] to post any row</i>`;
+      
+      await ctx.reply(message, { parse_mode: 'HTML' });
+    } catch (error) {
+      logger.error('Content rows error', { error: error.message });
+      ctx.reply('❌ Error listing content rows');
+    }
+  });
+  
   // Batch post multiple rows
   bot.command('content_batch', async (ctx) => {
     const userId = ctx.from.id.toString();
