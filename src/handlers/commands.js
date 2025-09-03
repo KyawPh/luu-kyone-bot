@@ -495,11 +495,17 @@ const setupCommands = (bot) => {
       
       const { googleSheets } = require('../utils/googleSheets');
       const { contentScheduler } = require('../utils/contentScheduler');
+      const { logger } = require('../utils/logger');
       
-      // Parse date
-      const month = parseInt(dateParts[0]) - 1;
+      // Parse date - Month is 0-based in JavaScript Date
+      const month = parseInt(dateParts[0]) - 1; // MM (1-12) -> 0-11
       const day = parseInt(dateParts[1]);
       const year = parseInt(dateParts[2]);
+      
+      logger.debug('Parsing date for content_date', {
+        input: dateStr,
+        parsed: { month: month + 1, day, year }
+      });
       const targetDate = new Date(year, month, day);
       
       // Get content for that date

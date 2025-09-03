@@ -202,8 +202,24 @@ class GoogleSheetsService {
       // Format date as MM/DD/YYYY
       const dateStr = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
       
+      logger.debug('Searching for content on date', { 
+        searchDate: dateStr,
+        dateObject: date.toISOString()
+      });
+      
       const content = rows
-        .filter(row => row.get('Date') === dateStr)
+        .filter(row => {
+          const rowDate = row.get('Date');
+          const matches = rowDate === dateStr;
+          if (rowDate && !matches) {
+            logger.debug('Date comparison', { 
+              rowDate, 
+              searchDate: dateStr, 
+              matches 
+            });
+          }
+          return matches;
+        })
         .map(row => ({
           date: row.get('Date'),
           time: row.get('Time'),
@@ -215,8 +231,15 @@ class GoogleSheetsService {
           status: row.get('Status'),
           author: row.get('Author'),
           notes: row.get('Notes'),
-          rowIndex: row.rowIndex
+          rowIndex: row.rowIndex,
+          row: row // Keep reference for updates
         }));
+      
+      logger.debug('Content found for date', { 
+        date: dateStr, 
+        count: content.length,
+        items: content.map(c => ({ title: c.title, status: c.status }))
+      });
       
       return content;
     } catch (error) {
@@ -328,6 +351,11 @@ class GoogleSheetsService {
     try {
       const rows = await this.sheet.getRows();
       
+      logger.debug('Getting content by rows', { 
+        requestedRows: rowIndices,
+        availableRows: rows.slice(0, 5).map(r => r.rowIndex) // Show first 5 for debugging
+      });
+      
       const content = rows
         .filter(row => rowIndices.includes(row.rowIndex))
         .map(row => ({
@@ -344,6 +372,12 @@ class GoogleSheetsService {
           rowIndex: row.rowIndex,
           row: row
         }));
+      
+      logger.debug('Content found by rows', { 
+        requestedRows: rowIndices,
+        foundCount: content.length,
+        foundRows: content.map(c => ({ rowIndex: c.rowIndex, title: c.title }))
+      });
       
       return content;
     } catch (error) {

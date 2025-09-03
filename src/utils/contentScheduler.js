@@ -270,7 +270,21 @@ class ContentScheduler {
   async getContentByRowIndex(rowIndex) {
     try {
       const allContent = await googleSheets.getAllContent();
+      // The rowIndex from google-spreadsheet starts at 2 for first data row
+      // So when user says row 2, they mean rowIndex 2
       const content = allContent.find(c => c.rowIndex === rowIndex);
+      
+      if (!content) {
+        logger.debug('Content not found', { 
+          requestedRowIndex: rowIndex,
+          availableRows: allContent.map(c => ({ 
+            rowIndex: c.rowIndex, 
+            title: c.title,
+            date: c.date
+          }))
+        });
+      }
+      
       return content || null;
     } catch (error) {
       logger.error('Failed to get content by row index', { 
