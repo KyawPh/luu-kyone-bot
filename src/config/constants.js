@@ -1,11 +1,11 @@
 const CITIES = {
-  // singapore: {
-  //   code: 'SG',
-  //   name: 'Singapore',
-  //   currency: 'SGD',
-  //   premiumPrice: 1.3,
-  //   emoji: '🇸🇬'
-  // },
+  singapore: {
+    code: 'SG',
+    name: 'Singapore',
+    currency: 'SGD',
+    premiumPrice: 1.3,
+    emoji: '🇸🇬'
+  },
   bangkok: {
     code: 'BKK',
     name: 'Bangkok',

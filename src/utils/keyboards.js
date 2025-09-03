@@ -24,10 +24,10 @@ const mainMenu = () => {
 const routeKeyboard = () => {
   const buttons = [
     // // Myanmar ↔ Singapore routes (prioritized)
-    // [
-    //   Markup.button.callback('🇲🇲 YGN → 🇸🇬 SG', 'route_YGN_SG'),
-    //   Markup.button.callback('🇸🇬 SG → 🇲🇲 YGN', 'route_SG_YGN')
-    // ],
+    [
+      Markup.button.callback('🇲🇲 YGN → 🇸🇬 SG', 'route_YGN_SG'),
+      Markup.button.callback('🇸🇬 SG → 🇲🇲 YGN', 'route_SG_YGN')
+    ],
     // Myanmar ↔ Bangkok routes
     [
       Markup.button.callback('🇲🇲 YGN → 🇹🇭 BKK', 'route_YGN_BKK'),
