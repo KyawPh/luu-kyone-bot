@@ -306,11 +306,17 @@ function setupScheduledJobs(bot) {
       // First, cleanup expired posts
       await cleanupExpiredPosts();
       
-      // Then load today's content from Google Sheets
-      const scheduledCount = await contentScheduler.loadTodayContent();
-      
-      if (scheduledCount > 0) {
-        logger.info(`Content calendar: ${scheduledCount} items scheduled for today`);
+      // Then try to load today's content from Google Sheets (if configured)
+      try {
+        const scheduledCount = await contentScheduler.loadTodayContent();
+        
+        if (scheduledCount > 0) {
+          logger.info(`Content calendar: ${scheduledCount} items scheduled for today`);
+        }
+      } catch (error) {
+        logger.debug('Content calendar check skipped', { 
+          reason: error.message || 'Google Sheets not configured' 
+        });
       }
     }, {
       timezone: config.bot.timezone

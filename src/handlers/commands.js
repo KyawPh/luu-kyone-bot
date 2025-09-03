@@ -312,6 +312,18 @@ const setupCommands = (bot) => {
       const { googleSheets } = require('../utils/googleSheets');
       const { contentScheduler } = require('../utils/contentScheduler');
       
+      // Check if Google Sheets is initialized
+      if (!googleSheets.initialized) {
+        return ctx.reply(
+          '⚠️ Google Sheets content calendar is not available\n\n' +
+          'Possible reasons:\n' +
+          '1. Google Sheets API not enabled\n' +
+          '2. Sheet not shared with service account\n' +
+          '3. GOOGLE_SHEETS_ID not configured\n\n' +
+          'Check logs for details.'
+        );
+      }
+      
       // Get today's content
       const todayContent = await googleSheets.getTodayContent();
       

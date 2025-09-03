@@ -81,7 +81,26 @@ class GoogleSheetsService {
       
       return true;
     } catch (error) {
-      logger.error('Failed to initialize Google Sheets', { error: error.message });
+      // Check for specific API not enabled error
+      if (error.message?.includes('Google Sheets API has not been used')) {
+        logger.error('⚠️ Google Sheets API is not enabled!', {
+          solution: 'Please enable the Google Sheets API in Google Cloud Console',
+          projectId: error.message.match(/project (\d+)/)?.[1],
+          link: error.message.match(/https:\/\/[^\s]+/)?.[0]
+        });
+        logger.info('Content calendar disabled - Google Sheets API not enabled');
+        logger.info('To enable: Visit the link above or go to Google Cloud Console > APIs & Services > Library > Search "Google Sheets API" > Enable');
+      } else if (error.message?.includes('403')) {
+        logger.error('Google Sheets access denied', {
+          error: error.message,
+          solution: 'Make sure to share your Google Sheet with the service account email'
+        });
+      } else {
+        logger.error('Failed to initialize Google Sheets', { 
+          error: error.message,
+          type: error.name
+        });
+      }
       return false;
     }
   }

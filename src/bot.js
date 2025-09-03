@@ -159,6 +159,25 @@ const launch = async () => {
     // Setup scheduled jobs
     setupScheduledJobs(bot);
     
+    // Check Google Sheets configuration (optional feature)
+    const sheetsId = process.env.GOOGLE_SHEETS_ID;
+    if (sheetsId) {
+      logger.info('📊 Google Sheets configured', { sheetsId: sheetsId.substring(0, 10) + '...' });
+      
+      // Try to initialize Google Sheets
+      const { googleSheets } = require('./utils/googleSheets');
+      const sheetsReady = await googleSheets.initialize();
+      
+      if (!sheetsReady) {
+        logger.warn('⚠️ Google Sheets content calendar is disabled');
+        logger.info('The bot will continue working without content calendar features');
+        logger.info('To enable: 1) Enable Google Sheets API in Google Cloud Console');
+        logger.info('           2) Share your sheet with the service account email');
+      }
+    } else {
+      logger.info('Google Sheets content calendar not configured (optional feature)');
+    }
+    
     logger.info('🤖 Luu Kyone Bot (@luukyonebot) is running!');
   } catch (error) {
     logger.error('Failed to launch bot', { error: error.message });
