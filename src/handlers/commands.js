@@ -308,6 +308,8 @@ const setupCommands = (bot) => {
       return ctx.reply(messages.admin.adminOnly);
     }
     
+    logger.info('Content today command', { userId });
+    
     try {
       const { googleSheets } = require('../utils/googleSheets');
       const { contentScheduler } = require('../utils/contentScheduler');
@@ -368,11 +370,15 @@ const setupCommands = (bot) => {
       return ctx.reply(messages.admin.adminOnly);
     }
     
+    logger.info('Content refresh command', { userId });
+    
     try {
       await ctx.reply('🔄 Refreshing content calendar...');
       
       const { loadContentCalendar } = require('../utils/scheduler');
       const count = await loadContentCalendar(bot);
+      
+      logger.info('Content calendar refreshed', { itemsScheduled: count });
       
       if (count > 0) {
         await ctx.reply(`✅ Content calendar refreshed!\n${count} items scheduled for today.`);
@@ -380,12 +386,13 @@ const setupCommands = (bot) => {
         await ctx.reply('📅 No content to schedule for today');
       }
     } catch (error) {
-      logger.error('Content refresh error', { error: error.message });
+      logger.error('Content refresh error', { error: error.message, userId });
       ctx.reply('❌ Error refreshing content calendar');
     }
   });
   
-  bot.command('content_test', async (ctx) => {
+  // Post single content row
+  bot.command('content_post', async (ctx) => {
     const userId = ctx.from.id.toString();
     
     if (!isAdmin(userId, config.telegram.adminIds)) {
@@ -393,16 +400,18 @@ const setupCommands = (bot) => {
     }
     
     try {
-      // Get row index from command (e.g., /content_test 5)
+      // Get row index from command (e.g., /content_post 5)
       const args = ctx.message.text.split(' ');
       if (args.length < 2) {
-        return ctx.reply('Usage: /content_test <row_number>');
+        return ctx.reply('Usage: /content_post <row_number>');
       }
       
       const rowIndex = parseInt(args[1]);
       if (isNaN(rowIndex)) {
-        return ctx.reply('Invalid row number. Usage: /content_test <row_number>');
+        return ctx.reply('Invalid row number. Usage: /content_post <row_number>');
       }
+      
+      logger.info('Content post command', { userId, rowIndex });
       
       const { contentScheduler } = require('../utils/contentScheduler');
       contentScheduler.setBot(bot);
@@ -410,13 +419,15 @@ const setupCommands = (bot) => {
       const success = await contentScheduler.postContentManually(rowIndex);
       
       if (success) {
+        logger.info('Content posted successfully', { rowIndex });
         await ctx.reply('✅ Content posted successfully!');
       } else {
+        logger.warn('Failed to post content', { rowIndex });
         await ctx.reply('❌ Failed to post content. Check logs for details.');
       }
     } catch (error) {
-      logger.error('Content test error', { error: error.message });
-      ctx.reply('❌ Error testing content post');
+      logger.error('Content post error', { error: error.message, userId });
+      ctx.reply('❌ Error posting content');
     }
   });
   
@@ -427,6 +438,8 @@ const setupCommands = (bot) => {
     if (!isAdmin(userId, config.telegram.adminIds)) {
       return ctx.reply(messages.admin.adminOnly);
     }
+    
+    logger.info('Content browse command', { userId });
     
     try {
       const { googleSheets } = require('../utils/googleSheets');
@@ -468,7 +481,7 @@ const setupCommands = (bot) => {
         reply_markup: keyboard
       });
     } catch (error) {
-      logger.error('Content browse error', { error: error.message });
+      logger.error('Content browse error', { error: error.message, userId });
       ctx.reply('❌ Error browsing content');
     }
   });
@@ -513,13 +526,25 @@ const setupCommands = (bot) => {
       const approvedContent = content.filter(c => c.status === 'approved');
       
       if (approvedContent.length === 0) {
+        logger.info('No approved content for date', { date: dateStr });
         return ctx.reply(`📅 No approved content found for ${dateStr}`);
       }
+      
+      logger.info('Posting content for date', { 
+        date: dateStr, 
+        count: approvedContent.length 
+      });
       
       await ctx.reply(`📤 Posting ${approvedContent.length} items for ${dateStr}...`);
       
       contentScheduler.setBot(bot);
       const result = await contentScheduler.postMultipleContent(approvedContent);
+      
+      logger.info('Content date posting completed', { 
+        date: dateStr,
+        success: result.success, 
+        failed: result.failed 
+      });
       
       await ctx.reply(
         `✅ Batch posting completed!\n` +
@@ -527,8 +552,123 @@ const setupCommands = (bot) => {
         `Failed: ${result.failed}`
       );
     } catch (error) {
-      logger.error('Content date error', { error: error.message });
+      logger.error('Content date error', { error: error.message, userId });
       ctx.reply('❌ Error posting content by date');
+    }
+  });
+  
+  // Generate content templates for Google Sheets
+  bot.command('content_templates', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    logger.info('Content templates command', { userId });
+    
+    try {
+      const { googleSheets } = require('../utils/googleSheets');
+      
+      // Generate templates for next 7 days
+      const templates = [];
+      const today = new Date();
+      
+      for (let i = 0; i < 7; i++) {
+        const date = new Date(today);
+        date.setDate(today.getDate() + i);
+        const dateStr = `${(date.getMonth() + 1).toString().padStart(2, '0')}/${date.getDate().toString().padStart(2, '0')}/${date.getFullYear()}`;
+        const dayName = date.toLocaleDateString('en-US', { weekday: 'long' });
+        
+        // Daily motivation (every day at 8 AM)
+        templates.push({
+          date: dateStr,
+          time: '08:00',
+          type: 'motivation',
+          title: `${dayName} Motivation`,
+          message: `🌅 Start your ${dayName} with purpose!\n\n"Your empty luggage space can bring joy to someone"\n\nCheck who needs help today: @luukyonebot`,
+          imageUrl: '',
+          tags: `#${dayName}Motivation #KindnessInAction #LuuKyone`,
+          status: 'draft',
+          author: 'Bot',
+          notes: 'Daily motivational post'
+        });
+        
+        // Tuesday Route Spotlight
+        if (dayName === 'Tuesday') {
+          templates.push({
+            date: dateStr,
+            time: '12:00',
+            type: 'spotlight',
+            title: 'Route Spotlight Tuesday',
+            message: `📍 Route Spotlight: Singapore ↔️ Yangon\n\nThis week's activity:\n• Active travelers ready to help\n• Pending favor requests\n• Most needed: Medicine & Documents\n\nTraveling this route? Check @luukyonebot`,
+            imageUrl: '',
+            tags: '#RouteSpotlight #TravelWithPurpose',
+            status: 'draft',
+            author: 'Bot',
+            notes: 'Weekly route highlight'
+          });
+        }
+        
+        // Thursday Gratitude
+        if (dayName === 'Thursday') {
+          templates.push({
+            date: dateStr,
+            time: '18:00',
+            type: 'gratitude',
+            title: 'Thank You Thursday',
+            message: `🙏 Thank You Thursday!\n\nThis week our community:\n💚 Completed acts of kindness\n✈️ Connected across borders\n🤝 Welcomed new neighbors\n\nEvery favor matters. Thank you for choosing kindness!`,
+            imageUrl: '',
+            tags: '#ThankYouThursday #GratefulHeart #LuuKyoneFamily',
+            status: 'draft',
+            author: 'Bot',
+            notes: 'Weekly gratitude post'
+          });
+        }
+        
+        // Friday Safety Reminder
+        if (dayName === 'Friday') {
+          templates.push({
+            date: dateStr,
+            time: '15:00',
+            type: 'safety',
+            title: 'Safety First Friday',
+            message: `🛡️ Safety First Friday!\n\nRemember:\n✅ Meet in public places\n✅ Document exchanges with photos\n✅ Trust your instincts\n❌ No suspicious packages\n\nStay safe, spread kindness! 💚`,
+            imageUrl: '',
+            tags: '#SafetyFirst #FridayReminder #StaySafe',
+            status: 'draft',
+            author: 'Bot',
+            notes: 'Weekly safety reminder'
+          });
+        }
+      }
+      
+      // Add templates to sheet
+      let addedCount = 0;
+      for (const template of templates) {
+        const success = await googleSheets.addContent(template);
+        if (success) addedCount++;
+      }
+      
+      logger.info('Content templates generated', { 
+        totalTemplates: templates.length,
+        addedCount 
+      });
+      
+      await ctx.reply(
+        `📝 <b>Content Templates Generated!</b>\n\n` +
+        `Created ${addedCount} template posts for the next 7 days:\n\n` +
+        `• Daily Motivation (8 AM daily)\n` +
+        `• Route Spotlight (Tuesday 12 PM)\n` +
+        `• Thank You Thursday (6 PM)\n` +
+        `• Safety Friday (3 PM)\n\n` +
+        `Templates are saved as drafts in your Google Sheet.\n` +
+        `Edit them and change status to "approved" to schedule.`,
+        { parse_mode: 'HTML' }
+      );
+    } catch (error) {
+      logger.error('Content templates error', { error: error.message, userId });
+      ctx.reply('❌ Error generating content templates');
     }
   });
   
@@ -561,7 +701,7 @@ const setupCommands = (bot) => {
         message += `   Date: ${content.date}, Status: ${status}\n\n`;
       });
       
-      message += `\n<i>Use /content_test [row_number] to post any row</i>`;
+      message += `\n<i>Use /content_post [row_number] to post any row</i>`;
       
       await ctx.reply(message, { parse_mode: 'HTML' });
     } catch (error) {
@@ -599,13 +739,24 @@ const setupCommands = (bot) => {
       const content = await googleSheets.getContentByRows(validRows);
       
       if (content.length === 0) {
+        logger.warn('No content found for rows', { rows: validRows });
         return ctx.reply('No content found for specified rows');
       }
+      
+      logger.info('Batch posting content', { 
+        rows: validRows, 
+        count: content.length 
+      });
       
       await ctx.reply(`📤 Posting ${content.length} items...`);
       
       contentScheduler.setBot(bot);
       const result = await contentScheduler.postMultipleContent(content);
+      
+      logger.info('Batch posting completed', { 
+        success: result.success, 
+        failed: result.failed 
+      });
       
       await ctx.reply(
         `✅ Batch posting completed!\n` +
@@ -613,46 +764,11 @@ const setupCommands = (bot) => {
         `Failed: ${result.failed}`
       );
     } catch (error) {
-      logger.error('Content batch error', { error: error.message });
+      logger.error('Content batch error', { error: error.message, userId });
       ctx.reply('❌ Error batch posting content');
     }
   });
   
-  // Test channel features (admin only)
-  bot.command('test_channel', async (ctx) => {
-    const userId = ctx.from.id.toString();
-    
-    // Check if user is admin (you can add your user ID here)
-    if (!isAdmin(userId, config.telegram.adminIds)) {
-      return ctx.reply(messages.admin.adminOnly);
-    }
-    
-    try {
-      // Show test options
-      const testKeyboard = {
-        inline_keyboard: [
-          [{ text: '📢 ကြိုဆိုစကား စမ်းသပ်ရန်', callback_data: 'test_welcome' }],
-          [{ text: '💚 နေ့စဉ် စကားပုံ စမ်းသပ်ရန်', callback_data: 'test_quote' }],
-          [{ text: '🎊 မှတ်တိုင် စမ်းသပ်ရန် (ကူညီမှု ၁၀၀)', callback_data: 'test_milestone_100' }],
-          [{ text: '🎉 မှတ်တိုင် စမ်းသပ်ရန် (အဖွဲ့ဝင် ၅၀၀)', callback_data: 'test_milestone_500' }],
-          [{ text: '📊 အပတ်စဉ် စာရင်းဇယား စမ်းသပ်ရန်', callback_data: 'test_stats' }],
-          [{ text: '❌ မလုပ်တော့ပါ', callback_data: 'cancel' }]
-        ]
-      };
-      
-      await ctx.reply(
-        '🧪 <b>Channel Test Menu</b>\n\n' +
-        'Select what you want to test:',
-        { 
-          parse_mode: 'HTML',
-          reply_markup: testKeyboard
-        }
-      );
-    } catch (error) {
-      logger.error('Test command error', { error: error.message });
-      ctx.reply(messages.admin.errorAccessingMenu);
-    }
-  });
 };
 
 module.exports = setupCommands;

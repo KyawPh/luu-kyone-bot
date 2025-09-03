@@ -111,41 +111,8 @@ const setupCallbacks = (bot) => {
     }
   });
   
-  bot.action('test_quote', async (ctx) => {
-    await ctx.answerCbQuery(messages.test.sendingQuote);
-    
-    try {
-      await bot.telegram.sendDailyQuote();
-      await ctx.editMessageText(messages.test.dailyQuoteSent);
-    } catch (error) {
-      logger.error('Test quote error', { error: error.message });
-      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
-    }
-  });
   
-  bot.action('test_milestone_100', async (ctx) => {
-    await ctx.answerCbQuery(messages.test.sendingMilestone);
-    
-    try {
-      await bot.telegram.celebrateMilestone('kindness', 100);
-      await ctx.editMessageText(messages.test.milestoneMessageSent);
-    } catch (error) {
-      logger.error('Test milestone error', { error: error.message });
-      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
-    }
-  });
   
-  bot.action('test_milestone_500', async (ctx) => {
-    await ctx.answerCbQuery(messages.test.sendingMilestone);
-    
-    try {
-      await bot.telegram.celebrateMilestone('members', 500);
-      await ctx.editMessageText(messages.test.milestoneMessageSent);
-    } catch (error) {
-      logger.error('Test milestone error', { error: error.message });
-      await ctx.editMessageText(formatMessage(messages.common.failedToSend, { error: error.message }));
-    }
-  });
   
   bot.action('test_stats', async (ctx) => {
     await ctx.answerCbQuery(messages.callbacks.generatingStats);
