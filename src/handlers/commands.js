@@ -300,6 +300,268 @@ const setupCommands = (bot) => {
     }
   });
 
+  // Content calendar commands (admin only)
+  bot.command('content_today', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      const { googleSheets } = require('../utils/googleSheets');
+      const { contentScheduler } = require('../utils/contentScheduler');
+      
+      // Get today's content
+      const todayContent = await googleSheets.getTodayContent();
+      
+      if (todayContent.length === 0) {
+        return ctx.reply('📅 No content scheduled for today');
+      }
+      
+      // Get currently scheduled items
+      const scheduled = contentScheduler.getScheduledContent();
+      
+      let message = '📅 <b>Today\'s Content Calendar</b>\n\n';
+      
+      // Show scheduled content
+      if (scheduled.length > 0) {
+        message += '<b>Currently Scheduled:</b>\n';
+        scheduled.forEach(item => {
+          message += `• ${item.time} - ${item.title} (${item.type})\n`;
+        });
+        message += '\n';
+      }
+      
+      // Show all today's content
+      message += '<b>All Today\'s Content:</b>\n';
+      todayContent.forEach(item => {
+        const statusEmoji = item.status === 'published' ? '✅' : 
+                          item.status === 'approved' ? '⏰' : '📝';
+        message += `${statusEmoji} ${item.time} - ${item.title}\n`;
+        message += `   Type: ${item.type}, Author: ${item.author || 'Unknown'}\n`;
+      });
+      
+      await ctx.reply(message, { parse_mode: 'HTML' });
+    } catch (error) {
+      logger.error('Content today command error', { error: error.message });
+      ctx.reply('❌ Error fetching content calendar');
+    }
+  });
+  
+  bot.command('content_refresh', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      await ctx.reply('🔄 Refreshing content calendar...');
+      
+      const { loadContentCalendar } = require('../utils/scheduler');
+      const count = await loadContentCalendar(bot);
+      
+      if (count > 0) {
+        await ctx.reply(`✅ Content calendar refreshed!\n${count} items scheduled for today.`);
+      } else {
+        await ctx.reply('📅 No content to schedule for today');
+      }
+    } catch (error) {
+      logger.error('Content refresh error', { error: error.message });
+      ctx.reply('❌ Error refreshing content calendar');
+    }
+  });
+  
+  bot.command('content_test', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      // Get row index from command (e.g., /content_test 5)
+      const args = ctx.message.text.split(' ');
+      if (args.length < 2) {
+        return ctx.reply('Usage: /content_test <row_number>');
+      }
+      
+      const rowIndex = parseInt(args[1]);
+      if (isNaN(rowIndex)) {
+        return ctx.reply('Invalid row number. Usage: /content_test <row_number>');
+      }
+      
+      const { contentScheduler } = require('../utils/contentScheduler');
+      contentScheduler.setBot(bot);
+      
+      const success = await contentScheduler.postContentManually(rowIndex);
+      
+      if (success) {
+        await ctx.reply('✅ Content posted successfully!');
+      } else {
+        await ctx.reply('❌ Failed to post content. Check logs for details.');
+      }
+    } catch (error) {
+      logger.error('Content test error', { error: error.message });
+      ctx.reply('❌ Error testing content post');
+    }
+  });
+  
+  // Browse all content in Google Sheets
+  bot.command('content_browse', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      const { googleSheets } = require('../utils/googleSheets');
+      const allContent = await googleSheets.getAllContent();
+      
+      if (allContent.length === 0) {
+        return ctx.reply('📭 No content found in Google Sheets');
+      }
+      
+      // Group by status
+      const draft = allContent.filter(c => c.status === 'draft');
+      const approved = allContent.filter(c => c.status === 'approved');
+      const published = allContent.filter(c => c.status === 'published');
+      
+      // Create inline keyboard with first 10 unpublished items
+      const unpublished = [...draft, ...approved].slice(0, 10);
+      const keyboard = {
+        inline_keyboard: unpublished.map(item => [{
+          text: `${item.date} - ${item.title || 'Untitled'} (${item.status})`,
+          callback_data: `post_content_${item.rowIndex}`
+        }])
+      };
+      
+      // Add navigation
+      keyboard.inline_keyboard.push([
+        { text: '🔄 Refresh', callback_data: 'refresh_content_list' },
+        { text: '❌ Close', callback_data: 'close_content_browser' }
+      ]);
+      
+      const message = `📚 <b>Content Browser</b>\n\n` +
+        `📝 Draft: ${draft.length}\n` +
+        `✅ Approved: ${approved.length}\n` +
+        `📤 Published: ${published.length}\n` +
+        `━━━━━━━━━━━━━━━\n` +
+        `<b>Select content to post:</b>`;
+      
+      await ctx.reply(message, {
+        parse_mode: 'HTML',
+        reply_markup: keyboard
+      });
+    } catch (error) {
+      logger.error('Content browse error', { error: error.message });
+      ctx.reply('❌ Error browsing content');
+    }
+  });
+  
+  // Post content for specific date
+  bot.command('content_date', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      const args = ctx.message.text.split(' ');
+      if (args.length < 2) {
+        return ctx.reply('Usage: /content_date MM/DD/YYYY');
+      }
+      
+      const dateStr = args[1];
+      const dateParts = dateStr.split('/');
+      if (dateParts.length !== 3) {
+        return ctx.reply('Invalid date format. Use MM/DD/YYYY');
+      }
+      
+      const { googleSheets } = require('../utils/googleSheets');
+      const { contentScheduler } = require('../utils/contentScheduler');
+      
+      // Parse date
+      const month = parseInt(dateParts[0]) - 1;
+      const day = parseInt(dateParts[1]);
+      const year = parseInt(dateParts[2]);
+      const targetDate = new Date(year, month, day);
+      
+      // Get content for that date
+      const content = await googleSheets.getContentForDate(targetDate);
+      const approvedContent = content.filter(c => c.status === 'approved');
+      
+      if (approvedContent.length === 0) {
+        return ctx.reply(`📅 No approved content found for ${dateStr}`);
+      }
+      
+      await ctx.reply(`📤 Posting ${approvedContent.length} items for ${dateStr}...`);
+      
+      contentScheduler.setBot(bot);
+      const result = await contentScheduler.postMultipleContent(approvedContent);
+      
+      await ctx.reply(
+        `✅ Batch posting completed!\n` +
+        `Success: ${result.success}\n` +
+        `Failed: ${result.failed}`
+      );
+    } catch (error) {
+      logger.error('Content date error', { error: error.message });
+      ctx.reply('❌ Error posting content by date');
+    }
+  });
+  
+  // Batch post multiple rows
+  bot.command('content_batch', async (ctx) => {
+    const userId = ctx.from.id.toString();
+    
+    if (!isAdmin(userId, config.telegram.adminIds)) {
+      return ctx.reply(messages.admin.adminOnly);
+    }
+    
+    try {
+      const args = ctx.message.text.split(' ');
+      if (args.length < 2) {
+        return ctx.reply('Usage: /content_batch row1,row2,row3');
+      }
+      
+      // Parse row numbers
+      const rowIndices = args[1].split(',').map(r => parseInt(r.trim()));
+      const validRows = rowIndices.filter(r => !isNaN(r));
+      
+      if (validRows.length === 0) {
+        return ctx.reply('No valid row numbers provided');
+      }
+      
+      const { googleSheets } = require('../utils/googleSheets');
+      const { contentScheduler } = require('../utils/contentScheduler');
+      
+      // Get content for specified rows
+      const content = await googleSheets.getContentByRows(validRows);
+      
+      if (content.length === 0) {
+        return ctx.reply('No content found for specified rows');
+      }
+      
+      await ctx.reply(`📤 Posting ${content.length} items...`);
+      
+      contentScheduler.setBot(bot);
+      const result = await contentScheduler.postMultipleContent(content);
+      
+      await ctx.reply(
+        `✅ Batch posting completed!\n` +
+        `Success: ${result.success}\n` +
+        `Failed: ${result.failed}`
+      );
+    } catch (error) {
+      logger.error('Content batch error', { error: error.message });
+      ctx.reply('❌ Error batch posting content');
+    }
+  });
+  
   // Test channel features (admin only)
   bot.command('test_channel', async (ctx) => {
     const userId = ctx.from.id.toString();

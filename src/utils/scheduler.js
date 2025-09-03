@@ -5,6 +5,7 @@ const { messages, formatMessage } = require('../config/messages');
 const { logger, logEvent } = require('./logger');
 const { CITIES } = require('../config/constants');
 const { config } = require('../config');
+const { contentScheduler } = require('./contentScheduler');
 
 // Create daily summary message
 async function createDailySummary(isEvening = false) {
@@ -279,6 +280,9 @@ async function sendHowToUseReminder(bot) {
 // Setup all scheduled jobs
 function setupScheduledJobs(bot) {
   try {
+    // Set bot reference for content scheduler
+    contentScheduler.setBot(bot);
+    
     // Morning summary at 9:00 AM
     cron.schedule('0 9 * * *', async () => {
       logger.info('Running morning summary job');
@@ -295,42 +299,28 @@ function setupScheduledJobs(bot) {
       timezone: config.bot.timezone
     });
     
-    // How-to-use reminder at 12:00 PM (noon) daily
-    cron.schedule('0 12 * * *', async () => {
-      logger.info('Running how-to-use reminder job');
-      await sendHowToUseReminder(bot);
-    }, {
-      timezone: config.bot.timezone
-    });
-    
-    // Weekly engagement reminder on Mondays at 10:00 AM
-    cron.schedule('0 10 * * 1', async () => {
-      logger.info('Running weekly engagement reminder');
-      const message = `🎉 <b>Weekly Challenge!</b>\n\nThis week, let's aim for:\n• 100+ acts of kindness\n• 50+ new connections\n• 20+ successful deliveries\n\nEvery journey starts with a single step.\nEvery kindness starts with YOU!\n\n👉 Start now: @luukyonebot\n\n#WeeklyChallenge #MondayMotivation #LuuKyone`;
-      
-      await bot.telegram.sendMessage(
-        config.telegram.channelId,
-        message,
-        { parse_mode: 'HTML' }
-      );
-    }, {
-      timezone: config.bot.timezone
-    });
-    
-    // Daily cleanup at 2:00 AM
+    // Content calendar check at 2:00 AM - loads and schedules today's content
     cron.schedule('0 2 * * *', async () => {
-      logger.info('Running daily cleanup job');
+      logger.info('Running content calendar check');
+      
+      // First, cleanup expired posts
       await cleanupExpiredPosts();
+      
+      // Then load today's content from Google Sheets
+      const scheduledCount = await contentScheduler.loadTodayContent();
+      
+      if (scheduledCount > 0) {
+        logger.info(`Content calendar: ${scheduledCount} items scheduled for today`);
+      }
     }, {
-      timezone: 'Asia/Singapore'
+      timezone: config.bot.timezone
     });
     
     logger.info('Scheduled jobs setup complete', {
       jobs: [
         'morning_summary', 
         'evening_summary', 
-        'how_to_use_reminder',
-        'weekly_engagement',
+        'content_calendar_check',
         'daily_cleanup'
       ]
     });
@@ -347,9 +337,17 @@ async function testDailySummary(bot, isEvening = false) {
   await sendDailySummary(bot, isEvening);
 }
 
+// Manual trigger for content calendar
+async function loadContentCalendar(bot) {
+  contentScheduler.setBot(bot);
+  const count = await contentScheduler.loadTodayContent();
+  return count;
+}
+
 module.exports = {
   setupScheduledJobs,
   sendDailySummary,
   testDailySummary,
-  cleanupExpiredPosts
+  cleanupExpiredPosts,
+  loadContentCalendar
 };
